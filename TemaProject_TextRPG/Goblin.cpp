@@ -22,7 +22,6 @@ Goblin::Goblin(const Player& player)
 }
 
 Goblin::~Goblin()
-	:
 {
 	std::cout << "고블린(를)을 처치하셨습니다!" << std::endl;
 	std::cout << "경험치(EXP) 50을 획득했습니다!" << std::endl;
