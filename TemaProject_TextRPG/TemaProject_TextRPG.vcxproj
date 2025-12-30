@@ -124,9 +124,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="abc.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Player.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="abc.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
