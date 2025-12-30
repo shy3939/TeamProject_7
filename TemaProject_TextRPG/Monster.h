@@ -1,27 +1,27 @@
 ﻿#pragma once
 #include <string>
 #include <iostream>
-#include <vecotr>
+#include <vector>
 #include <cstdlib>
+#include "Player.h"
 
 class Monster
 {
 public:
-	Monster(std::string monstername, int maxhp, int atk, int gold);
+	Monster();
 
-	~Monster();
+	virtual ~Monster();
 
+	virtual int MosterAttack() = 0;
+	virtual void RHoldingItem() = 0;
+	virtual void InitRandom() = 0;
 
-	virtual void MosterAttack() = 0;
-	virtual void MosterDie() = 0;
-
-	std::string GetMonsterName();
-	int GetMaxHp();
-	int GetHp();
-	int GetATK();
-	int GetGold();
+	std::string GetMonsterName() const;
+	int GetMaxHp() const;
+	int GetHp() const;
+	int GetATK() const;
+	int GetGold() const;
 	// 획득한 아이템 출력
-	void SetMonsterName(std::string monstername);
 	void SetMaxHp(int maxhp);
 	void SetHp(int hp);
 	void SetATK(int atk);

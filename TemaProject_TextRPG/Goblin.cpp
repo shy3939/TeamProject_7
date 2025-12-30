@@ -1,39 +1,48 @@
 ﻿#include "Goblin.h"
 
 Goblin::Goblin(const Player& player)
-	:
+	: Monster()
 {
-	RandHp = rand() % 11 + 20;
-	RandATK = rand() % 6 + 5;
-	RandGold = rand() % 11 + 10;
-	RandItem = rand() 10;
-
+	monstername_ = "고블린";
+	InitRandom();
 	int Level = player.GetLevel();
 
-	"고블린"
-	SetMaxHp(Level* RandHp);
-	SetATK(Level* RandATK);
-	SetGold(RandGold);
+	maxhp_ = Level* rmaxhp_;
+	hp_ = maxhp_;
+	atk_ = Level* ratk_;
+	gold_ = rgold_;
 
-	//if (RandItem > 6)
-	//{
-	//	// 아이템 보유
-	//}
+	// 아이템 보유 or 미보유
+
 }
 
 Goblin::~Goblin()
-	:
 {
 	std::cout << "고블린(를)을 처치하셨습니다!" << std::endl;
-	std::cout << "경험치(EXP) 50을 획득했습니다!" << std::endl;
-	std::cout << "골드" << GetGold() << "를 획득하셨습니다!" << std::endl;
-
-	// 아이템 획득 시 실행될 코드(포인터로 받을 예정)
+	
+	// 동적 할당할 아이템 delete할 공간
 }
 
 
 
 void Goblin::InitRandom()
 {
-	RandMaxHp = RandomInRange(10, 20);
+	rmaxhp_ = RandomInRange(20, 30);
+	ratk_ = RandomInRange(5, 10);
+	rgold_ = RandomInRange(10, 20);
+	ritem_ = RandomInRange(1, 10);
+}
+
+int Goblin::MosterAttack()
+{
+	return atk_;
+}
+
+void Goblin::RHoldingItem()
+{
+	if (RandomInRange(1, 10) <= 3)
+	{
+		// 아이템 부여
+	}
+	// 아이템 미부여
 }
