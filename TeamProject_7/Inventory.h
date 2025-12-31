@@ -1,16 +1,17 @@
 ﻿#pragma once
 
-#include <vector>
+#include <map>
 #include <string>
 
 template<typename T>
 class Inventory
 {
 private:
-    std::vector<T> items;
+    std::map<T, int> items;
 
 public:
     void AddItem(const T& item);
-    void RemoveLastItem();
-    void GetInventory() const;
+    void RemoveItem(const T& item);
+    void ShowInventory() const;
+    const std::map<T, int>& GetInventory() const;
 };
