@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include <iostream>
-
+#include "Inventory.h"
 // 기본 생성자
 Player::Player()
     : Name("Hero"), LV(1), HP(200), MaxHP(200), Attack(30), Experience(0), Gold(0)
