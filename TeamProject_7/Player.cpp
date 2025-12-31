@@ -1,5 +1,8 @@
 ﻿#include "Player.h"
+#include "Inventory.h"
 #include <iostream>
+
+using namespace std;
 
 // 기본 생성자
 Player::Player()
@@ -67,7 +70,7 @@ int Player::GetHP() const { return HP; }
 int Player::GetMaxHP() const { return MaxHP; }
 int Player::GetAttack() const { return Attack; }
 int Player::GetGold() const { return Gold; }
-Inventory* Player::GetInventory() { return &Inven; }
+Inventory<string>* Player::GetInventory() { return &Inven; }
 
 // 세터
 void Player::SetName(const string& name) { Name = name; }
