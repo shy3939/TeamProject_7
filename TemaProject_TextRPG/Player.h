@@ -18,22 +18,22 @@ private:
     Inventory Inven;
 
 public:
-    // »ý¼ºÀÚ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     Player();
     Player(const string& name, int lv = 1, int hp = 200, int attack = 30, int exp = 0, int gold = 0);
 
-    // °æÇèÄ¡ °ü·Ã
+    // ï¿½ï¿½ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
     void GainExperience(int amount);
     void AddExp(int amount);
 
-    // µ¥¹ÌÁö Ã³¸®
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
     void TakeDamage(int amount);
 
-    // °ñµå °ü·Ã
+    // ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     void AddGold(int amount);
     bool SpendGold(int amount);
 
-    // °ÔÅÍ
+    // ï¿½ï¿½ï¿½ï¿½
     string GetName() const;
     int GetLV() const;
     int GetHP() const;
@@ -42,7 +42,7 @@ public:
     int GetGold() const;
     Inventory* GetInventory();
 
-    // ¼¼ÅÍ
+    // ï¿½ï¿½ï¿½ï¿½
     void SetName(const string& name);
     void SetHP(int hp);
     void SetAttack(int attack);
@@ -51,6 +51,6 @@ public:
     void SetGold(int gold);
     void SetMaxHP(int maxHp);
 
-    // »óÅÂ Ãâ·Â
+    // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
     void ShowStatus() const;
 };
