@@ -1,16 +1,18 @@
 ﻿#include "Monster.h"
 
 Monster::Monster()
-	:monstername_("Unknow"),
+	:monstername_("Unknown"),
 	maxhp_(0),
 	hp_(0),
 	atk_(0),
-	gold_(0)
+	gold_(0).
+	item_(nullptr)
 {
 }
 
 Monster::~Monster()
 {
+	delete item_;
 }
 
 std::string Monster::GetMonsterName() const
@@ -33,7 +35,6 @@ int Monster::GetGold() const
 {
 	return gold_;
 }
-// 획득한 아이템 출력
 void Monster::SetMaxHp(int maxhp)
 {
 	maxhp_ = maxhp;
@@ -50,7 +51,6 @@ void Monster::SetGold(int gold)
 {
 	gold_ = gold;
 }
-// 획득할 아이템 선택
 
 int Monster::RandomInRange(int min, int max)
 {
