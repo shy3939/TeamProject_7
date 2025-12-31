@@ -5,8 +5,9 @@ Goblin::Goblin(const Player& player)
 {
 	monstername_ = "고블린";
 	InitRandom();
-	int Level = player.GetLevel();
+	int Level = player.GetLV();
 
+	int RandNum = RandomInRange(1, 10);
 	maxhp_ = Level * rmaxhp_;
 	hp_ = maxhp_;
 	atk_ = Level * ratk_;

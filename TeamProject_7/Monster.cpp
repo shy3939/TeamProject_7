@@ -5,7 +5,7 @@ Monster::Monster()
 	maxhp_(0),
 	hp_(0),
 	atk_(0),
-	gold_(0).
+	gold_(0),
 	item_(nullptr)
 {
 }
