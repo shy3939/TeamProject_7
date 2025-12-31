@@ -1,40 +1,49 @@
-﻿#include <iostream>
 #include "Inventory.h"
+#include <iostream>
 
-template<typename T>
-void Inventory<T>::AddItem(const T& item)
+void Inventory::AddItem(const std::string& key)
 {
-    items.push_back(item);
-    std::cout << item << " 아이템이 인벤토리에 추가되었습니다.\n";
+    items[key]++;
+    std::cout << key << " 아이템이 인벤토리에 추가되었습니다." << std::endl;
 }
 
-template<typename T>
-void Inventory<T>::RemoveLastItem()
+void Inventory::RemoveItem(const std::string& key)
 {
-    if (items.empty())
+        auto it = items.find(key);
+
+    if (it == items.end())
     {
-        std::cout << "인벤토리가 비어있습니다.\n";
+        std::cout << "해당 아이템이 없습니다." << std::endl;
         return;
     }
 
-    std::cout << items.back()
-        << " 아이템이 인벤토리에서 제거되었습니다.\n";
-    items.pop_back();
+    if (--it->second <= 0)
+    {
+        items.erase(it);
+        std::cout << key << " 아이템이 인벤토리에서 제거되었습니다." << std::endl;
+
+    }
 }
 
-template<typename T>
-void Inventory<T>::GetInventory() const
+void Inventory::ShowInventory() const
 {
-    std::cout << "인벤토리가 열렸습니다\n";
+    std::cout << "인벤토리가 열렸습니다." << std::endl;
+
 
     if (items.empty())
     {
-        std::cout << "인벤토리가 비어있습니다.\n";
+        std::cout << "인벤토리가 비어있습니다." << std::endl;
         return;
     }
 
-    for (const T& item : items)
-    {
-        std::cout << "- " << item << "\n";
-    }
+        for (const auto& pair : items)
+        {
+            std::cout << "- " << pair.first
+                << " x" << pair.second << std::endl;
+        }
+}
+
+const std::map<std::string, int>& Inventory::GetInventory() const
+{
+    return items;
 }
