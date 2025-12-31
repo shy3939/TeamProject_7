@@ -70,7 +70,8 @@ int Player::GetHP() const { return HP; }
 int Player::GetMaxHP() const { return MaxHP; }
 int Player::GetAttack() const { return Attack; }
 int Player::GetGold() const { return Gold; }
-Inventory<string>* Player::GetInventory() { return &Inven; }
+const Inventory& Player::GetInventory() const { return Inven; }
+
 
 // 세터
 void Player::SetName(const string& name) { Name = name; }
