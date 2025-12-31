@@ -1,4 +1,4 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include <iostream>
 
 void Inventory::AddItem(const std::string& key)
@@ -9,7 +9,7 @@ void Inventory::AddItem(const std::string& key)
 
 void Inventory::RemoveItem(const std::string& key)
 {
-    auto it = items.find(key);
+        auto it = items.find(key);
 
     if (it == items.end())
     {
@@ -21,24 +21,26 @@ void Inventory::RemoveItem(const std::string& key)
     {
         items.erase(it);
         std::cout << key << " 아이템이 인벤토리에서 제거되었습니다." << std::endl;
+
     }
 }
 
 void Inventory::ShowInventory() const
 {
-    std::cout << "인벤토리가 열렸습니다" << std::endl;
+    std::cout << "인벤토리가 열렸습니다." << std::endl;
+
 
     if (items.empty())
     {
-        std::cout << "인벤토리가 비어있습니다" << std::endl;
+        std::cout << "인벤토리가 비어있습니다." << std::endl;
         return;
     }
 
-    for (const auto& pair : items)
-    {
-        std::cout << "- " << pair.first
-            << " x" << pair.second << std::endl;
-    }
+        for (const auto& pair : items)
+        {
+            std::cout << "- " << pair.first
+                << " x" << pair.second << std::endl;
+        }
 }
 
 const std::map<std::string, int>& Inventory::GetInventory() const
