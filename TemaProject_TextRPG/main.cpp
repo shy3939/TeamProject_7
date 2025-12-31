@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 #include "GameField.h"
 #include "ShopField.h"
 #include <iostream>
