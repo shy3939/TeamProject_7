@@ -12,5 +12,5 @@ private:
 public:
     void AddItem(const T& item);
     void RemoveLastItem();
-    void ShowInventory() const;
+    void GetInventory() const;
 };

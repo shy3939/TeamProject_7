@@ -23,7 +23,7 @@ void Inventory<T>::RemoveLastItem()
 }
 
 template<typename T>
-void Inventory<T>::ShowInventory() const
+void Inventory<T>::GetInventory() const
 {
     std::cout << "인벤토리가 열렸습니다\n";
 
