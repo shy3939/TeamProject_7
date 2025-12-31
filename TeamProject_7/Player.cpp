@@ -1,6 +1,9 @@
-﻿#include "Player.h"
-#include <iostream>
+#include "Player.h"
 #include "Inventory.h"
+#include <iostream>
+
+using namespace std;
+
 // 기본 생성자
 Player::Player()
     : Name("Hero"), LV(1), HP(200), MaxHP(200), Attack(30), Experience(0), Gold(0)
@@ -67,7 +70,7 @@ int Player::GetHP() const { return HP; }
 int Player::GetMaxHP() const { return MaxHP; }
 int Player::GetAttack() const { return Attack; }
 int Player::GetGold() const { return Gold; }
-Inventory* Player::GetInventory() { return &Inven; }
+Inventory<string>* Player::GetInventory() { return &Inven; }
 
 // 세터
 void Player::SetName(const string& name) { Name = name; }

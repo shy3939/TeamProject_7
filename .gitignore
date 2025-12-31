@@ -45,7 +45,16 @@ nunit-*.xml
 *.ilk
 *.meta
 *.obj
+<<<<<<< HEAD
+
+# Visual Studio Cache Folder
+.vs/
+
+# Precompiled Headers
+*.gch
+=======
 *.iobj
+>>>>>>> 20978ffc80dff5b7bf98cbbaf662989c9939b290
 *.pch
 *.pdb
 *.ipdb
@@ -89,9 +98,17 @@ _ReSharper*/
 **/[Pp]ackages/*
 !**/[Pp]ackages/build/
 
+<<<<<<< HEAD
+# Executables
+*.exe
+*.out
+*.app
+
+=======
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
 
 # Folder config file
 Desktop.ini
+>>>>>>> 20978ffc80dff5b7bf98cbbaf662989c9939b290

@@ -15,7 +15,7 @@ private:
     int Attack;
     int Experience;
     int Gold;
-    Inventory Inven;
+    Inventory<string> Inven;
 
 public:
     // 생성자
@@ -40,7 +40,7 @@ public:
     int GetMaxHP() const;
     int GetAttack() const;
     int GetGold() const;
-    Inventory* GetInventory();
+    Inventory<string>* GetInventory();
 
     // 세터
     void SetName(const string& name);
