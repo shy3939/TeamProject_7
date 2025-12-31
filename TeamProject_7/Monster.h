@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include "Player.h"
+#include "Item.h"
 
 class Monster
 {
@@ -13,7 +14,6 @@ public:
 	virtual ~Monster();
 
 	virtual int MosterAttack() = 0;
-	virtual void RHoldingItem() = 0;
 	virtual void InitRandom() = 0;
 
 	std::string GetMonsterName() const;
@@ -21,12 +21,10 @@ public:
 	int GetHp() const;
 	int GetATK() const;
 	int GetGold() const;
-	// 획득한 아이템 출력
 	void SetMaxHp(int maxhp);
 	void SetHp(int hp);
 	void SetATK(int atk);
 	void SetGold(int gold);
-	// 획득할 아이템 선택
 	int RandomInRange(int min, int max);
 
 
@@ -36,5 +34,5 @@ protected:
 	int hp_;
 	int atk_;
 	int gold_;
-	// 아이템 객체 랜덤으로 생성해야 될듯?
+	Item* item_;
 };
