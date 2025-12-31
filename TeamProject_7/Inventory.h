@@ -3,15 +3,14 @@
 #include <map>
 #include <string>
 
-template<typename T>
 class Inventory
 {
 private:
-    std::map<T, int> items;
+    std::map<std::string, int> items;
 
 public:
-    void AddItem(const T& item);
-    void RemoveItem(const T& item);
+    void AddItem(const std::string& item);
+    void RemoveItem(const std::string& item);
     void ShowInventory() const;
-    const std::map<T, int>& GetInventory() const;
+    const std::map<std::string, int>& GetInventory() const;
 };

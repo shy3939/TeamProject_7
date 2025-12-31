@@ -1,16 +1,13 @@
-﻿#include <iostream>
-#include <map>
-#include "Inventory.h"
+﻿#include "Inventory.h"
+#include <iostream>
 
-template<typename T>
-void Inventory<T>::AddItem(const T& item)
+void Inventory::AddItem(const std::string& item)
 {
     items[item]++;
     std::cout << item << " 아이템이 인벤토리에 추가되었습니다.\n";
 }
 
-template<typename T>
-void Inventory<T>::RemoveItem(const T& item)
+void Inventory::RemoveItem(const std::string& item)
 {
     auto it = items.find(item);
 
@@ -20,17 +17,14 @@ void Inventory<T>::RemoveItem(const T& item)
         return;
     }
 
-    it->second--;
-
-    if (it->second <= 0)
+    if (--it->second <= 0)
     {
         items.erase(it);
         std::cout << item << " 아이템이 인벤토리에서 제거되었습니다.\n";
     }
 }
 
-template<typename T>
-void Inventory<T>::ShowInventory() const
+void Inventory::ShowInventory() const
 {
     std::cout << "인벤토리가 열렸습니다\n";
 
@@ -47,8 +41,7 @@ void Inventory<T>::ShowInventory() const
     }
 }
 
-template<typename T>
-const std::map<T, int>& Inventory<T>::GetInventory() const
+const std::map<std::string, int>& Inventory::GetInventory() const
 {
     return items;
 }
