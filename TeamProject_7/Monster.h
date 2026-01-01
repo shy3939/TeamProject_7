@@ -13,23 +13,26 @@ public:
 
 	virtual ~Monster();
 
-	virtual int MosterAttack() = 0;
+	virtual int MonsterATK() = 0;
 	virtual void InitRandom() = 0;
 
-	std::string GetMonsterName() const;
-	int GetMaxHp() const;
-	int GetHp() const;
+	std::string GetName() const;
+	int GetMaxHP() const;
+	int GetHP() const;
 	int GetATK() const;
 	int GetGold() const;
-	void SetMaxHp(int maxhp);
-	void SetHp(int hp);
+
+
+	void SetMaxHP(int maxhp);
+	void SetHP(int hp);
 	void SetATK(int atk);
 	void SetGold(int gold);
+
 	int RandomInRange(int min, int max);
 
 
 protected:
-	std::string monstername_;
+	std::string name_;
 	int maxhp_;
 	int hp_;
 	int atk_;

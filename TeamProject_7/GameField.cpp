@@ -89,9 +89,9 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         inventory->Use("AttackPotion");
     }
 
-    int damage = player->GetAttack();
+    int damage = player->GetATK();
     monster->TakeDamage(damage);
-
+    
     std::cout << player->GetName() << "의 공격! " << std::endl;
     std::cout << monster->GetName() << "에게 " << damage << " 데미지! " << std::endl;
     if (monster->GetHP() > 0) {
@@ -103,7 +103,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
 {
     std::cout << "--- 몬스터 턴 ---" << std::endl;
 
-    int damage = monster->GetAttack();
+    int damage = monster->MonsterATK();
     player->TakeDamage(damage);
 
     std::cout << monster->GetName() << "의 공격! ";
@@ -111,34 +111,6 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
     if (player->GetHP() > 0) {
         std::cout << " 내 현재 체력 : " << player->GetHP() << std::endl;
     }
-}
-
-// 몬스터 생성자 확인 이름, HP, ATK, Gold 
-Monster* GameField::CreateRandomMonster(int level)
-{
-    int monsterType = rand() % 3;
-    int Gold = 10 + rand() % 11;
-    int RandomHP = 20 + rand() % 11;
-    int RandomATK = 5 + rand() % 6;
-
-    switch (monsterType)
-    {
-    case 0:
-        return new Monster("슬라임", level * RandomHP, level * RandomATK, Gold);
-    case 1:
-        return new Monster("고블린", level * RandomHP, level * RandomATK, Gold);
-    case 2:
-        return new Monster("오크", level * RandomHP, level * RandomATK, Gold);
-    default:
-        return new Monster("슬라임", level * RandomHP, level * RandomATK, Gold);
-    }
-}
-
-Monster* GameField::CreateBossMonster()
-{
-    int RandomHp = 30 + rand() % 16;
-    int RandomATK = 10 + rand() % 6;
-    return new Monster("드래곤", 10 * RandomHp, 10 * RandomATK, 0);
 }
 
 void GameField::Victory(Player* player, Monster* monster)
@@ -160,14 +132,13 @@ void GameField::Victory(Player* player, Monster* monster)
     std::cout << "=======================================" << std::endl;
 
     // 골드와 경험치 보상
-    int goldReward = monster->GetGoldReward();
-    int expReward = monster->GetExpReward(); // 50 고정
+    int goldReward = monster->GetGold();
 
     player->AddGold(goldReward);
-    player->AddExp(expReward);
+    player->AddExp(50);
 
     std::cout << "획득 골드: " << goldReward << " G" << std::endl;
-    std::cout << "획득 경험치: " << expReward << " EXP" << std::endl;
+    std::cout << "획득 경험치: " << 50 << " EXP" << std::endl;
 
 
     int NumHealthPotion = rand() % 5;

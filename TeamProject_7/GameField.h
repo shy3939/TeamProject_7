@@ -18,8 +18,6 @@ private:
     void StartBattle(Player* player);
     void ProcessPlayerTurn(Player* player, Monster* monster);
     void ProcessMonsterTurn(Player* player, Monster* monster);
-    Monster* CreateRandomMonster(int playerLevel);
-    Monster* CreateBossMonster();
     void Victory(Player* player, Monster* monster);
     void Defeat(Player* player);
 

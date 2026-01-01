@@ -3,24 +3,11 @@
 #include <string>
 #include "Inventory.h"
 
-using namespace std;
-
 class Player
 {
-private:
-    string Name;
-    int LV;
-    int HP;
-    int MaxHP;
-    int Attack;
-    int Experience;
-    int Gold;
-    Inventory Inven;
-
 public:
     // 생성자
-    Player();
-    Player(const string& name, int lv = 1, int hp = 200, int attack = 30, int exp = 0, int gold = 0);
+    Player(const std::string& Name);
 
     // 경험치 관련
     void GainExperience(int amount);
@@ -34,24 +21,34 @@ public:
     bool SpendGold(int amount);
 
     // 게터
-    string GetName() const;
-    int GetLV() const;
+    std::string GetName() const;
+    int GetLevel() const;
+    int GetEXP() const;
     int GetHP() const;
     int GetMaxHP() const;
-    int GetAttack() const;
+    int GetATK() const;
     int GetGold() const;
-    Inventory& GetInventory();
+    Inventory* GetInventory();
 
     // 세터
-    void SetName(const string& name);
     void SetHP(int hp);
-    void SetAttack(int attack);
-    void SetExperience(int exp);
-    void SetLV(int lv);
+    void SetATK(int attack);
+    void SetEXP(int exp);
+    void SetLevel(int lv);
     void SetGold(int gold);
     void SetMaxHP(int maxHp);
 
     // 상태 출력
     void ShowStatus() const;
+
+private:
+    std::string name_;
+    int level_;
+    int hp_;
+    int maxhp_;
+    int atk_;
+    int exp_;
+    int gold_;
+    Inventory* inventory_;
 };
 

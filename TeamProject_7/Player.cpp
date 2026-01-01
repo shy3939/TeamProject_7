@@ -1,36 +1,25 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
-using namespace std;
-
-// 기본 생성자
-Player::Player()
-    : Name("Hero"), LV(1), HP(200), MaxHP(200), Attack(30), Experience(0), Gold(0)
-{
-    cout << "Player created! Name: " << Name << endl;
-    ShowStatus();
-}
-
 // 이름 포함 생성자
-Player::Player(const string& name, int lv, int hp, int attack, int exp, int gold)
-    : Name(name), LV(lv), HP(hp), MaxHP(hp), Attack(attack), Experience(exp), Gold(gold)
+Player::Player(const std::string& Name)
+    : name_(Name), level_(1), maxhp_(200), hp_(maxhp_), atk_(30), exp_(0), gold_(0)
 {
-    cout << "Player created! Name: " << Name << endl;
     ShowStatus();
 }
 
 // 경험치 증가
 void Player::GainExperience(int amount)
 {
-    Experience += amount;
-    while (Experience >= 100)
+    exp_ += amount;
+    while (exp_ >= 100)
     {
-        LV++;
-        Experience -= 100;
-        MaxHP += 20; // 레벨업 시 최대 HP 증가 예시
-        HP = MaxHP;  // HP 회복
-        cout << Name << " leveled up! Now LV: " << LV << endl;
+        level_++;
+        exp_ -= 100;
+        maxhp_ += 20; // 레벨업 시 최대 HP 증가 예시
+        hp_ = maxhp_;  // HP 회복
+        std::cout << name_ << " leveled up! Now LV: " << level_ << std::endl;
     }
 }
 
@@ -42,53 +31,56 @@ void Player::AddExp(int amount)
 // 데미지 처리
 void Player::TakeDamage(int amount)
 {
-    HP -= amount;
-    if (HP < 0) HP = 0;
-    cout << Name << " took " << amount << " damage! HP: " << HP << "/" << MaxHP << endl;
+    hp_ -= amount;
+    if (hp_ < 0) 
+    {
+        hp_ = 0;
+    }
+    std::cout << name_ << " took " << amount << " damage! HP: " << hp_ << "/" << maxhp_ << std::endl;
 }
 
 // 골드 처리
 void Player::AddGold(int amount)
 {
-    Gold += amount;
+    gold_ += amount;
 }
 
 bool Player::SpendGold(int amount)
 {
-    if (Gold >= amount)
+    if (gold_ >= amount)
     {
-        Gold -= amount;
+        gold_ -= amount;
         return true;
     }
     return false;
 }
 
 // 게터
-string Player::GetName() const { return Name; }
-int Player::GetLV() const { return LV; }
-int Player::GetHP() const { return HP; }
-int Player::GetMaxHP() const { return MaxHP; }
-int Player::GetAttack() const { return Attack; }
-int Player::GetGold() const { return Gold; }
-Inventory& Player::GetInventory() { return Inven; }
+std::string Player::GetName() const { return name_; }
+int Player::GetLevel() const { return level_; }
+int Player::GetHP() const { return hp_; }
+int Player::GetMaxHP() const { return maxhp_; }
+int Player::GetEXP() const { return exp_;  }
+int Player::GetATK() const { return atk_; }
+int Player::GetGold() const { return gold_; }
+Inventory* Player::GetInventory() { return inventory_; }
 
 
 // 세터
-void Player::SetName(const string& name) { Name = name; }
-void Player::SetHP(int hp) { HP = hp; }
-void Player::SetAttack(int attack) { Attack = attack; }
-void Player::SetExperience(int exp) { Experience = exp; }
-void Player::SetLV(int lv) { LV = lv; }
-void Player::SetGold(int gold) { Gold = gold; }
-void Player::SetMaxHP(int maxHp) { MaxHP = maxHp; }
+void Player::SetHP(int hp) { hp_ = hp; }
+void Player::SetATK(int attack) { atk_ = attack; }
+void Player::SetEXP(int exp) { exp_ = exp; }
+void Player::SetLevel(int lv) { hp_ = lv; }
+void Player::SetGold(int gold) { gold_ = gold; }
+void Player::SetMaxHP(int maxHp) { maxhp_ = maxHp; }
 
 // 상태 출력
 void Player::ShowStatus() const
 {
-    cout << "Name: " << Name
-        << ", LV: " << LV
-        << ", HP: " << HP << "/" << MaxHP
-        << ", Attack: " << Attack
-        << ", Experience: " << Experience
-        << ", Gold: " << Gold << endl;
+    std::cout << "Name: " << name_
+        << ", LV: " << level_
+        << ", HP: " << hp_ << "/" << maxhp_
+        << ", Attack: " << atk_
+        << ", Experience: " << exp_
+        << ", Gold: " << gold_ << std::endl;
 }

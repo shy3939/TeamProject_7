@@ -3,9 +3,9 @@
 Goblin::Goblin(const Player& player)
 	: Monster()
 {
-	monstername_ = "고블린";
+	name_ = "고블린";
 	InitRandom();
-	int Level = player.GetLV();
+	int Level = player.GetLevel();
 
 	int RandNum = RandomInRange(1, 10);
 	maxhp_ = Level * rmaxhp_;
@@ -15,7 +15,7 @@ Goblin::Goblin(const Player& player)
 
 	if (RandNum < 4)
 	{
-		item_ = new AtkPotion(5, 1);
+		item_ = new AtkPotion("공격력 포션",1);
 	}
 
 }
@@ -34,7 +34,7 @@ void Goblin::InitRandom()
 	rgold_ = RandomInRange(10, 20);
 }
 
-int Goblin::MosterAttack()
+int Goblin::MonsterATK()
 {
 	return atk_;
 }

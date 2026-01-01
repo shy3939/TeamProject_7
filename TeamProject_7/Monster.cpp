@@ -1,7 +1,7 @@
 ﻿#include "Monster.h"
 
 Monster::Monster()
-	:monstername_("Unknown"),
+	:name_("Unknown"),
 	maxhp_(0),
 	hp_(0),
 	atk_(0),
@@ -15,15 +15,9 @@ Monster::~Monster()
 	delete item_;
 }
 
-std::string Monster::GetMonsterName() const
-{
-	return monstername_;
-}
-int Monster::GetMaxHp() const
-{
-	return maxhp_;
-}
-int Monster::GetHp() const
+std::string Monster::GetName() const { return name_; }
+int Monster::GetMaxHP() const { return maxhp_; }
+int Monster::GetHP() const
 {
 	return hp_;
 }
@@ -35,11 +29,11 @@ int Monster::GetGold() const
 {
 	return gold_;
 }
-void Monster::SetMaxHp(int maxhp)
+void Monster::SetMaxHP(int maxhp)
 {
 	maxhp_ = maxhp;
 }
-void Monster::SetHp(int hp)
+void Monster::SetHP(int hp)
 {
 	hp_ = hp;
 }

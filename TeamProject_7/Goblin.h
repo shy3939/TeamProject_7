@@ -8,7 +8,7 @@ public:
 
 	~Goblin() override;
 
-	int MosterAttack() override;
+	int MonsterATK() override;
 
 	void InitRandom() override;
 
