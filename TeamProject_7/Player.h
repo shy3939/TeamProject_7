@@ -40,7 +40,7 @@ public:
     int GetMaxHP() const;
     int GetAttack() const;
     int GetGold() const;
-    const Inventory& GetInventory() const;
+    Inventory& GetInventory();
 
     // 세터
     void SetName(const string& name);
