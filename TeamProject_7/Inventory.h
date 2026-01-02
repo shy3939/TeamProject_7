@@ -10,7 +10,7 @@ public:
 	bool IsEmpty() const;
 	bool IsAvailable(const std::string& key) const;
 	int GetItemCount(const std::string& key) const;
-	void Use(const std::string& ItemName, Player* player);
+	void Use(const std::string& key, Player* player);
 
 	void AddItem(const std::string& key);
 	void RemoveItem(const std::string& key);
