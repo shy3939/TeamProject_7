@@ -17,7 +17,7 @@ void ShopField::Enter(Player* player)
         ShowMenu();
 
         int Choice;
-        std::cin >> Choice;
+        Choice = GetUTFInput();
 
         switch (Choice)
         {
@@ -72,7 +72,7 @@ void ShopField::BuyItem(Player* player)
     std::cout << " 구매할 아이템: ";
 
     int Choice;
-    std::cin >> Choice;
+    Choice = GetUTFInput();
 
     std::string ItemName;
     int Price = 0;
@@ -106,7 +106,7 @@ void ShopField::BuyItem(Player* player)
     // 몇 개 살지 물어보기
     std::cout << "몇 개 구매하시겠습니까? (보유 골드: " << player->GetGold() << " G): ";
     int Quantity;
-    std::cin >> Quantity;
+    Quantity = GetUTFInput();
 
     if (Quantity <= 0)
     {
@@ -154,7 +154,7 @@ void ShopField::SellItem(Player* player)
     std::cout << "판매할 아이템: ";
 
     int Choice;
-    std::cin >> Choice;
+    Choice = GetUTFInput();
 
     std::string ItemName;
     int SellPrice = 0;
@@ -187,7 +187,7 @@ void ShopField::SellItem(Player* player)
 
     std::cout << "몇 개 판매하시겠습니까? (보유: " << Owned << "개): ";
     int Quantity;
-    std::cin >> Quantity;
+    Quantity = GetUTFInput();
 
     // 입력 체크
     if (Quantity <= 0)

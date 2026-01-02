@@ -1,4 +1,5 @@
 #include <windows.h>
+#include "utf.h"
 #include "Player.h"
 #include "GameField.h"
 #include "ShopField.h"
@@ -10,7 +11,6 @@
 int main()
 {
     SetConsoleOutputCP(65001);
-
     srand(time(nullptr));
     std::cout << " 플레이어의 이름을 정해주세요 " << std::endl;
     std::string PlayerName;
@@ -18,7 +18,7 @@ int main()
     while (1)
     {
         std::cout << " 이름: ";
-        std::getline(std::cin, PlayerName);
+        PlayerName = GetUTFInput();
 
         // 빈 문자열 체크
         if (PlayerName.empty())
@@ -66,7 +66,7 @@ int main()
         {
             char bShop;
             std::cout << " 상점에서 아이템을 구매하시겠습니까? (y/n) " << std::endl;
-            std::cin >> bShop;
+            bShop = GetUTFInput();
 
             switch (bShop)
             {

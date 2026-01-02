@@ -39,8 +39,8 @@
     <ClCompile Include="ShopField.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="utf.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="utf.h">
+      <Filter>헤더 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

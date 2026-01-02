@@ -1,6 +1,7 @@
 ﻿#include <Windows.h>
 #include <iostream>
 #include <string>
+#include <math.h>
 
 std::string GetUTFInput() {
     HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
@@ -32,4 +33,12 @@ std::string GetUTFInput() {
         size_needed, NULL, NULL);
 
     return utf8Str;
+}
+
+void GetEnterInput() {
+    std::cin.clear();
+    if (std::cin.rdbuf()->in_avail() > 0) {
+        std::cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n');
+    }
+    std::cin.get();
 }
