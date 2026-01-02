@@ -7,6 +7,7 @@ Goblin::Goblin(const Player& player)
 	InitRandom();
 
 	int Level = player.GetLevel();
+
 	int RandNum = RandomInRange(1, 10);
 
 	maxhp_ = Level * rmaxhp_;
@@ -17,6 +18,15 @@ Goblin::Goblin(const Player& player)
 	if (RandNum < 4)
 	{
 		item_ = new AtkPotion();
+		item_ = new HpPotion();
+	}
+	else if (RandNum >= 4 && RandNum < 8)
+	{
+		item_ = new AtkPotion();
+	}
+	else
+	{
+		item_ = new HpPotion();
 	}
 }
 
