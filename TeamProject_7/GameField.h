@@ -2,7 +2,6 @@
 #pragma once
 #include "Field.h"
 #include "Player.h"
-#include "Monster.h"
 
 
 class GameField : public Field
@@ -11,6 +10,7 @@ public:
     GameField() {};
 
     void Enter(Player* player) override;
+    Monster* CreateRandomMonster(Player& player);
     bool GetGameIsOver() const { return GameIsOver; }
     void ShowLog();
 

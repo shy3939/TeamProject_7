@@ -13,6 +13,7 @@ public:
 	virtual ~Monster();
 
 	virtual int MonsterATK() = 0;
+	virtual void TakeDamage(int damage_) = 0;
 	virtual void InitRandom() = 0;
 
 	//getter
@@ -30,6 +31,8 @@ public:
 
 	int RandomInRange(int min, int max);
 
+	Monster* CreateRandomMonster(Player& player);
+
 
 protected:
 	std::string name_;
@@ -38,4 +41,5 @@ protected:
 	int atk_;
 	int gold_;
 	Item* item_;
+	Player* player_;
 };

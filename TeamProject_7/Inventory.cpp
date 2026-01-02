@@ -5,49 +5,6 @@
 
 Inventory::Inventory()
 {
-    itemData["HpPotion"] = new HpPotion();
-    itemData["ATKPotion"] = new AtkPotion();
-}
-
-Inventory::~Inventory()
-{
-    for (auto& pair : itemData)
-    {
-        delete pair.second;
-    }
-    itemData.clear();
-}
-
-bool Inventory::IsEmpty() const                               // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
-{
-    return false;
-}
-
-bool Inventory::IsAvailable(const std::string& key) const     // key가 들어왔을때 맵에서 key를 찾아서 재고가 0개인지 사용가능한지를 반환.
-{
-    return false;
-}
-
-int Inventory::GetItemCount(const std::string& key) const     //key를 받아와서 key가 해당하는 재고의 갯수를 반환
-{
-    return 0;
-}
-
-void Inventory::Use(const std::string& key, Player* player)
-{
-    if (items[key] <= 0) return; // 재고 부족 처리
-
-    if (!itemData[key]->Use(player)) // 아이템 사용 불가능 처리
-    {
-        return;
-    }
-
-    items[key]--;
-}
-
-
-Inventory::Inventory()
-{
 	itemData_["HpPotion"] = new HpPotion();
 	itemData_["ATKPotion"] = new AtkPotion();
 }

@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <iostream>
 #include "GameField.h"
+#include "Goblin.h"
 
 void GameField::Enter(Player* player)
 {
@@ -26,21 +27,41 @@ void GameField::Enter(Player* player)
     StartBattle(player);
 }
 
+// 추가함
+Monster* GameField::CreateRandomMonster(Player& player)
+{
+    int RandNum = rand() % 4 + 1;
+
+    switch (RandNum)
+    {
+    case 1:
+        return new Goblin(player);
+    case 2:
+        return new Goblin(player);
+    case 3:
+        return new Goblin(player);
+    case 4:
+        return new Goblin(player);
+    default:
+        return nullptr;
+    }
+}
+
 void GameField::StartBattle(Player* player)
 {
     Monster* monster = nullptr;
 
     // 레벨 10이면 보스 등장
-    if (BossBattle)
-    {
-        std::cout << " 보스 몬스터가 나타났다! " << std::endl;
-        monster = CreateBossMonster();
-    }
-    else
-    {
-        monster = CreateRandomMonster(player->GetLevel());
-        std::cout << monster->GetName() << "이(가) 나타났다! " << std::endl;
-    }
+    //if (BossBattle)
+    //{
+    //    std::cout << " 보스 몬스터가 나타났다! " << std::endl;
+    //    monster = CreateBossMonster();
+    //}
+    //else
+    //{
+    monster = CreateRandomMonster(*player);
+    std::cout << monster->GetName() << "이(가) 나타났다! " << std::endl;
+    //}
 
     // 턴 기반 전투
     while (1)
@@ -79,14 +100,14 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     //inventory 사용
     Inventory* inventory = player->GetInventory();
 
-    if (inventory->isAvailable("HealthPotion") && player->GetHP() < (player->GetMaxHP() / 2))
+    if (inventory->IsAvailable("HealthPotion") && player->GetHP() < (player->GetMaxHP() / 2))
     {
-        inventory->Use("AttackPotion");
+        inventory->Use("AttackPotion", player);
     }
 
-    if (inventory->isAvailable("AttackPotion"))
+    if (inventory->IsAvailable("AttackPotion"))
     {
-        inventory->Use("AttackPotion");
+        inventory->Use("AttackPotion", player);
     }
 
     int damage = player->GetATK();
@@ -147,8 +168,8 @@ void GameField::Victory(Player* player, Monster* monster)
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("HealthPotion", NumHealthPotion);
-        inventory->AddItem("AttackPotion", NumAttackHealthPotion);
+        inventory->AddItem("HealthPotion");
+        inventory->AddItem("AttackPotion");
     }
 
     if (monster->GetName() == "슬라임")

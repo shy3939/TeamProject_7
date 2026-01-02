@@ -1,4 +1,4 @@
-#include <windows.h>
+﻿#include <windows.h>
 #include "utf.h"
 #include "Player.h"
 #include "GameField.h"
@@ -49,7 +49,7 @@ int main()
     std::cout << " 용사 [" << PlayerName << "] 모험 시작 ! " << std::endl;
     Player* player = new Player(PlayerName);
     GameField* gamefield = new GameField();
-    ShopField* shopfield = new ShopField();
+    //ShopField* shopfield = new ShopField();
 
     while (1)
     {
@@ -66,13 +66,13 @@ int main()
         {
             char bShop;
             std::cout << " 상점에서 아이템을 구매하시겠습니까? (y/n) " << std::endl;
-            bShop = GetUTFInput();
+            std::cin >>bShop;
 
             switch (bShop)
             {
             case 'y':
             case 'Y':
-                shopfield->Enter(player);
+                //shopfield->Enter(player);
                 break;
             case 'n':
             case 'N':
@@ -88,6 +88,6 @@ int main()
 
     delete player;
     delete gamefield;
-    delete shopfield;
+    //delete shopfield;
     return 0;
 }

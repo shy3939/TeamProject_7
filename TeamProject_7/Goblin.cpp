@@ -16,13 +16,18 @@ Goblin::Goblin(const Player& player)
 
 	if (RandNum < 4)
 	{
-		item_ = new AtkPotion("공격력 포션",1);
+		item_ = new AtkPotion();
 	}
 }
 
 Goblin::~Goblin()
 {
 	std::cout << "고블린(를)을 처치하셨습니다!" << std::endl;
+}
+
+void Goblin::TakeDamage(int damage_)
+{
+	this->hp_ -= damage_;
 }
 
 void Goblin::InitRandom()

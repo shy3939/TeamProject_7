@@ -132,6 +132,7 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShopField.cpp" />
+    <ClCompile Include="utf.cpp" />
     <ClCompile Include="utf.h" />
   </ItemGroup>
   <ItemGroup>
