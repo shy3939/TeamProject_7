@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+#include <windows.h>
 #include "utf.h"
 #include "Player.h"
 #include "GameField.h"
