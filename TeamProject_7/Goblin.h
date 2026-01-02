@@ -5,7 +5,6 @@ class Goblin : public Monster
 {
 public:
 	Goblin(const Player& player);
-
 	~Goblin() override;
 
 	int MonsterATK() override;

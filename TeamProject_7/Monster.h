@@ -10,19 +10,19 @@ class Monster
 {
 public:
 	Monster();
-
 	virtual ~Monster();
 
 	virtual int MonsterATK() = 0;
 	virtual void InitRandom() = 0;
 
+	//getter
 	std::string GetName() const;
 	int GetMaxHP() const;
 	int GetHP() const;
 	int GetATK() const;
 	int GetGold() const;
 
-
+	//setter
 	void SetMaxHP(int maxhp);
 	void SetHP(int hp);
 	void SetATK(int atk);
