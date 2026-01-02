@@ -8,6 +8,8 @@ class Player
 public:
     // 생성자
     Player(const std::string& Name);
+    // 소멸자
+    ~Player();
 
     // 경험치 관련
     void GainExperience(int amount);
