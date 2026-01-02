@@ -12,7 +12,7 @@ Goblin::Goblin(const Player& player)
 	hp_ = maxhp_;
 	atk_ = Level * ratk_;
 	gold_ = rgold_;
-
+	
 	if (RandNum < 4)
 	{
 		item_ = new AtkPotion("공격력 포션",1);
