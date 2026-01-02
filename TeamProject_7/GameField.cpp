@@ -1,4 +1,4 @@
-// GameField.cpp
+﻿// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "GameField.h"
@@ -100,14 +100,14 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     //inventory 사용
     Inventory* inventory = player->GetInventory();
 
-    if (inventory->IsAvailable("HealthPotion") && player->GetHP() < (player->GetMaxHP() / 2))
+    if (inventory->IsAvailable("HpPotion") && player->GetHP() < (player->GetMaxHP() / 2))
     {
-        inventory->Use("AttackPotion", player);
+        inventory->Use("HpPotion", player);
     }
 
-    if (inventory->IsAvailable("AttackPotion"))
+    if (inventory->IsAvailable("AtkPotion"))
     {
-        inventory->Use("AttackPotion", player);
+        inventory->Use("AtkPotion", player);
     }
 
     int damage = player->GetATK();
@@ -169,8 +169,8 @@ void GameField::Victory(Player* player, Monster* monster)
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("HealthPotion");
-        inventory->AddItem("AttackPotion");
+        inventory->AddItem("HpPotion");
+        inventory->AddItem("AtkPotion");
     }
 
     if (monster->GetName() == "슬라임")

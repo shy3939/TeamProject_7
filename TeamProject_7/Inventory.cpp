@@ -1,11 +1,11 @@
-#include "Inventory.h"
+﻿#include "Inventory.h"
 #include <iostream>
 #include "Item.h"
 #include "Player.h"
 Inventory::Inventory()
 {
 	itemData_["HpPotion"] = new HpPotion();
-	itemData_["ATKPotion"] = new AtkPotion();
+	itemData_["AtkPotion"] = new AtkPotion();
 }
 Inventory::~Inventory()
 {
@@ -44,6 +44,7 @@ void Inventory::Use(const std::string& key, Player* player)
 	}
 	dataIt->second->Use(player);
 	if (--itemIt->second <= 0) // 수량 감소
+		std::cout << "아이템 사용" << std::endl;
 		items_.erase(itemIt);
 }
 void Inventory::AddItem(const std::string& key)
