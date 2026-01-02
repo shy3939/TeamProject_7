@@ -8,11 +8,11 @@ class Item
 {
 public:
 
-    Item(std::string ItemName);
+    Item();
 
     virtual ~Item();
 
-    virtual void Use(Player& player) = 0;
+    virtual bool Use(Player* player) = 0;
 
 protected:
 
@@ -23,8 +23,8 @@ class HpPotion : public Item
 {
 public:
 
-    HpPotion(std::string ItemName);
-    void Use(Player& player) override;
+    HpPotion();
+    bool Use(Player* player) override;
 
 private:
     int HealAmount_ = 50;
@@ -33,9 +33,8 @@ private:
 class AtkPotion : public Item
 {
 public:
-
-    AtkPotion(std::string ItemName, int count);
-    void Use(Player& player) override;
+    AtkPotion();
+    bool Use(Player* player) override;
 
 private:
 

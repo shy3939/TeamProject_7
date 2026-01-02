@@ -6,7 +6,14 @@
 Player::Player(const std::string& Name)
     : name_(Name), level_(1), maxhp_(200), hp_(maxhp_), atk_(30), exp_(0), gold_(0)
 {
+    inventory_ = new Inventory();
     ShowStatus();
+}
+
+// 소멸자
+Player::~Player()
+{
+    delete inventory_;
 }
 
 // 경험치 증가
