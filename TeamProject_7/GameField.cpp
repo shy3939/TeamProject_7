@@ -136,6 +136,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
 
 void GameField::Victory(Player* player, Monster* monster)
 {
+    GameIsOver = false;
     // 보스 처치 시 엔딩
     if (BossBattle)
     {
