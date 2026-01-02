@@ -66,7 +66,7 @@ int main()
         {
             char bShop;
             std::cout << " 상점에서 아이템을 구매하시겠습니까? (y/n) " << std::endl;
-            std::cin >> bShop;
+            bShop = GetUTFInput();
 
             switch (bShop)
             {
