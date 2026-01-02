@@ -1,19 +1,18 @@
 ﻿#include <iostream>
 #include <string>
 #include "Item.h"
-#include "player.h"
+#include "Player.h"
 
-
-Item::Item(std::string ItemName) : ItemName_(ItemName) {}
+Item::Item() {}
 Item::~Item() {}
 
 
-HpPotion::HpPotion(std::string ItemName) : Item("HP 포션") {}
+HpPotion::HpPotion() {}
 
-void HpPotion::Use(Player& player)
+bool HpPotion::Use(Player* player)
 {
-    int CurrentHp = player.GetHP();
-    int MaxHp = player.GetMaxHP();
+    int CurrentHp = player->GetHP();
+    int MaxHp = player->GetMaxHP();
 
     if (CurrentHp < MaxHp)
     {
@@ -25,25 +24,28 @@ void HpPotion::Use(Player& player)
             CurrentHp = MaxHp;
         }
 
-        player.SetHP(CurrentHp);
+        player->SetHP(CurrentHp);
 
-        std::cout << "현재 체력 : " << player.GetHP() << std::endl;
+        std::cout << "현재 체력 : " << player->GetHP() << std::endl;
+        return true;
     }
     else
     {
         std::cout << "이미 체력이 가득 차 있어 포션을 사용할 수 없습니다." << std::endl;
+        return false;
     }
 }
 
-AtkPotion::AtkPotion(std::string ItemName, int count) : Item("공격력 포션") {}
+AtkPotion::AtkPotion() {}
 
-void AtkPotion::Use(Player& player)
+bool AtkPotion::Use(Player* player)
 {
 
-    int nextAtk = player.GetATK() + AtkAmount_;
+    int nextAtk = player->GetATK() + AtkAmount_;
 
-    player.SetATK(nextAtk);
+    player->SetATK(nextAtk);
 
     std::cout << ItemName_ << " 사용" << AtkAmount_ << "의 공격력이 증가했습니다." << std::endl;
-    std::cout << "현재 공격력 : " << player.GetATK() << std::endl;
+    std::cout << "현재 공격력 : " << player->GetATK() << std::endl;
+    return true;
 }
