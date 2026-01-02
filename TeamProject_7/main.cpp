@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+#include <windows.h>
 #include "Player.h"
 #include "GameField.h"
 #include "ShopField.h"
