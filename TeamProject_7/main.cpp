@@ -1,4 +1,5 @@
-﻿#include "Player.h"
+#include <windows.h>
+#include "Player.h"
 #include "GameField.h"
 #include "ShopField.h"
 #include <iostream>
@@ -8,6 +9,8 @@
 
 int main()
 {
+    SetConsoleOutputCP(65001);
+
     srand(time(nullptr));
     std::cout << " 플레이어의 이름을 정해주세요 " << std::endl;
     std::string PlayerName;
