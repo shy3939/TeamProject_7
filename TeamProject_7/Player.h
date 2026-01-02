@@ -3,7 +3,7 @@
 #include <string>
 #include "Inventory.h"
 
-class Invenetory;
+class Inventory;
 
 class Player
 {
@@ -48,8 +48,8 @@ public:
 private:
     std::string name_;
     int level_;
-    int hp_;
     int maxhp_;
+    int hp_;
     int atk_;
     int exp_;
     int gold_;

@@ -133,7 +133,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShopField.cpp" />
     <ClCompile Include="utf.cpp" />
-    <ClCompile Include="utf.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Field.h" />
@@ -144,6 +143,7 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShopField.h" />
+	<ClCompile Include="utf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
