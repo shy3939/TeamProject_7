@@ -3,6 +3,8 @@
 #include <string>
 #include "Inventory.h"
 
+class Invenetory;
+
 class Player
 {
 public:
