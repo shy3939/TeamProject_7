@@ -1,4 +1,4 @@
-﻿// GameField.cpp
+// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "GameField.h"
@@ -136,7 +136,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
 
 void GameField::Victory(Player* player, Monster* monster)
 {
-    GameIsOver = true;
+    GameIsOver = false;
     // 보스 처치 시 엔딩
     if (BossBattle)
     {

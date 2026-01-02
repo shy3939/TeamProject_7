@@ -1,4 +1,4 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include <iostream>
 #include "Item.h"
 #include "Player.h"
@@ -43,10 +43,21 @@ int Inventory::GetItemCount(const std::string& key) const     //key를 받아와
 
 void Inventory::Use(const std::string& key, Player* player)
 {
-	if (items_[key] <= 0) return;
+	// 수량 체크
+	auto itemIt = items_.find(key);
+	if (itemIt == items_.end() || itemIt->second <= 0)
+		return;
 
-	itemData_[key]->Use(player);
-	items_[key]--;
+	// 아이템 데이터 존재 여부 체크
+	auto dataIt = itemData_.find(key);
+	if (dataIt == itemData_.end() || dataIt->second == nullptr)
+	{
+		std::cout << key << " 아이템 데이터가 없습니다." << std::endl;
+		return;
+	}
+
+	dataIt->second->Use(player);
+	itemIt->second--;
 }
 
 void Inventory::AddItem(const std::string& key)
