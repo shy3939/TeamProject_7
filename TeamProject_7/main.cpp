@@ -1,8 +1,9 @@
-﻿#include <windows.h>
+#include <windows.h>
 #include "utf.h"
 #include "Player.h"
 #include "GameField.h"
 #include "ShopField.h"
+#include "UIHelper.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -12,18 +13,32 @@ int main()
 {
     SetConsoleOutputCP(65001);
     srand(time(nullptr));
-    std::cout << " 플레이어의 이름을 정해주세요 " << std::endl;
+    
+    UIHelper::Init();
+    UIHelper::UpdateTop(R"(
+ ███╗   ██╗██████╗  ██████╗    ████████╗███████╗ █████╗ ███╗   ███╗    ███████╗
+ ████╗  ██║██╔══██╗██╔════╝    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║    ╚════██║
+ ██╔██╗ ██║██████╔╝██║            ██║   █████╗  ███████║██╔████╔██║        ██╔╝
+ ██║╚██╗██║██╔══██╗██║            ██║   ██╔══╝  ██╔══██║██║╚██╔╝██║       ██╔╝ 
+ ██║ ╚████║██████╔╝╚██████╗       ██║   ███████╗██║  ██║██║ ╚═╝ ██║       ██║  
+ ╚═╝  ╚═══╝╚═════╝  ╚═════╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝       ╚═╝  
+       ████████╗███████╗██╗  ██╗████████╗    ██████╗ ██████╗  ██████╗          
+       ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝    ██╔══██╗██╔══██╗██╔════╝          
+          ██║   █████╗   ╚███╔╝    ██║       ██████╔╝██████╔╝██║  ███╗         
+          ██║   ██╔══╝   ██╔██╗    ██║       ██╔══██╗██╔═══╝ ██║   ██║         
+          ██║   ███████╗██╔╝ ██╗   ██║       ██║  ██║██║     ╚██████╔╝         
+          ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═╝      ╚═════╝          
+)");
     std::string PlayerName;
 
     while (1)
     {
-        std::cout << " 이름: ";
-        PlayerName = GetUTFInput();
+        PlayerName = UIHelper::UpdateBotInput(" 플레이어의 이름을 정해주세요 ");
 
         // 빈 문자열 체크
         if (PlayerName.empty())
         {
-            std::cout << " 이름은 비워둘 수 없습니다! " << std::endl;
+            UIHelper::UpdateBot(" 경고 ! : 이름은 비워둘 수 없습니다! ", 1);
             continue;
         }
 
@@ -40,16 +55,18 @@ int main()
 
         if (OnlySpaces)
         {
-            std::cout << " 공백만 입력할 수 없습니다! " << std::endl;
+            UIHelper::UpdateBot(" 경고 ! : 올바른 이름을 입력해주세요! ", 1);
             continue;
         }
         break;
     }
 
-    std::cout << " 용사 [" << PlayerName << "] 모험 시작 ! " << std::endl;
+    UIHelper::UpdateBot("용사 [" + PlayerName + "] 모험 시작!", 1);
     Player* player = new Player(PlayerName);
     GameField* gamefield = new GameField();
     //ShopField* shopfield = new ShopField();
+
+    UIHelper::UpdateStatus(player);
 
     while (1)
     {
@@ -61,6 +78,7 @@ int main()
             break;
         }
 
+        /*
         // 상점 선택 루프
         while (1)
         {
@@ -84,8 +102,10 @@ int main()
             }
             break;
         }
+        */
     }
 
+    Sleep(10000);
     delete player;
     delete gamefield;
     //delete shopfield;

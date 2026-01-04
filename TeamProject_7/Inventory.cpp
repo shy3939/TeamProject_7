@@ -1,7 +1,9 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include <iostream>
 #include "Item.h"
 #include "Player.h"
+#include "UIHelper.h"
+
 Inventory::Inventory()
 {
 	itemData_["HpPotion"] = new HpPotion();
@@ -39,7 +41,7 @@ void Inventory::Use(const std::string& key, Player* player)
 	auto itemIt = items_.find(key);
 	auto dataIt = itemData_.find(key);
 	if (itemIt == items_.end() || dataIt == itemData_.end()) {
-		std::cout << " 해당하는 아이템이 인벤토리에 존재하지 않습니다. " << std::endl;;
+		UIHelper::UpdateBot(" 해당하는 아이템이 인벤토리에 존재하지 않습니다. ", 1);
 		return;
 	}
 	dataIt->second->Use(player);
@@ -51,24 +53,24 @@ void Inventory::AddItem(const std::string& key)
 {
 	if (itemData_.find(key) == itemData_.end())
 	{
-		std::cout << "존재하지 않는 아이템입니다." << std::endl;
+		UIHelper::UpdateBot("존재하지 않는 아이템입니다.", 1);
 		return;
 	}
 	items_[key]++;  // 삽입 목적이라 이건 OK
-	std::cout << key << " 아이템이 인벤토리에 추가되었습니다." << std::endl;
+	UIHelper::UpdateBot(key + "이(가) 인벤토리에 추가되었습니다.", 1);
 }
 void Inventory::RemoveItem(const std::string& key)
 {
 	auto it = items_.find(key);
 	if (it == items_.end())
 	{
-		std::cout << "해당 아이템이 없습니다." << std::endl;
+		UIHelper::UpdateBot(" 해당하는 아이템이 인벤토리에 존재하지 않습니다. ", 1);
 		return;
 	}
 	if (--it->second <= 0)
 	{
 		items_.erase(it);
-		std::cout << key << " 아이템이 인벤토리에서 제거되었습니다." << std::endl;
+		UIHelper::UpdateBot(" 아이템이 인벤토리에서 제거되었습니다.", 1);
 	}
 }
 void Inventory::ShowInventory() const
