@@ -13,18 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="헤더 파일\Items">
-      <UniqueIdentifier>{0556cb81-9cc9-423b-98d1-47a9010933ee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Items">
-      <UniqueIdentifier>{1bcacb84-5b2b-4dd6-9fc4-a071507d6f2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="헤더 파일\Recipe">
-      <UniqueIdentifier>{82ef65f9-12a0-44a1-8956-c554ba3ab45f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\Recipe">
-      <UniqueIdentifier>{f59ffc8c-e6c1-466a-9220-7973510b4c8c}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -54,13 +42,16 @@
     <ClCompile Include="utf.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ItemDatabase.cpp">
-      <Filter>소스 파일\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="RecipeDatabase.cpp">
-      <Filter>소스 파일\Recipe</Filter>
+    <ClCompile Include="UIHelper.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Craft.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="RecipeDatabase.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemDatabase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BossMonster.cpp">
@@ -95,20 +86,26 @@
     <ClInclude Include="utf.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ItemEnum.h">
-      <Filter>헤더 파일\Items</Filter>
+    <ClInclude Include="UIHelper.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AsciiArt.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ItemData.h">
-      <Filter>헤더 파일\Items</Filter>
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="ItemDatabase.h">
-      <Filter>헤더 파일\Items</Filter>
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemEnum.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Recipe.h">
-      <Filter>헤더 파일\Recipe</Filter>
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="RecipeDatabase.h">
-      <Filter>헤더 파일\Recipe</Filter>
+      <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="BossMonster.h">
       <Filter>헤더 파일</Filter>

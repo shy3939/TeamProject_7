@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -7,7 +7,6 @@ Player::Player(const std::string& Name)
     : name_(Name), level_(1), hp_(200), maxhp_(200), atk_(30), exp_(0), gold_(0), str_(RandomInRange(10, 50)), agi_(RandomInRange(1, 10)), vit_(RandomInRange(10, 100)), int_(RandomInRange(10, 30)), luk_(RandomInRange(0, 40))
 {
     inventory_ = new Inventory();
-    ShowStatus();
 }
 
 // 소멸자
@@ -43,7 +42,6 @@ void Player::TakeDamage(int amount)
     {
         hp_ = 0;
     }
-    std::cout << name_ << " took " << amount << " damage! HP: " << hp_ << "/" << maxhp_ << std::endl;
 }
 
 // 골드 처리
