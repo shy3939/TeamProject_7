@@ -1,91 +1,153 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include <iostream>
+#include "ItemEnum.h"
 #include "Item.h"
 #include "Player.h"
+
+
 Inventory::Inventory()
 {
-	itemData_["HpPotion"] = new HpPotion();
-	itemData_["AtkPotion"] = new AtkPotion();
+    // 슬롯 30칸 생성 (기본값 Slot 사용)
+    slots_.assign(MAX_SLOT, Slot());
+
+    // 아이템 데이터 등록
+    itemData_[(int)PotionID::HPPotion] = new HpPotion();
+    itemData_[(int)PotionID::ATKPotion] = new AtkPotion();
 }
+
 Inventory::~Inventory()
 {
-	for (auto& pair : itemData_)
-	{
-		delete pair.second;
-	}
-	itemData_.clear();
+    for (auto& pair : itemData_)
+        delete pair.second;
+
+    itemData_.clear();
 }
-bool Inventory::IsEmpty() const                               // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
+
+bool Inventory::IsSlotAvailable(int displaySlot) const
 {
-	return items_.empty();
+    int index = displaySlot - 1;
+    if (index < 0 || index >= MAX_SLOT)
+        return false;
+
+    return !slots_[index].IsEmpty();
 }
-bool Inventory::IsAvailable(const std::string& key) const     // key가 들어왔을때 맵에서 key를 찾아서 재고가 0개인지 사용가능한지를 반환.
+
+int Inventory::FindSameItemSlot(ItemType type, int id) const
 {
-	auto it = items_.find(key);
-	if (it == items_.end())
-		return false;
-	return it->second > 0;
+    for (int i = 0; i < MAX_SLOT; ++i)
+    {
+        if (!slots_[i].IsEmpty() &&
+            slots_[i].type == type &&
+            slots_[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
-int Inventory::GetItemCount(const std::string& key) const     //key를 받아와서 key가 해당하는 재고의 갯수를 반환
+
+int Inventory::FindEmptySlot() const
 {
-	auto it = items_.find(key);
-	if (it == items_.end())
-		return 0;
-	return it->second;
+    for (int i = 0; i < MAX_SLOT; ++i)
+    {
+        if (slots_[i].IsEmpty())
+            return i;
+    }
+    return -1;
 }
-void Inventory::Use(const std::string& key, Player* player)
+
+void Inventory::AddItem(ItemType type, int id, int count)
 {
-	if (player == nullptr) return;
-	auto itemIt = items_.find(key);
-	auto dataIt = itemData_.find(key);
-	if (itemIt == items_.end() || dataIt == itemData_.end()) {
-		std::cout << " 해당하는 아이템이 인벤토리에 존재하지 않습니다. " << std::endl;;
-		return;
-	}
-	dataIt->second->Use(player);
-	if (--itemIt->second <= 0) // 수량 감소
-		std::cout << "아이템 사용" << std::endl;
-		items_.erase(itemIt);
+    int sameSlot = FindSameItemSlot(type, id);
+    if (sameSlot != -1)
+    {
+        slots_[sameSlot].count += count;
+        return;
+    }
+
+    int emptySlot = FindEmptySlot();
+    if (emptySlot == -1)
+    {
+        std::cout << "인벤토리가 가득 찼습니다." << std::endl;
+        return;
+    }
+
+    slots_[emptySlot].type = type;
+    slots_[emptySlot].id = id;
+    slots_[emptySlot].count = count;
 }
-void Inventory::AddItem(const std::string& key)
+
+void Inventory::Use(int displaySlot, Player* player)
 {
-	if (itemData_.find(key) == itemData_.end())
-	{
-		std::cout << "존재하지 않는 아이템입니다." << std::endl;
-		return;
-	}
-	items_[key]++;  // 삽입 목적이라 이건 OK
-	std::cout << key << " 아이템이 인벤토리에 추가되었습니다." << std::endl;
+    if (!player) return;
+
+    int index = displaySlot - 1;
+    if (index < 0 || index >= MAX_SLOT || slots_[index].IsEmpty())
+    {
+        std::cout << "비어있는 슬롯입니다." << std::endl;
+        return;
+    }
+
+    Slot& slot = slots_[index];
+
+    auto it = itemData_.find(slot.id);
+    if (it == itemData_.end())
+    {
+        std::cout << "아이템 데이터 없음" << std::endl;
+        return;
+    }
+
+    // 타입별 처리
+    switch (slot.type)
+    {
+    case ItemType::Potion:
+        itemData_[slot.id]->Use(player);
+        break;
+
+    case ItemType::Equipment:
+        std::cout << "장비는 장착만 가능합니다." << std::endl;
+        break;
+
+    case ItemType::Ingredient:
+        std::cout << "재료는 사용할 수 없습니다." << std::endl;
+        break;
+    }
 }
-void Inventory::RemoveItem(const std::string& key)
+
+int Inventory::GetItemCount(ItemType type, int id) const
 {
-	auto it = items_.find(key);
-	if (it == items_.end())
-	{
-		std::cout << "해당 아이템이 없습니다." << std::endl;
-		return;
-	}
-	if (--it->second <= 0)
-	{
-		items_.erase(it);
-		std::cout << key << " 아이템이 인벤토리에서 제거되었습니다." << std::endl;
-	}
+    int total = 0;
+    for (const auto& slot : slots_)
+    {
+        if (!slot.IsEmpty() &&
+            slot.type == type &&
+            slot.id == id)
+        {
+            total += slot.count;
+        }
+    }
+    return total;
 }
+
 void Inventory::ShowInventory() const
 {
-	std::cout << "인벤토리가 열렸습니다." << std::endl;
-	if (items_.empty())
-	{
-		std::cout << "인벤토리가 비어있습니다." << std::endl;
-		return;
-	}
-	for (const auto& pair : items_)
-	{
-		std::cout << "- " << pair.first
-			<< " x" << pair.second << std::endl;
-	}
-}
-const std::map<std::string, int>& Inventory::GetInventory() const
-{
-	return items_;
+    std::cout << std::endl;
+    std::cout << "====== 인벤토리 ======" << std::endl;
+
+    for (int i = 0; i < MAX_SLOT; ++i)
+    {
+        std::cout << "[" << i + 1 << "] ";
+
+        if (slots_[i].IsEmpty())
+            std::cout << "----\t";
+        else
+            std::cout << "ID:" << slots_[i].id
+            << " x" << slots_[i].count << "\t";
+
+        if ((i + 1) % 5 == 0)
+            std::cout << std::endl;
+    }
+
+    std::cout << "=====================" << std::endl;
+    std::cout << std::endl;
 }
