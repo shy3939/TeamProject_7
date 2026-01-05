@@ -3,6 +3,7 @@
 #include "ItemEnum.h"
 #include "Item.h"
 #include "Player.h"
+#include "UIHelper.h"
 
 Inventory::Inventory()
 {
@@ -80,70 +81,43 @@ int Inventory::FindSameItemSlot(ItemType type, int id) const
 
 int Inventory::FindEmptySlot() const
 {
-    for (int i = 1; i < MAX_SLOT; ++i)
-    {
-        if (slots_[i].IsEmpty())
-            return i;
-    }
-    return -1;
+	if (player == nullptr) return;
+	auto itemIt = items_.find(key);
+	auto dataIt = itemData_.find(key);
+	if (itemIt == items_.end() || dataIt == itemData_.end()) {
+		UIHelper::UpdateBot(" 해당하는 아이템이 인벤토리에 존재하지 않습니다. ", 1);
+		return;
+	}
+	dataIt->second->Use(player);
+	if (--itemIt->second <= 0) // 수량 감소
+		std::cout << "아이템 사용" << std::endl;
+		items_.erase(itemIt);
 }
 
 void Inventory::AddItem(ItemType type, int id, int count)
 {
-    int sameSlot = FindSameItemSlot(type, id);
-    if (sameSlot != -1)
-    {
-        slots_[sameSlot].count += count;
-        return;
-    }
-
-    int emptySlot = FindEmptySlot();
-    if (emptySlot == -1)
-    {
-        std::cout << "인벤토리가 가득 찼습니다." << std::endl;
-        return;
-    }
-
-    slots_[emptySlot].type = type;
-    slots_[emptySlot].id = id;
-    slots_[emptySlot].count = count;
+	if (itemData_.find(key) == itemData_.end())
+	{
+		UIHelper::UpdateBot("존재하지 않는 아이템입니다.", 1);
+		return;
+	}
+	items_[key]++;  // 삽입 목적이라 이건 OK
+	UIHelper::UpdateBot(key + "이(가) 인벤토리에 추가되었습니다.", 1);
 }
 
 void Inventory::Use(int displaySlot, Player* player)
 {
-    if (!player) return;
-
-    int index = displaySlot - 1;
-    if (index < 1 || index >= MAX_SLOT || slots_[index].IsEmpty())
-    {
-        std::cout << "비어있는 슬롯입니다." << std::endl;
-        return;
-    }
-
-    Slot& slot = slots_[index];
-
-    auto it = itemData_.find(slot.id);
-    if (it == itemData_.end())
-    {
-        std::cout << "아이템 데이터 없음" << std::endl;
-        return;
-    }
-
-    // 타입별 처리
-    switch (slot.type)
-    {
-    case ItemType::Potion:
-        itemData_[slot.id]->Use(player);
-        break;
-
-    case ItemType::Equipment:
-        std::cout << "장비는 장착만 가능합니다." << std::endl;
-        break;
-
-    case ItemType::Ingredient:
-        std::cout << "재료는 사용할 수 없습니다." << std::endl;
-        break;
-    }
+	auto it = items_.find(key);
+	if (it == items_.end())
+	{
+		UIHelper::UpdateBot(" 해당하는 아이템이 인벤토리에 존재하지 않습니다. ", 1);
+		return;
+	}
+	if (--it->second <= 0)
+	{
+		items_.erase(it);
+		UIHelper::UpdateBot(" 아이템이 인벤토리에서 제거되었습니다.", 1);
+	}
 }
 
 int Inventory::GetItemCount(ItemType type, int id) const

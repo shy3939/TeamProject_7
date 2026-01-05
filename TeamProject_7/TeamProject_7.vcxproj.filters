@@ -54,13 +54,7 @@
     <ClCompile Include="utf.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ItemDatabase.cpp">
-      <Filter>소스 파일\Items</Filter>
-    </ClCompile>
-    <ClCompile Include="RecipeDatabase.cpp">
-      <Filter>소스 파일\Recipe</Filter>
-    </ClCompile>
-    <ClCompile Include="Craft.cpp">
+    <ClCompile Include="UIHelper.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,20 +86,11 @@
     <ClInclude Include="utf.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ItemEnum.h">
-      <Filter>헤더 파일\Items</Filter>
+    <ClInclude Include="UIHelper.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="ItemData.h">
-      <Filter>헤더 파일\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="ItemDatabase.h">
-      <Filter>헤더 파일\Items</Filter>
-    </ClInclude>
-    <ClInclude Include="Recipe.h">
-      <Filter>헤더 파일\Recipe</Filter>
-    </ClInclude>
-    <ClInclude Include="RecipeDatabase.h">
-      <Filter>헤더 파일\Recipe</Filter>
+    <ClInclude Include="AsciiArt.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

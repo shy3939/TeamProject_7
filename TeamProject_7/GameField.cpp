@@ -4,26 +4,28 @@
 #include "utf.h"
 #include "GameField.h"
 #include "Goblin.h"
+#include "UIHelper.h"
+#include "AsciiArt.h"
 
 void GameField::Enter(Player* player)
 {
+    UIHelper::UpdateTop(AsciiArt::Hero);
+
     if (player->GetLevel() == 10)
     {
-        std::cout << " 이제 일반 몬스터는 상대도 안 된다!!! " << std::endl;
+        UIHelper::UpdateBot("이제 일반 몬스터는 상대도 안 된다!!! ", 1);
         BossBattle = true;
     }
 
     if (BossBattle) {
-        std::cout << "========================================" << std::endl;
-        std::cout << "   ⚔️  보스의 서식지에 입장했습니다!  ⚔️" << std::endl;
-        std::cout << "========================================" << std::endl;
+
+        UIHelper::UpdateBot("**!** 보스의 서식지에 입장했습니다! **!**", 1);
     }
 
     else
     {
-        std::cout << "========================================" << std::endl;
-        std::cout << " ⚔️ 일반 전투 필드에 입장했습니다! ⚔️ " << std::endl;
-        std::cout << "========================================" << std::endl;
+
+        UIHelper::UpdateBot("+++ 몬스터 서식지에 입장했습니다! +++", 1);
     }
     StartBattle(player);
 }
@@ -61,31 +63,45 @@ void GameField::StartBattle(Player* player)
     //else
     //{
     monster = CreateRandomMonster(*player);
-    std::cout << monster->GetName() << "이(가) 나타났다! " << std::endl;
+
+    if (monster->GetName() == "슬라임")
+        UIHelper::UpdateTop(AsciiArt::HeroVsSlime);
+    else if (monster->GetName() == "고블린")
+        UIHelper::UpdateTop(AsciiArt::HeroVsGoblin);
+    else if (monster->GetName() == "오크")
+        UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
+    else if (monster->GetName() == "드래곤")
+        UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
+
+    UIHelper::UpdateBot(monster->GetName() + "이(가) 나타났다! ", 1);
     //}
+
+
+
 
     // 턴 기반 전투
     while (1)
     {         
-        //플레이어 상태 확인 (player에서 구현됐나 확인)
-        player->ShowStatus();
-
         // 플레이어 턴
         ProcessPlayerTurn(player, monster);
+        UIHelper::UpdateStatus(player);
 
         // 몬스터 사망 체크
         if (monster->GetHP() <= 0)
         {
+            
             Victory(player, monster);
             break;
         }
 
         // 몬스터 턴
         ProcessMonsterTurn(player, monster);
+        UIHelper::UpdateStatus(player);
 
         // 플레이어 사망 체크
         if (player->GetHP() <= 0)
         {
+            
             Defeat(player);
             break;
         }
@@ -96,7 +112,7 @@ void GameField::StartBattle(Player* player)
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
 {
-    std::cout << "--- 플레이어 턴 ---" << std::endl;
+    UIHelper::UpdateBot("[ 플레이어 턴 ]", 1);
 
     //inventory 사용
     Inventory* inventory = player->GetInventory();
@@ -111,30 +127,80 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         inventory->Use("AtkPotion", player);
     }
 
+    // 공격 처리
+    UIHelper::PlaySlashEffect();
+    if (monster->GetName() == "슬라임")
+        UIHelper::UpdateTop(AsciiArt::HeroVsSlime);
+    else if (monster->GetName() == "고블린")
+        UIHelper::UpdateTop(AsciiArt::HeroVsGoblin);
+    else if (monster->GetName() == "오크")
+        UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
+    else if (monster->GetName() == "드래곤")
+        UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
+
     int damage = player->GetATK();
     monster->TakeDamage(damage);
-    
-    std::cout << player->GetName() << "의 공격! " << std::endl;
-    std::cout << monster->GetName() << "에게 " << damage << " 데미지! " << std::endl;
+
+    // Log 처리
+    std::string PromptEnemyHP;
     if (monster->GetHP() > 0) {
-        std::cout << " 적 현재 체력 : " << monster->GetHP() << std::endl;
+        PromptEnemyHP = "적 현재 체력 : " + std::to_string(monster->GetHP());
     }
-    GetEnterInput();
+
+    else {
+        UIHelper::PlayMonsterDeathEffect();
+        PromptEnemyHP = monster->GetName() + "은(는) 쓰러졌다!";
+    }
+    UIHelper::UpdateBot({
+        player->GetName() + "의 공격!",
+        monster->GetName() + "에게 " + std::to_string(damage) + " 데미지!",
+        PromptEnemyHP
+        }, 2);
+
+
 }
 
 void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
 {
-    std::cout << "--- 몬스터 턴 ---" << std::endl;
+    UIHelper::UpdateBot("[ 몬스터 턴 ]" , 1);
+
+    // 공격처리 
+    if (monster->GetName() == "슬라임") {
+        UIHelper::PlayFireEffect();
+        UIHelper::UpdateTop(AsciiArt::HeroVsSlime);
+    }
+    else if (monster->GetName() == "고블린") {
+        UIHelper::PlaySlashEffectReverse();
+        UIHelper::UpdateTop(AsciiArt::HeroVsGoblin);
+    }
+    else if (monster->GetName() == "오크") {
+        UIHelper::PlaySlashEffectReverse();
+        UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
+    }
+    else if (monster->GetName() == "드래곤") {
+        UIHelper::PlayFireEffect();
+        UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
+    }
 
     int damage = monster->MonsterATK();
     player->TakeDamage(damage);
 
-    std::cout << monster->GetName() << "의 공격! ";
-    std::cout << player->GetName() << "에게 " << damage << " 데미지! " << std::endl;
-    if (player->GetHP() > 0) {
-        std::cout << " 내 현재 체력 : " << player->GetHP() << std::endl;
+    // Log 처리
+    std::string PromptPlayerHP;
+    if (monster->GetHP() > 0) {
+        PromptPlayerHP = "내 현재 체력 : " + std::to_string(player->GetHP());
     }
-    GetEnterInput();
+
+    else {
+        UIHelper::PlayHeroDeathEffect();
+        PromptPlayerHP = player->GetName() + "은(는) 쓰러졌다!";
+    }
+
+    UIHelper::UpdateBot({
+    monster->GetName() + "의 공격!",
+    player->GetName() + "에게 " + std::to_string(damage) + " 데미지!",
+    PromptPlayerHP
+    }, 2);
 }
 
 void GameField::Victory(Player* player, Monster* monster)
@@ -144,17 +210,15 @@ void GameField::Victory(Player* player, Monster* monster)
     if (BossBattle)
     {
         GameIsOver = true;
-        std::cout << "========================================" << std::endl;
-        std::cout << "    🏆 축하합니다! 게임 클리어! 🏆    " << std::endl;
-        std::cout << "  드래곤을 물리치고 세계를 구했습니다!  " << std::endl;
-        std::cout << "========================================" << std::endl;
-        return;
+    
+        UIHelper::UpdateBot({
+            "*** 축하합니다 "+player->GetName()+ "! ***",
+            "당신이 보스를 물리치고 세계를 구했습니다!"
+        }, 3);
     }
-
-    // 일반 전투 승리 로그
-    std::cout << "=======================================" << std::endl;
-    std::cout << "    🎉 전투에서 승리했습니다! 🎉     " << std::endl;
-    std::cout << "=======================================" << std::endl;
+    else {
+        UIHelper::UpdateBot("*** 전투에서 승리했습니다! ***", 3);
+    }
 
     // 골드와 경험치 보상
     int goldReward = monster->GetGold();
@@ -162,17 +226,24 @@ void GameField::Victory(Player* player, Monster* monster)
     player->AddGold(goldReward);
     player->AddExp(50);
 
-    std::cout << "획득 골드: " << goldReward << " G" << std::endl;
-    std::cout << "획득 경험치: " << 50 << " EXP" << std::endl;
-
+    UIHelper::UpdateBot({
+        "획득 골드: " + std::to_string(goldReward) + " G",
+        "획득 경험치: " + std::to_string(50) + " EXP"
+        }, 1);
 
     int NumHealthPotion = rand() % 5;
     int NumAttackHealthPotion = rand() % 5;
+
     // 아이템 보상
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
         inventory->AddItem("HpPotion");
+    }
+
+    if (rand() % 100 < 30)
+    {
+        Inventory* inventory = player->GetInventory();
         inventory->AddItem("AtkPotion");
     }
 
@@ -191,14 +262,14 @@ void GameField::Defeat(Player* player)
 {
     GameIsOver = true;
 
-    std::cout << " 전투 패배 : " << player->GetName() << " 이(가) 사망했습니다... " << std::endl;
-
+    UIHelper::UpdateBot("전투 패배 : " + player->GetName() + " 이(가) 사망했습니다... ", 1);
 }
 
 void GameField::ShowLog() {
-    std::cout << " 현재까지 처치한 적 " << std::endl;
-    std::cout << " 슬라임 : " << KillScore[0] << std::endl;
-    std::cout << " 고블린 : " << KillScore[1] << std::endl;
-    std::cout << " 오크 : " << KillScore[2] << std::endl;
-    std::cout << " 드래곤 : " << KillScore[3] << std::endl;
+    UIHelper::UpdateBot({ "현재까지 처치한 적 " ,
+        "슬라임 : " + std::to_string(KillScore[0]),
+        "고블린 : " + std::to_string(KillScore[1]),
+        "오크 : " + std::to_string(KillScore[2]),
+        "드래곤 : " + std::to_string(KillScore[3]),
+    }, 2);
 }
