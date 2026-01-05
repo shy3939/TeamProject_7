@@ -1,6 +1,7 @@
 ﻿// GameField.cpp
 #include <cstdlib>
 #include <iostream>
+#include "utf.h"
 #include "GameField.h"
 #include "Goblin.h"
 
@@ -118,6 +119,7 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     if (monster->GetHP() > 0) {
         std::cout << " 적 현재 체력 : " << monster->GetHP() << std::endl;
     }
+    GetEnterInput();
 }
 
 void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
@@ -132,6 +134,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
     if (player->GetHP() > 0) {
         std::cout << " 내 현재 체력 : " << player->GetHP() << std::endl;
     }
+    GetEnterInput();
 }
 
 void GameField::Victory(Player* player, Monster* monster)
