@@ -32,11 +32,12 @@ public:
     ~Inventory();
 
     // 슬롯 번호는 1 ~ 30
-    bool IsSlotAvailable(int displaySlot) const;
+    bool IsAvailable(int displaySlot) const;
     void Use(int displaySlot, Player* player);
 
     void AddItem(ItemType type, int id, int count = 1);
     int GetItemCount(ItemType type, int id) const;
+    void RemoveItem(ItemType type, int id, int count = 1);
 
     void ShowInventory() const;
 

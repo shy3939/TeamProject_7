@@ -4,7 +4,6 @@
 #include "Item.h"
 #include "Player.h"
 
-
 Inventory::Inventory()
 {
     // 슬롯 30칸 생성 (기본값 Slot 사용)
@@ -23,7 +22,7 @@ Inventory::~Inventory()
     itemData_.clear();
 }
 
-bool Inventory::IsSlotAvailable(int displaySlot) const
+bool Inventory::IsAvailable(int displaySlot) const
 {
     int index = displaySlot - 1;
     if (index < 0 || index >= MAX_SLOT)
@@ -32,9 +31,42 @@ bool Inventory::IsSlotAvailable(int displaySlot) const
     return !slots_[index].IsEmpty();
 }
 
+void Inventory::RemoveItem(ItemType type, int id, int count)
+{
+    int remaining = count;
+
+    for (int i = 1; i < MAX_SLOT && remaining > 0; ++i)
+    {
+        Slot& slot = slots_[i];
+
+        if (!slot.IsEmpty() &&
+            slot.type == type &&
+            slot.id == id)
+        {
+            // 슬롯에 있는 개수가 충분한 경우
+            if (slot.count > remaining)
+            {
+                slot.count -= remaining;
+                remaining = 0;
+            }
+            // 슬롯 개수가 부족하거나 정확히 같은 경우
+            else
+            {
+                remaining -= slot.count;
+                slot.Clear();
+            }
+        }
+    }
+
+    if (remaining > 0)
+    {
+        std::cout << "제거할 아이템 수량이 부족합니다." << std::endl;
+    }
+}
+
 int Inventory::FindSameItemSlot(ItemType type, int id) const
 {
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int i = 1; i < MAX_SLOT; ++i)
     {
         if (!slots_[i].IsEmpty() &&
             slots_[i].type == type &&
@@ -48,7 +80,7 @@ int Inventory::FindSameItemSlot(ItemType type, int id) const
 
 int Inventory::FindEmptySlot() const
 {
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int i = 1; i < MAX_SLOT; ++i)
     {
         if (slots_[i].IsEmpty())
             return i;
@@ -82,7 +114,7 @@ void Inventory::Use(int displaySlot, Player* player)
     if (!player) return;
 
     int index = displaySlot - 1;
-    if (index < 0 || index >= MAX_SLOT || slots_[index].IsEmpty())
+    if (index < 1 || index >= MAX_SLOT || slots_[index].IsEmpty())
     {
         std::cout << "비어있는 슬롯입니다." << std::endl;
         return;
@@ -134,7 +166,7 @@ void Inventory::ShowInventory() const
     std::cout << std::endl;
     std::cout << "====== 인벤토리 ======" << std::endl;
 
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int i = 1; i < MAX_SLOT; ++i)
     {
         std::cout << "[" << i + 1 << "] ";
 

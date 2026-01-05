@@ -1,4 +1,4 @@
-﻿// GameField.cpp
+// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "utf.h"
