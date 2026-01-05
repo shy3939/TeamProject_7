@@ -1,4 +1,4 @@
-#include "Inventory.h"
+﻿#include "Inventory.h"
 #include <iostream>
 #include "ItemEnum.h"
 #include "Item.h"
@@ -19,6 +19,11 @@ Inventory::~Inventory()
         delete pair.second;
 
     itemData_.clear();
+}
+
+bool Inventory::IsEmpty() const                               // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
+{
+    return slots_.empty();
 }
 
 bool Inventory::IsAvailable(int displaySlot) const
@@ -133,7 +138,7 @@ void Inventory::Use(int displaySlot, Player* player)
         slot.Clear();
 }
 
-int Inventory::GetItemCount(ItemType type, int id) const
+int Inventory::GetItemCount(ItemType type, int id, int count) const
 {
     int total = 0;
     for (const auto& slot : slots_)

@@ -1,4 +1,4 @@
-// ShopField.h
+﻿// ShopField.h
 #pragma once
 #include "Field.h"
 #include "Player.h"
@@ -14,7 +14,7 @@ public:
 class ShopField : public Field
 {
 public:
-    ShopField() {};
+    ShopField();
     void Enter(Player* player) override;
  
 private:

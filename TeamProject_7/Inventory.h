@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include <map>
@@ -32,12 +32,14 @@ public:
     Inventory();
     ~Inventory();
 
+    bool IsEmpty() const;
     bool IsAvailable(int displaySlot) const;
     void Use(int displaySlot, Player* player);
 
     void AddItem(ItemType type, int id, int count = 1);
     void RemoveItem(ItemType type, int id, int count = 1);
-    int GetItemCount(ItemType type, int id) const;
+
+    int GetItemCount(ItemType type, int id, int count = 1) const;
 
     void ShowInventory() const;
 
