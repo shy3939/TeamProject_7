@@ -88,7 +88,7 @@ namespace UIHelper {
         for (int i = BOT_Y; i < BOT_Y + 5; i++) {
             ClearLine(i);
         }
-        SetCursor(0, BOT_Y);
+        SetCursor(0, BOT_Y); 
         std::cout << " " << message;
         if (sleepSec > 0) {
             Sleep(static_cast<DWORD>(sleepSec * 1000));
@@ -199,5 +199,23 @@ namespace UIHelper {
             DrawAt(40, i + 1, std::string(40, ' '));
             if (delaySec > 0) Sleep(static_cast<DWORD>(delaySec * 1000));
         }
+    }
+
+    void AddToShopList(const std::string& message, const std::string& price , int shopslot) {
+        HideCursor();
+        int x, y;
+
+        switch (shopslot) {
+        case 0: x = 4;  y = 4; break;   // 예시
+        case 1: x = 29; y = 4; break;   // 
+        case 2: x = 54; y = 4; break;   // 
+        case 3: x = 4; y = 7; break;   // 
+        case 4: x = 29; y = 7; break;   // 
+        case 5: x = 54;  y = 7; break;  // 
+        default: return;  
+        }
+
+        DrawAt(x, y, message);
+        DrawAt(x, y + 2, price + " G");
     }
 }

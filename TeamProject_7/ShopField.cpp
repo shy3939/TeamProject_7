@@ -1,6 +1,8 @@
-﻿// ShopField.cpp
+// ShopField.cpp
 #include "ShopField.h"
 #include "Inventory.h"
+#include "UIHelper.h"
+#include "AsciiArt.h"
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -19,83 +21,59 @@ ShopField::ShopField() {
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
 void ShopField::Enter(Player* player)
 {
-    RefreshShop(); // 상점 입장 시마다 아이템 구성을 새로고침
-    std::cout << "========================================" << std::endl;
-    std::cout << "      🏪 상점에 입장했습니다! 🏪        " << std::endl;
-    std::cout << "========================================" << std::endl;
+    RefreshShop(); 
+        // 상점 입장 시마다 아이템 구성을 새로고침
+      
+        // UI 상단부에 아이템 정보 삽입
+    UIHelper::UpdateTop(AsciiArt::ShopBackGround);
+    for (int i = 0; i < 6; ++i) {
+        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice) , i);
+    }
+    UIHelper::UpdateBot("  상점에 입장했습니다! " , 1);
 
     while (1)
     {
-        std::cout << std::endl;
-        std::cout << " 보유 골드 : " << player->GetGold() << " G" << std::endl;
-        ShowMenu();
+        std::string Choice =  UIHelper::UpdateBotInput("[상점 메뉴] : 1. 아이템 구매  2. 아이템 판매 3. 나가기 ");
 
-        int Choice;
-        // 숫자가 아닌 입력이 들어왔을 때의 예외 처리
-        if (!(std::cin >> Choice))
-        {
-            std::cin.clear();
-            std::cin.ignore(100, '\n');
-            continue;
+        if (Choice == "1") {
+            BuyItem(player);
         }
-
-        switch (Choice)
-        {
-        case 1: BuyItem(player); break;
-        case 2: SellItem(player); break;
-        case 3: player->ShowStatus(); break;
-        case 4: player->GetInventory()->ShowInventory(); break;
-        case 0:
-            std::cout << " 다음에도 살아서 만나요~ " << std::endl;
+        else if (Choice == "2") {
+            SellItem(player);
+        }
+        else if (Choice == "3") {
+            UIHelper::UpdateBot("다음에도 살아서 만나요~ ", 1);
             return;
-        default:
-            std::cout << " 잘못된 입력입니다. " << std::endl;
-            break;
+        }
+        else {
+            UIHelper::UpdateBot("잘못된 입력입니다 !", 0.5);
         }
     }
 }
-// [3] 메뉴 UI 출력
-void ShopField::ShowMenu()
-{
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "[상점 메뉴]" << std::endl;
-    std::cout << "1. 아이템 구매" << std::endl;
-    std::cout << "2. 아이템 판매" << std::endl;
-    std::cout << "3. 상태 확인" << std::endl;
-    std::cout << "4. 인벤토리 확인" << std::endl;
-    std::cout << "0. 나가기" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "선택: ";
-}
-// [4] 판매 목록 UI: 고정 상품과 랜덤 상품을 구분하여 출력
-void ShopField::ShowShopItems()
-{
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "[오늘의 상품 목록]" << std::endl;
 
-    // 1 & 2번은 변하지 않는 고정 필수 아이템
-    std::cout << " 1. 체력 포션 \t| 가격: " << HealthPotionPrice << " G (고정)" << std::endl;
-    std::cout << " 2. 공격력 포션 \t| 가격: " << AttackPotionPrice << " G (고정)" << std::endl;
-    
-    // 3번부터는 RefreshShop에 의해 결정된 랜덤 아이템들
-    for (int i = 0; i < CurrentStock.size(); ++i) 
-    {
-        std::cout << " " << i + 3 << ". " << CurrentStock[i].Name
-            << " \t| 가격: " << CurrentStock[i].CurrentPrice << " G" << std::endl;
-    }
-
-    std::cout << " 0. 취소 " << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-}
 // [5] 아이템 구매 로직: 선택 번호에 따른 인덱스 매핑이 핵심
 void ShopField::BuyItem(Player* player)
 {
-    ShowShopItems();
+//////////////////////
+    // 1. 구매할 아이템 선택
     if (CurrentStock.empty()) return;
     
-    std::cout << " 구매할 아이템 번호: ";
-    int Choice;
-    std::cin >> Choice;
+    std::string strChoice = UIHelper::UpdateBotInput("구매할 아이템 번호를 입력해주세요");
+   
+    // 빈 문자열 체크
+    if (strChoice.empty()) {
+        UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
+        return;
+    }
+
+    // 전체가 숫자인지 체크
+    size_t pos;
+    int Choice = std::stoi(strChoice, &pos);
+
+    if (pos != strChoice.length()) {
+        UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
+        return;
+    }
 
     if (Choice == 0) return;
 
@@ -124,31 +102,70 @@ void ShopField::BuyItem(Player* player)
     }
     else 
     {
-        std::cout << "잘못된 번호입니다." << std::endl;
+        UIHelper::UpdateBot("잘못된 번호 : 구매를 취소합니다 !", 0.5);
         return;
     }
 
+////////////////////
     // 2. 수량 입력 및 확인
-    int Quantity = 1;
+    int Quantity;
     if (!isEquipment) {
         // [포션] 수량을 입력받음
-        std::cout << finalName << "을(를) 몇 개 구매하시겠습니까?: ";
-        std::cin >> Quantity;
-        if (Quantity <= 0) return;
+        std::string strQunatity = UIHelper::UpdateBotInput(finalName + "을(를) 몇 개 구매하시겠습니까?");
+
+        // 빈 문자열 체크
+        if (strQunatity.empty()) {
+            UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
+            return;
+        }
+
+        // 전체가 숫자인지 체크
+        size_t pos;
+        Quantity = std::stoi(strQunatity, &pos);
+
+        if (pos != strQunatity.length()) {
+            UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
+            return;
+        }
+
+        if (Quantity <= 0) {
+            UIHelper::UpdateBot("잘못된 수량 : 구매를 취소합니다 !", 0.5);
+            return;
+        }
     }
+
     else {
         // [장비] 단품 구매 확인만 거침
-        std::cout << finalName << "을(를) 구매하시겠습니까? (1.예 / 0.아니오): ";
-        int confirm;
-        std::cin >> confirm;
-        if (confirm != 1) return;
-        Quantity = 1;
+        char Confirm;
+        std::string strConfirm = UIHelper::UpdateBotInput(finalName + "을(를) 구매하시겠습니까? ( y / n )");
+        
+        if (strConfirm.length() != 1) {
+            UIHelper::UpdateBot("잘못된 입력입니다. 구매를 취소합니다.", 1);
+            return;
+        }
+
+        Confirm = strConfirm[0];
+
+        switch (Confirm)
+        {
+        case 'y':
+        case 'Y':
+            Quantity = 1;
+            break;
+        case 'n':
+        case 'N':
+            UIHelper::UpdateBot("구매를 취소합니다 !", 0.5);
+            return;
+        default:
+            UIHelper::UpdateBot("잘못된 입력 : 구매를 취소합니다 !", 0.5);
+            return;
+        }
     }
 
     // 3. 골드 체크 및 결제
     int TotalPrice = finalPrice * Quantity;
     if (player->GetGold() < TotalPrice) {
-        std::cout << " 골드가 부족합니다! " << std::endl;
+        UIHelper::UpdateBot("보유 골드가 부족합니다 : 구매를 취소합니다 !", 0.5);
         return;
     }
 
@@ -156,16 +173,14 @@ void ShopField::BuyItem(Player* player)
     player->GetInventory()->AddItem(finalName, id, Quantity);
 
     // 4. 아이템 종류에 따른 출력 문구 차별화
-    std::cout << " --------------------------------------- " << std::endl;
     if (isEquipment) {
-        // 장착형 아이템: "✅ [아이템이름] 구매 완료!"
-        std::cout << " ✅ " << finalName << " 구매 완료!" << std::endl;
+        UIHelper::UpdateBot("[" + finalName + "]" + " 구매 완료!", 1);
     }
     else {
         // 소모품(포션): "✅ [아이템이름] [개수]개 구매 완료!"
-        std::cout << " ✅ " << finalName << " " << Quantity << "개 구매 완료!" << std::endl;
+        UIHelper::UpdateBot("[" + finalName + "] " + std::to_string(Quantity) +"개 구매 완료!", 1);
     }
-    std::cout << " --------------------------------------- " << std::endl;
+
 }
 
 
@@ -177,13 +192,11 @@ void ShopField::SellItem(Player* player)
     // 인벤토리 비어있는지 확인
     if (inventory->IsEmpty())
     {
-        std::cout << "판매할 아이템이 없습니다." << std::endl;
+        UIHelper::UpdateBot("판매할 아이템이 없습니다.", 1);
         return;
     }
 
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "[보유 아이템] (판매가는 구입가의 60%)" << std::endl;
-
+    UIHelper::UpdateBot("알림 ! : 판매가는 구입가의 60%입니다", 0.7);
 
     // [2] 마스터 리스트 작성: 상점이 가격 정보를 알고 있는 모든 품목을 모음
     // 고정 상품(포션)과 랜덤 상품(ItemPool)을 하나의 벡터에 임시로 합침
