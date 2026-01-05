@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Craft.cpp" />
     <ClCompile Include="GameField.cpp" />
     <ClCompile Include="Goblin.cpp" />
     <ClCompile Include="Inventory.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RecipeDatabase.cpp" />
     <ClCompile Include="ShopField.cpp" />
     <ClCompile Include="utf.cpp" />
   </ItemGroup>
@@ -146,6 +148,8 @@
     <ClInclude Include="ItemEnum.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Recipe.h" />
+    <ClInclude Include="RecipeDatabase.h" />
     <ClInclude Include="ShopField.h" />
     <ClInclude Include="utf.h" />
   </ItemGroup>

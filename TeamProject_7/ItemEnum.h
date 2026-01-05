@@ -70,6 +70,7 @@ enum class IngredID
 
 	// --- 광물 및 무기물 ---
 	RustyIronPiece,    // 녹슨 철 조각
+	IronBar,		   // 철 주괴
 	CopperOre,         // 구리 광석
 	Flint,             // 부싯돌
 	QuartzPiece,       // 석영 조각
@@ -97,4 +98,5 @@ enum class IngredID
 	EmptyGlassBottle,  // 빈 유리병
 	MonsterOil,        // 가공된 기름
 	Whetstone,         // 숫돌
+	Water			   // 물
 };

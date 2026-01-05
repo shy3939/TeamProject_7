@@ -19,6 +19,12 @@
     <Filter Include="소스 파일\Items">
       <UniqueIdentifier>{1bcacb84-5b2b-4dd6-9fc4-a071507d6f2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Recipe">
+      <UniqueIdentifier>{82ef65f9-12a0-44a1-8956-c554ba3ab45f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Recipe">
+      <UniqueIdentifier>{f59ffc8c-e6c1-466a-9220-7973510b4c8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +56,12 @@
     </ClCompile>
     <ClCompile Include="ItemDatabase.cpp">
       <Filter>소스 파일\Items</Filter>
+    </ClCompile>
+    <ClCompile Include="RecipeDatabase.cpp">
+      <Filter>소스 파일\Recipe</Filter>
+    </ClCompile>
+    <ClCompile Include="Craft.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +100,12 @@
     </ClInclude>
     <ClInclude Include="ItemDatabase.h">
       <Filter>헤더 파일\Items</Filter>
+    </ClInclude>
+    <ClInclude Include="Recipe.h">
+      <Filter>헤더 파일\Recipe</Filter>
+    </ClInclude>
+    <ClInclude Include="RecipeDatabase.h">
+      <Filter>헤더 파일\Recipe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
