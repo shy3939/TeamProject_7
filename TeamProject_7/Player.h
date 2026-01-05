@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 #include "Inventory.h"
@@ -23,6 +23,17 @@ public:
     // 골드 관련
     void AddGold(int amount);
     bool SpendGold(int amount);
+
+
+
+    // 능력치 관련
+    int CalcPhysicalDamage(int baseAtk) const; //STR
+    bool TryEvade(int enemyAgi) const;          // AGI
+    int  ApplyDamageReduction(int rawDamage) const; // VIT
+    int CalcMagicDamage(int baseMagic) const; //INT
+    bool IsCritical() const;                    // LUK
+
+    int RandomInRange(int min, int max);
 
     // 게터
     std::string GetName() const;
@@ -53,6 +64,12 @@ private:
     int atk_;
     int exp_;
     int gold_;
+    //능력치
+    int str_;
+    int agi_;
+    int vit_;
+    int int_;
+    int luk_;
     Inventory* inventory_;
 };
 

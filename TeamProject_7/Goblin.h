@@ -16,5 +16,9 @@ private:
 	int rmaxhp_;
 	int ratk_;
 	int rgold_;
-
+	int rstr_;
+	int ragi_;
+	int rvit_;
+	int rint_;
+	int rluk_;
 };

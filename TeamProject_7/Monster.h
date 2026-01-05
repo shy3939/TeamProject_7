@@ -22,6 +22,12 @@ public:
 	int GetHP() const;
 	int GetATK() const;
 	int GetGold() const;
+	int GetSTR() const;
+	int GetAGI() const;
+	int GetVIT() const;
+	int GetINT() const;
+	int GetLUK() const;
+	
 
 	//setter
 	void SetMaxHP(int maxhp);
@@ -40,6 +46,12 @@ protected:
 	int hp_;
 	int atk_;
 	int gold_;
+	// 능력치
+	int str_;
+	int agi_;
+	int vit_;
+	int int_;
+	int luk_;
 	Item* item_;
 	Player* player_;
 };

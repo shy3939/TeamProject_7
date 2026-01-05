@@ -4,7 +4,7 @@
 
 // 이름 포함 생성자
 Player::Player(const std::string& Name)
-    : name_(Name), level_(1), hp_(200), maxhp_(200), atk_(30), exp_(0), gold_(0)
+    : name_(Name), level_(1), hp_(200), maxhp_(200), atk_(30), exp_(0), gold_(0), str_(RandomInRange(10, 50)), agi_(RandomInRange(1, 10)), vit_(RandomInRange(10, 100)), int_(RandomInRange(10, 30)), luk_(RandomInRange(0, 40))
 {
     inventory_ = new Inventory();
 }
@@ -59,6 +59,37 @@ bool Player::SpendGold(int amount)
     }
     return false;
 }
+
+//능력치 처리
+int Player::CalcPhysicalDamage(int baseATK) const //STR
+{
+    float rate = 1.0f + str_ * 0.01f;
+    return static_cast<int>(baseATK * rate);
+}
+
+bool Player::TryEvade(int MonsterAgi) const //AGI
+{
+    if (agi_ > MonsterAgi)
+        return rand() % 100 < 50;
+    return false;
+}
+int Player::ApplyDamageReduction(int rawDamage) const //VIT
+{
+    float rate = vit_ * 0.01f;
+    if (rate > 0.5f) rate = 0.5f;
+    return static_cast<int>(rawDamage * (1.0f - rate));
+}
+
+int Player::CalcMagicDamage(int baseMagic) const //INT
+{
+    float rate = 1.0f + int_ * 0.01f;
+    return static_cast<int>(baseMagic * rate);
+}
+
+bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
+
+
+
 
 // 게터
 std::string Player::GetName() const { return name_; }
