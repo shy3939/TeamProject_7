@@ -1,29 +1,53 @@
-﻿#pragma once
+#pragma once
 
+#include <vector>
 #include <map>
-#include <string>
-#include "Item.h"
+#include "ItemEnum.h"
 
 class Item;
 class Player;
 
+struct Slot
+{
+    ItemType type;   // "무엇이 들어있나"
+    int id;          // 구체적인 아이템 ID
+    int count;
+
+    bool IsEmpty() const
+    {
+        return count <= 0;
+    }
+
+    void Clear()
+    {
+        id = -1;
+        count = 0;
+        // type은 의미 없으므로 굳이 초기화 안 해도 됨
+    }
+};
 class Inventory
 {
 public:
-	bool IsEmpty() const;
-	bool IsAvailable(const std::string& key) const;
-	int GetItemCount(const std::string& key) const;
-	void Use(const std::string& key, Player* player);
+    Inventory();
+    ~Inventory();
 
-	void AddItem(const std::string& key);
-	void RemoveItem(const std::string& key);
-	void ShowInventory() const;
-	const std::map<std::string, int>& GetInventory() const;
+    // 슬롯 번호는 1 ~ 30
+    bool IsAvailable(int displaySlot) const;
+    void Use(int displaySlot, Player* player);
 
-	Inventory();
-	~Inventory();
+    void AddItem(ItemType type, int id, int count = 1);
+    int GetItemCount(ItemType type, int id) const;
+    void RemoveItem(ItemType type, int id, int count = 1);
+
+    void ShowInventory() const;
 
 private:
-	std::map<std::string, int> items_;       // 키 값의 이름에 해당하는 아이템의 재고 관리 (포션 5개)
-	std::map<std::string, Item*> itemData_;  // 아이템의 주소 값 
+    static const int MAX_SLOT = 30;
+    std::vector<Slot> slots_;
+
+    // enum id → Item*
+    std::map<int, Item*> itemData_;
+
+    int FindSameItemSlot(ItemType type, int id) const;
+    int FindEmptySlot() const;
 };
