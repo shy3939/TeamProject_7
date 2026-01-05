@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include <iostream>
 #include <string>
-#include "Inventory.h"
+#include <memory>
+#include "ItemDatabase.h"
 
 class Inventory;
 
@@ -9,7 +10,7 @@ class Player
 {
 public:
     // 생성자
-    Player(const std::string& Name);
+    Player(const std::string& Name, const ItemDatabase& db);
     // 소멸자
     ~Player();
 
@@ -55,6 +56,7 @@ public:
 
     // 상태 출력
     void ShowStatus() const;
+    void AddStat(int str, int agi, int vit, int intel, int luk);
 
 private:
     std::string name_;
@@ -70,6 +72,6 @@ private:
     int vit_;
     int int_;
     int luk_;
-    Inventory* inventory_;
+    std::unique_ptr<Inventory> inventory_;
 };
 

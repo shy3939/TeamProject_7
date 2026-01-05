@@ -1,19 +1,27 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
 // 이름 포함 생성자
-Player::Player(const std::string& Name)
-    : name_(Name), level_(1), hp_(200), maxhp_(200), atk_(30), exp_(0), gold_(0), str_(RandomInRange(10, 50)), agi_(RandomInRange(1, 10)), vit_(RandomInRange(10, 100)), int_(RandomInRange(10, 30)), luk_(RandomInRange(0, 40))
-{
-    inventory_ = new Inventory();
-}
+Player::Player(const std::string& Name, const ItemDatabase& db)
+    : name_(Name),
+    level_(1),
+    hp_(200),
+    maxhp_(200),
+    atk_(30),
+    exp_(0),
+    gold_(0),
+    str_(RandomInRange(10, 50)),
+    agi_(RandomInRange(1, 10)),
+    vit_(RandomInRange(10, 100)),
+    int_(RandomInRange(10, 30)),
+    luk_(RandomInRange(0, 40)),
+    inventory_(std::make_unique<Inventory>(db))
+{}
 
 // 소멸자
 Player::~Player()
-{
-    delete inventory_;
-}
+{}
 
 // 경험치 증가
 void Player::GainExperience(int amount)
@@ -99,14 +107,14 @@ int Player::GetMaxHP() const { return maxhp_; }
 int Player::GetEXP() const { return exp_;  }
 int Player::GetATK() const { return atk_; }
 int Player::GetGold() const { return gold_; }
-Inventory* Player::GetInventory() { return inventory_; }
+Inventory* Player::GetInventory() { return inventory_.get(); }
 
 
 // 세터
 void Player::SetHP(int hp) { hp_ = hp; }
 void Player::SetATK(int attack) { atk_ = attack; }
 void Player::SetEXP(int exp) { exp_ = exp; }
-void Player::SetLevel(int lv) { hp_ = lv; }
+void Player::SetLevel(int lv) { level_ = lv; }
 void Player::SetGold(int gold) { gold_ = gold; }
 void Player::SetMaxHP(int maxHp) { maxhp_ = maxHp; }
 
@@ -119,4 +127,13 @@ void Player::ShowStatus() const
         << ", Attack: " << atk_
         << ", Experience: " << exp_
         << ", Gold: " << gold_ << std::endl;
+}
+
+void Player::AddStat(int str, int agi, int vit, int intel, int luk)
+{
+    str_ += str;
+    agi_ += agi;
+    vit_ += vit;
+    int_ += intel;
+    luk_ += luk;
 }

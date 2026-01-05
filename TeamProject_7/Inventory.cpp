@@ -1,49 +1,61 @@
 ﻿#include "Inventory.h"
+#include "PotionItem.h"
+#include "ItemDatabase.h"
 #include <iostream>
 #include "ItemEnum.h"
 #include "Item.h"
 #include "Player.h"
 #include "UIHelper.h"
 
-Inventory::Inventory()
+Inventory::Inventory(const ItemDatabase& db)
+    : db_(db)
 {
     slots_.assign(MAX_SLOT, Slot());
 
-    itemData_[(int)PotionID::HPPotion] = new HpPotion();
-    itemData_[(int)PotionID::ATKPotion] = new AtkPotion();
+    itemData_.emplace(
+        (int)PotionID::HPPotion,
+        std::make_unique<PotionItem>(PotionID::HPPotion, db_)
+    );
+
+    itemData_.emplace(
+        (int)PotionID::ATKPotion,
+        std::make_unique<PotionItem>(PotionID::ATKPotion, db_)
+    );
 }
+
 
 Inventory::~Inventory()
-{
-    for (auto& pair : itemData_)
-        delete pair.second;
+{}
 
-    itemData_.clear();
-}
-
-bool Inventory::IsEmpty() const                               // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
+bool Inventory::IsEmpty() const            // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
 {
-    return slots_.empty();
+    for (const Slot& slot : slots_)
+    {
+        if (!slot.IsEmpty())
+            return false;
+    }
+    return true;
 }
 
 bool Inventory::IsAvailable(int displaySlot) const
 {
     int index = displaySlot - 1;
     if (index < 0 || index >= MAX_SLOT)
+    {
         return false;
-
+    }
     return !slots_[index].IsEmpty();
 }
 
 int Inventory::FindSameItemSlot(ItemType type, int id) const
 {
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int index = 0; index < MAX_SLOT; ++index)
     {
-        if (!slots_[i].IsEmpty() &&
-            slots_[i].type == type &&
-            slots_[i].id == id)
+        if (!slots_[index].IsEmpty() &&
+            slots_[index].type == type &&
+            slots_[index].id == id)
         {
-            return i;
+            return index;
         }
     }
     return -1;
@@ -51,10 +63,10 @@ int Inventory::FindSameItemSlot(ItemType type, int id) const
 
 int Inventory::FindEmptySlot() const
 {
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int index = 0; index < MAX_SLOT; ++index)
     {
-        if (slots_[i].IsEmpty())
-            return i;
+        if (slots_[index].IsEmpty())
+            return index;
     }
     return -1;
 }
@@ -87,9 +99,11 @@ void Inventory::RemoveItem(ItemType type, int id, int count)
 {
     int remaining = count;
 
-    for (int i = 0; i < MAX_SLOT && remaining > 0; ++i)
+    if (count <= 0) return;
+
+    for (int index = 0; index < MAX_SLOT && remaining > 0; ++index)
     {
-        Slot& slot = slots_[i];
+        Slot& slot = slots_[index];
 
         if (!slot.IsEmpty() &&
             slot.type == type &&
@@ -132,15 +146,20 @@ void Inventory::Use(int displaySlot, Player* player)
         return;
     }
 
-    it->second->Use(player);
+    if (!it->second->Use(player))
+    {
+        UIHelper::UpdateBot("아이템을 사용할 수 없습니다.", 1);
+        return;
+    }
 
     if (--slot.count <= 0)
         slot.Clear();
 }
 
-int Inventory::GetItemCount(ItemType type, int id, int count) const
+int Inventory::GetItemCount(ItemType type, int id) const
 {
     int total = 0;
+
     for (const auto& slot : slots_)
     {
         if (!slot.IsEmpty() &&
@@ -158,17 +177,17 @@ void Inventory::ShowInventory() const
     std::cout << std::endl;
     std::cout << "====== 인벤토리 ======" << std::endl;
 
-    for (int i = 0; i < MAX_SLOT; ++i)
+    for (int index = 0; index < MAX_SLOT; ++index)
     {
-        std::cout << "[" << i + 1 << "] ";
+        std::cout << "[" << index + 1 << "] ";
 
-        if (slots_[i].IsEmpty())
+        if (slots_[index].IsEmpty())
             std::cout << "----\t";
         else
-            std::cout << "ID:" << slots_[i].id
-            << " x" << slots_[i].count << "\t";
+            std::cout << "ID:" << slots_[index].id
+            << " x" << slots_[index].count << "\t";
 
-        if ((i + 1) % 5 == 0)
+        if ((index + 1) % 5 == 0)
             std::cout << std::endl;
     }
 

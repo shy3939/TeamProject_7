@@ -27,9 +27,6 @@
     <ClCompile Include="Inventory.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Goblin.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -55,6 +52,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="BossMonster.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PotionItem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="EquipItem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,9 +92,6 @@
     <ClInclude Include="UIHelper.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="AsciiArt.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ItemData.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -108,6 +108,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="BossMonster.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="AsciiArt.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PotionItem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="EquipItem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IngredItem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
