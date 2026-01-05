@@ -6,12 +6,13 @@ Monster::Monster()
 	hp_(0),
 	atk_(0),
 	gold_(0),
-	item_(nullptr),
 	str_(0),
 	agi_(0),
 	vit_(0),
 	int_(0),
-	luk_(0)
+	luk_(0),
+	item_(nullptr),
+	player_(nullptr)
 
 {
 }
@@ -41,4 +42,10 @@ void Monster::SetGold(int gold) { gold_ = gold; }
 int Monster::RandomInRange(int min, int max)
 {
 	return rand() % (max - min + 1) + min;
+}
+
+float Monster::RandomInRange(float min, float max)
+{
+	return (rand() / (float)RAND_MAX) * (max-min) + min ;
+	// 0부터1 -> max-min -> min부터 max까지
 }

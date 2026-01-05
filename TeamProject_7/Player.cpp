@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -103,10 +103,10 @@ Inventory* Player::GetInventory() { return inventory_; }
 
 
 // 세터
-void Player::SetHP(int hp) { hp_ = hp; }
+void Player::SetHP(int hp) { hp_ = std::max(0, std::min(hp, maxhp_)); }
 void Player::SetATK(int attack) { atk_ = attack; }
 void Player::SetEXP(int exp) { exp_ = exp; }
-void Player::SetLevel(int lv) { hp_ = lv; }
+void Player::SetLevel(int lv) { level_ = lv; }
 void Player::SetGold(int gold) { gold_ = gold; }
 void Player::SetMaxHP(int maxHp) { maxhp_ = maxHp; }
 
