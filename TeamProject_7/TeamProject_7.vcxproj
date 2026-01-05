@@ -132,9 +132,11 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShopField.cpp" />
+    <ClCompile Include="UIHelper.cpp" />
     <ClCompile Include="utf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsciiArt.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameField.h" />
     <ClInclude Include="Goblin.h" />

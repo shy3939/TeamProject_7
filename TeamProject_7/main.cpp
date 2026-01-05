@@ -4,6 +4,7 @@
 #include "GameField.h"
 #include "ShopField.h"
 #include "UIHelper.h"
+#include "AsciiArt.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -13,32 +14,23 @@ int main()
 {
     SetConsoleOutputCP(65001);
     srand(time(nullptr));
-    
+
+    for (const auto& frame : AsciiArt::TITLE) {
+        UIHelper::UpdateTop(frame, 0.7);
+    }
+
     UIHelper::Init();
-    UIHelper::UpdateTop(R"(
- ███╗   ██╗██████╗  ██████╗    ████████╗███████╗ █████╗ ███╗   ███╗    ███████╗
- ████╗  ██║██╔══██╗██╔════╝    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║    ╚════██║
- ██╔██╗ ██║██████╔╝██║            ██║   █████╗  ███████║██╔████╔██║        ██╔╝
- ██║╚██╗██║██╔══██╗██║            ██║   ██╔══╝  ██╔══██║██║╚██╔╝██║       ██╔╝ 
- ██║ ╚████║██████╔╝╚██████╗       ██║   ███████╗██║  ██║██║ ╚═╝ ██║       ██║  
- ╚═╝  ╚═══╝╚═════╝  ╚═════╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝       ╚═╝  
-       ████████╗███████╗██╗  ██╗████████╗    ██████╗ ██████╗  ██████╗          
-       ╚══██╔══╝██╔════╝╚██╗██╔╝╚══██╔══╝    ██╔══██╗██╔══██╗██╔════╝          
-          ██║   █████╗   ╚███╔╝    ██║       ██████╔╝██████╔╝██║  ███╗         
-          ██║   ██╔══╝   ██╔██╗    ██║       ██╔══██╗██╔═══╝ ██║   ██║         
-          ██║   ███████╗██╔╝ ██╗   ██║       ██║  ██║██║     ╚██████╔╝         
-          ╚═╝   ╚══════╝╚═╝  ╚═╝   ╚═╝       ╚═╝  ╚═╝╚═╝      ╚═════╝          
-)");
+
     std::string PlayerName;
 
     while (1)
     {
-        PlayerName = UIHelper::UpdateBotInput(" 플레이어의 이름을 정해주세요 ");
+        PlayerName = UIHelper::UpdateBotInput("플레이어의 이름을 정해주세요 ");
 
         // 빈 문자열 체크
         if (PlayerName.empty())
         {
-            UIHelper::UpdateBot(" 경고 ! : 이름은 비워둘 수 없습니다! ", 1);
+            UIHelper::UpdateBot("경고 ! : 이름은 비워둘 수 없습니다! ", 1);
             continue;
         }
 
@@ -55,7 +47,7 @@ int main()
 
         if (OnlySpaces)
         {
-            UIHelper::UpdateBot(" 경고 ! : 올바른 이름을 입력해주세요! ", 1);
+            UIHelper::UpdateBot("경고 ! : 올바른 이름을 입력해주세요! ", 1);
             continue;
         }
         break;

@@ -42,7 +42,6 @@ void Player::TakeDamage(int amount)
     {
         hp_ = 0;
     }
-    std::cout << name_ << " took " << amount << " damage! HP: " << hp_ << "/" << maxhp_ << std::endl;
 }
 
 // 골드 처리
