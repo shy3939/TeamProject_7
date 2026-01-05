@@ -2,9 +2,6 @@
 #pragma once
 #include "Field.h"
 #include "Player.h"
-#include <vector>
-#include <algorithm>
-#include <random>
 
 class ShopItem
 {
