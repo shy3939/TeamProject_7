@@ -103,7 +103,7 @@ Inventory* Player::GetInventory() { return inventory_; }
 
 
 // 세터
-void Player::SetHP(int hp) { hp_ = hp; }
+void Player::SetHP(int hp) { hp_ = std::max(0, std::min(hp, maxhp_)); }
 void Player::SetATK(int attack) { atk_ = attack; }
 void Player::SetEXP(int exp) { exp_ = exp; }
 void Player::SetLevel(int lv) { level_ = lv; }
