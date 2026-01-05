@@ -1,4 +1,4 @@
-#include <windows.h>
+﻿#include <windows.h>
 #include "utf.h"
 #include "Player.h"
 #include "GameField.h"
@@ -56,7 +56,7 @@ int main()
     UIHelper::UpdateBot("용사 [" + PlayerName + "] 모험 시작!", 1);
     Player* player = new Player(PlayerName);
     GameField* gamefield = new GameField();
-    //ShopField* shopfield = new ShopField();
+    ShopField* shopfield = new ShopField();
 
     UIHelper::UpdateStatus(player);
 
@@ -69,8 +69,7 @@ int main()
         {
             break;
         }
-
-        /*
+        
         // 상점 선택 루프
         while (1)
         {
@@ -82,7 +81,7 @@ int main()
             {
             case 'y':
             case 'Y':
-                //shopfield->Enter(player);
+                shopfield->Enter(player);
                 break;
             case 'n':
             case 'N':
@@ -93,13 +92,12 @@ int main()
                 continue;
             }
             break;
-        }
-        */
+        } 
     }
 
     Sleep(10000);
     delete player;
     delete gamefield;
-    //delete shopfield;
+    delete shopfield;
     return 0;
 }

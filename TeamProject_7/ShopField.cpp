@@ -1,4 +1,4 @@
-// ShopField.cpp
+﻿// ShopField.cpp
 #include "ShopField.h"
 #include "Inventory.h"
 #include <iostream>
@@ -44,7 +44,7 @@ void ShopField::Enter(Player* player)
         case 1: BuyItem(player); break;
         case 2: SellItem(player); break;
         case 3: player->ShowStatus(); break;
-        case 4: player->GetInventory()->ShowItems(); break;
+        case 4: player->GetInventory()->ShowInventory(); break;
         case 0:
             std::cout << " 다음에도 살아서 만나요~ " << std::endl;
             return;
@@ -153,7 +153,7 @@ void ShopField::BuyItem(Player* player)
     }
 
     player->SpendGold(TotalPrice);
-    player->GetInventory()->AddItem(finalName, Quantity);
+    player->GetInventory()->AddItem(finalName, id, Quantity);
 
     // 4. 아이템 종류에 따른 출력 문구 차별화
     std::cout << " --------------------------------------- " << std::endl;
