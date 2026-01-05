@@ -77,7 +77,7 @@ Inventory* Player::GetInventory() { return inventory_; }
 void Player::SetHP(int hp) { hp_ = hp; }
 void Player::SetATK(int attack) { atk_ = attack; }
 void Player::SetEXP(int exp) { exp_ = exp; }
-void Player::SetLevel(int lv) { hp_ = lv; }
+void Player::SetLevel(int lv) { level_ = lv; }
 void Player::SetGold(int gold) { gold_ = gold; }
 void Player::SetMaxHP(int maxHp) { maxhp_ = maxHp; }
 
