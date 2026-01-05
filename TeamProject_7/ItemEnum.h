@@ -7,6 +7,15 @@ enum class ItemType
 	Ingredient
 };
 
+enum class EquipSlot
+{
+	Weapon,
+	Armor,
+	Gloves,
+	Shoes
+};
+
+
 enum class EquipID
 {
 	// --- 검 ---
@@ -14,7 +23,7 @@ enum class EquipID
 	NormalSword,
 	SharpSword,
 	// --- 활 ---
-	WornBow,
+	OldBow,
 	NormalBow,
 	SturdyBow,
 	// --- 지팡이 ---

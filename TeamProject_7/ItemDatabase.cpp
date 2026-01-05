@@ -6,54 +6,102 @@
 static std::map<EquipID, std::vector<EquipData>> EquipDB = {
     // --- 검 (Sword) ---
     { EquipID::RustySword,   { 
-        EquipData("녹슨 검", 2, 1, 0, 0, 0, 0),
-        EquipData("녹슨 검", 1, 2, 0, 0, 0, 0),
-        EquipData("녹슨 검", 2, 2, 1, 0, 0, 0)
+        EquipData("녹슨 검", EquipSlot::Weapon, 2, 1, 0, 0, 0, 0),
+        EquipData("녹슨 검", EquipSlot::Weapon, 1, 2, 0, 0, 0, 0),
+        EquipData("녹슨 검", EquipSlot::Weapon, 2, 2, 1, 0, 0, 0)
 }},
     { EquipID::NormalSword,  { 
-        EquipData("평범한 검", 15, 4, 1, 0, 0, 0), 
-        EquipData("평범한 검", 15, 3, 3, 0, 0, 0) 
+        EquipData("평범한 검", EquipSlot::Weapon, 15, 4, 1, 0, 0, 0),
+        EquipData("평범한 검", EquipSlot::Weapon, 15, 3, 3, 0, 0, 0)
 }},
     { EquipID::SharpSword,   { 
-        EquipData("예리한 검", 35, 7, 2, 0, 0, 0), 
-        EquipData("예리한 검", 35, 6, 4, 0, 0, 0) 
+        EquipData("예리한 검", EquipSlot::Weapon, 35, 7, 2, 0, 0, 0),
+        EquipData("예리한 검", EquipSlot::Weapon, 35, 6, 4, 0, 0, 0)
 }},
 
     // --- 활 (Bow) ---
-    { EquipID::WornBow,      { EquipData("낡은 활", 5, 0, 2, 0, 0, 1) }},
-    { EquipID::NormalBow,     { EquipData("사냥꾼의 활", 15, 0, 5, 0, 0, 2) }},
-    { EquipID::SturdyBow,     { EquipData("강화된 복합궁", 40, 0, 8, 1, 0, 3) }},
+    { EquipID::OldBow,      { 
+        EquipData("낡은 활", EquipSlot::Weapon, 5, 0, 2, 0, 0, 1) 
+}},
+    { EquipID::NormalBow,     { 
+        EquipData("사냥꾼의 활", EquipSlot::Weapon, 15, 0, 5, 0, 0, 2) 
+}},
+    { EquipID::SturdyBow,     { 
+        EquipData("강화된 복합궁", EquipSlot::Weapon, 40, 0, 8, 1, 0, 3) 
+}},
 
     // --- 지팡이 (Staff) ---
-    { EquipID::OldStaff,      { EquipData("낡은 지팡이", 5, 0, 0, 0, 2, 0) }},
-    { EquipID::NormalStaff,   { EquipData("마법사의 지팡이", 20, 0, 0, 0, 6, 1) }},
-    { EquipID::SturdyStaff,   { EquipData("수정 지팡이", 45, 0, 0, 0, 10, 2) }},
+    { EquipID::OldStaff,      { 
+        EquipData("낡은 지팡이", EquipSlot::Weapon, 5, 0, 0, 0, 2, 0) 
+}},
+    { EquipID::NormalStaff,   { 
+        EquipData("마법사의 지팡이", EquipSlot::Weapon, 20, 0, 0, 0, 6, 1) 
+}},
+    { EquipID::SturdyStaff,   { 
+        EquipData("수정 지팡이", EquipSlot::Weapon, 45, 0, 0, 0, 10, 2) 
+}},
 
     // --- 창 (Spear) ---
-    { EquipID::RustySpear,    { EquipData("녹슨 창", 7, 3, 0, 1, 0, 0) }},
-    { EquipID::NormalSpear,   { EquipData("병사의 창", 18, 5, 1, 2, 0, 0) }},
-    { EquipID::SharpSpear,    { EquipData("날카로운 트라이던트", 40, 9, 2, 2, 0, 0) }},
+    { EquipID::RustySpear,    { 
+        EquipData("녹슨 창", EquipSlot::Weapon, 7, 3, 0, 1, 0, 0) 
+}},
+    { EquipID::NormalSpear,   { 
+        EquipData("병사의 창", EquipSlot::Weapon, 18, 5, 1, 2, 0, 0) 
+}},
+    { EquipID::SharpSpear,    { 
+        EquipData("날카로운 트라이던트", EquipSlot::Weapon, 40, 9, 2, 2, 0, 0) 
+}},
 
     // --- 도끼 (Axe) ---
-    { EquipID::RustyAxe,      { EquipData("낡은 벌목도끼", 8, 4, -1, 0, 0, 0) }},
-    { EquipID::NormalAxe,     { EquipData("철제 전투도끼", 20, 7, 0, 1, 0, 0) }},
-    { EquipID::SturdyAxe,     { EquipData("강철 양날도끼", 45, 11, -1, 3, 0, 0) }},
+    { EquipID::RustyAxe,      { 
+        EquipData("낡은 벌목도끼", EquipSlot::Weapon, 8, 4, -1, 0, 0, 0) 
+}},
+    { EquipID::NormalAxe,     { 
+        EquipData("철제 전투도끼", EquipSlot::Weapon, 20, 7, 0, 1, 0, 0) 
+}},
+    { EquipID::SturdyAxe,     { 
+        EquipData("강철 양날도끼", EquipSlot::Weapon, 45, 11, -1, 3, 0, 0) 
+}},
 
     // --- 단검 (Dagger) ---
-    { EquipID::RustyDagger,   { EquipData("녹슨 단검", 4, 1, 2, 0, 0, 1) }},
-    { EquipID::NormalDagger,  { EquipData("무법자의 단검", 12, 2, 4, 0, 0, 3) }},
-    { EquipID::SharpDagger,   { EquipData("암살자의 비수", 30, 3, 7, 0, 0, 5) }},
+    { EquipID::RustyDagger,   { 
+        EquipData("녹슨 단검", EquipSlot::Weapon, 4, 1, 2, 0, 0, 1) 
+}},
+    { EquipID::NormalDagger,  { 
+        EquipData("무법자의 단검", EquipSlot::Weapon, 12, 2, 4, 0, 0, 3) 
+}},
+    { EquipID::SharpDagger,   { 
+        EquipData("암살자의 비수", EquipSlot::Weapon, 30, 3, 7, 0, 0, 5) 
+}},
 
     // --- 방어구 (Armor/Gloves/Shoes) ---
-    { EquipID::RustyArmor,    { EquipData("녹슨 흉갑", 10, 0, 0, 2, 0, 0) }},
-    { EquipID::NormalArmor,   { EquipData("강철 흉갑", 30, 0, -1, 6, 0, 0) }},
-    { EquipID::SturdyArmor,   { EquipData("기사의 갑옷", 60, 1, -2, 12, 0, 0) }},
-    { EquipID::OldGloves,     { EquipData("낡은 장갑", 5, 0, 1, 1, 0, 0) }},
-    { EquipID::NormalGloves,  { EquipData("가죽 장갑", 15, 1, 2, 2, 0, 0) }},
-    { EquipID::SturdyGloves,  { EquipData("판금 장갑", 35, 2, 1, 5, 0, 0) }},
-    { EquipID::OldShoes,      { EquipData("낡은 신발", 5, 0, 1, 0, 0, 0) }},
-    { EquipID::NormalShoes,   { EquipData("여행자의 장화", 15, 0, 3, 1, 0, 0) }},
-    { EquipID::SturdyShoes,   { EquipData("강철 군화", 35, 0, 1, 4, 0, 0) }}
+    { EquipID::RustyArmor,    { 
+        EquipData("녹슨 흉갑", EquipSlot::Armor, 10, 0, 0, 2, 0, 0) 
+}},
+    { EquipID::NormalArmor,   { 
+        EquipData("강철 흉갑", EquipSlot::Armor,30, 0, -1, 6, 0, 0) 
+}},
+    { EquipID::SturdyArmor,   { 
+        EquipData("기사의 갑옷", EquipSlot::Armor, 60, 1, -2, 12, 0, 0) 
+}},
+    { EquipID::OldGloves,     { 
+        EquipData("낡은 장갑", EquipSlot::Gloves, 5, 0, 1, 1, 0, 0) 
+}},
+    { EquipID::NormalGloves,  { 
+        EquipData("가죽 장갑", EquipSlot::Gloves, 15, 1, 2, 2, 0, 0) 
+}},
+    { EquipID::SturdyGloves,  { 
+        EquipData("판금 장갑", EquipSlot::Gloves, 35, 2, 1, 5, 0, 0) 
+}},
+    { EquipID::OldShoes,      { 
+        EquipData("낡은 신발", EquipSlot::Shoes, 5, 0, 1, 0, 0, 0) 
+}},
+    { EquipID::NormalShoes,   { 
+        EquipData("여행자의 장화", EquipSlot::Shoes, 15, 0, 3, 1, 0, 0) 
+}},
+    { EquipID::SturdyShoes,   { 
+        EquipData("강철 군화", EquipSlot::Shoes, 35, 0, 1, 4, 0, 0) 
+}}
 };
 
 static std::map<PotionID, std::vector<PotionData>> PotionDB = {

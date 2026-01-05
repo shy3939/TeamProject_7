@@ -77,7 +77,7 @@ static std::vector<Recipe> RecipeDB = {
 	{
 		{
 			// 낡은 활(1) + 동물 힘줄(2) + 실(1) -> 일반 활(1)
-			{ItemType::Equipment, static_cast<int>(EquipID::WornBow), 1},
+			{ItemType::Equipment, static_cast<int>(EquipID::OldBow), 1},
 			{ItemType::Ingredient, static_cast<int>(IngredID::AnimalTendon), 2},
 			{ItemType::Ingredient, static_cast<int>(IngredID::LinenThread), 1}
 		},

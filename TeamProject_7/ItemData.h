@@ -11,6 +11,7 @@ struct EquipData : ItemBaseData
 {
 	EquipData(
 		const std::string& name_,
+		EquipSlot slot_,
 		int price_,
 		int str_,
 		int agi_,
