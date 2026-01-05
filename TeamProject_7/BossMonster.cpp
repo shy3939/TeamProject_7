@@ -7,11 +7,11 @@
 BossMonster::BossMonster(Monster& base_)
 {
 	name_ = "Boss " + base_.GetName();
-	maxhp_ = base_.GetHP() * RandomInRange(1, 1.5);
+	maxhp_ = base_.GetHP() * RandomInRange(1.0f, 1.5);
 	hp_ = maxhp_;
-	atk_ = base_.GetATK() * RandomInRange(1, 1.5);
-	gold_ = base_.GetGold() * RandomInRange(1, 1.5);
-	str_ = base_.GetSTR() * RandomInRange(1, 1.5);
+	atk_ = base_.GetATK() * RandomInRange(1.0f, 1.5);
+	gold_ = base_.GetGold() * RandomInRange(1.0f, 1.5);
+	str_ = base_.GetSTR() * RandomInRange(1.0f, 1.5);
 	agi_ = base_.GetAGI();
 	vit_ = base_.GetVIT() * 1.5;
 	int_ = base_.GetINT() * 1.5;

@@ -36,6 +36,7 @@ public:
 	void SetGold(int gold);
 
 	int RandomInRange(int min, int max);
+	float RandomInRange(float min, float max);
 
 	Monster* CreateRandomMonster(Player& player);
 
