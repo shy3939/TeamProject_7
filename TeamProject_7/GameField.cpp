@@ -1,6 +1,7 @@
 // GameField.cpp
 #include <cstdlib>
 #include <iostream>
+#include "utf.h"
 #include "GameField.h"
 #include "Goblin.h"
 #include "UIHelper.h"

@@ -1,41 +1,85 @@
 #include "Inventory.h"
 #include <iostream>
+#include "ItemEnum.h"
 #include "Item.h"
 #include "Player.h"
 #include "UIHelper.h"
 
 Inventory::Inventory()
 {
-	itemData_["HpPotion"] = new HpPotion();
-	itemData_["AtkPotion"] = new AtkPotion();
+    // 슬롯 30칸 생성 (기본값 Slot 사용)
+    slots_.assign(MAX_SLOT, Slot());
+
+    // 아이템 데이터 등록
+    itemData_[(int)PotionID::HPPotion] = new HpPotion();
+    itemData_[(int)PotionID::ATKPotion] = new AtkPotion();
 }
+
 Inventory::~Inventory()
 {
-	for (auto& pair : itemData_)
-	{
-		delete pair.second;
-	}
-	itemData_.clear();
+    for (auto& pair : itemData_)
+        delete pair.second;
+
+    itemData_.clear();
 }
-bool Inventory::IsEmpty() const                               // 맵이 아예 통째로 비여있는지 모든 아이템이 없으면 true 아이템이 하나라도 있으면 false
+
+bool Inventory::IsAvailable(int displaySlot) const
 {
-	return items_.empty();
+    int index = displaySlot - 1;
+    if (index < 0 || index >= MAX_SLOT)
+        return false;
+
+    return !slots_[index].IsEmpty();
 }
-bool Inventory::IsAvailable(const std::string& key) const     // key가 들어왔을때 맵에서 key를 찾아서 재고가 0개인지 사용가능한지를 반환.
+
+void Inventory::RemoveItem(ItemType type, int id, int count)
 {
-	auto it = items_.find(key);
-	if (it == items_.end())
-		return false;
-	return it->second > 0;
+    int remaining = count;
+
+    for (int i = 1; i < MAX_SLOT && remaining > 0; ++i)
+    {
+        Slot& slot = slots_[i];
+
+        if (!slot.IsEmpty() &&
+            slot.type == type &&
+            slot.id == id)
+        {
+            // 슬롯에 있는 개수가 충분한 경우
+            if (slot.count > remaining)
+            {
+                slot.count -= remaining;
+                remaining = 0;
+            }
+            // 슬롯 개수가 부족하거나 정확히 같은 경우
+            else
+            {
+                remaining -= slot.count;
+                slot.Clear();
+            }
+        }
+    }
+
+    if (remaining > 0)
+    {
+        std::cout << "제거할 아이템 수량이 부족합니다." << std::endl;
+    }
 }
-int Inventory::GetItemCount(const std::string& key) const     //key를 받아와서 key가 해당하는 재고의 갯수를 반환
+
+int Inventory::FindSameItemSlot(ItemType type, int id) const
 {
-	auto it = items_.find(key);
-	if (it == items_.end())
-		return 0;
-	return it->second;
+    for (int i = 1; i < MAX_SLOT; ++i)
+    {
+        if (!slots_[i].IsEmpty() &&
+            slots_[i].type == type &&
+            slots_[i].id == id)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
-void Inventory::Use(const std::string& key, Player* player)
+
+int Inventory::FindEmptySlot() const
 {
 	if (player == nullptr) return;
 	auto itemIt = items_.find(key);
@@ -49,7 +93,8 @@ void Inventory::Use(const std::string& key, Player* player)
 		std::cout << "아이템 사용" << std::endl;
 		items_.erase(itemIt);
 }
-void Inventory::AddItem(const std::string& key)
+
+void Inventory::AddItem(ItemType type, int id, int count)
 {
 	if (itemData_.find(key) == itemData_.end())
 	{
@@ -59,7 +104,8 @@ void Inventory::AddItem(const std::string& key)
 	items_[key]++;  // 삽입 목적이라 이건 OK
 	UIHelper::UpdateBot(key + "이(가) 인벤토리에 추가되었습니다.", 1);
 }
-void Inventory::RemoveItem(const std::string& key)
+
+void Inventory::Use(int displaySlot, Player* player)
 {
 	auto it = items_.find(key);
 	if (it == items_.end())
@@ -73,21 +119,41 @@ void Inventory::RemoveItem(const std::string& key)
 		UIHelper::UpdateBot(" 아이템이 인벤토리에서 제거되었습니다.", 1);
 	}
 }
+
+int Inventory::GetItemCount(ItemType type, int id) const
+{
+    int total = 0;
+    for (const auto& slot : slots_)
+    {
+        if (!slot.IsEmpty() &&
+            slot.type == type &&
+            slot.id == id)
+        {
+            total += slot.count;
+        }
+    }
+    return total;
+}
+
 void Inventory::ShowInventory() const
 {
-	std::cout << "인벤토리가 열렸습니다." << std::endl;
-	if (items_.empty())
-	{
-		std::cout << "인벤토리가 비어있습니다." << std::endl;
-		return;
-	}
-	for (const auto& pair : items_)
-	{
-		std::cout << "- " << pair.first
-			<< " x" << pair.second << std::endl;
-	}
-}
-const std::map<std::string, int>& Inventory::GetInventory() const
-{
-	return items_;
+    std::cout << std::endl;
+    std::cout << "====== 인벤토리 ======" << std::endl;
+
+    for (int i = 1; i < MAX_SLOT; ++i)
+    {
+        std::cout << "[" << i + 1 << "] ";
+
+        if (slots_[i].IsEmpty())
+            std::cout << "----\t";
+        else
+            std::cout << "ID:" << slots_[i].id
+            << " x" << slots_[i].count << "\t";
+
+        if ((i + 1) % 5 == 0)
+            std::cout << std::endl;
+    }
+
+    std::cout << "=====================" << std::endl;
+    std::cout << std::endl;
 }
