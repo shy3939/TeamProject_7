@@ -1,12 +1,5 @@
 ﻿#include "RecipeDatabase.h"
 
-
-const std::vector<Recipe>& RecipeDatabase::GetAllRecipes()
-{
-	return RecipeDB;
-}
-
-
 static std::vector<Recipe> RecipeDB = {
 	{
 		{	// [철 주괴] 녹슨 철 조각(5) + 숫돌(1) -> 철 주괴(1)
@@ -151,3 +144,8 @@ static std::vector<Recipe> RecipeDB = {
 		}
 	}
 };
+
+const std::vector<Recipe>& RecipeDatabase::GetAllRecipes()
+{
+	return RecipeDB;
+}

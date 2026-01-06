@@ -16,6 +16,7 @@ Player::Player(const std::string& Name, const ItemDatabase& db)
     vit_(RandomInRange(10, 100)),
     int_(RandomInRange(10, 30)),
     luk_(RandomInRange(0, 40)),
+    db_(db),
     inventory_(std::make_unique<Inventory>(db))
 {}
 
@@ -97,6 +98,66 @@ int Player::CalcMagicDamage(int baseMagic) const //INT
 bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
 
 
+// 장비
+void Player::Equip(EquipID id)
+{
+    const auto& equipList = db_.GetEquipItems(id);
+    const auto& data = equipList[0];
+
+    EquipSlot slot = data.slot;
+
+    // 기존 장비 해제
+    Unequip(slot);
+
+    // 장착
+    switch (slot)
+    {
+    case EquipSlot::Weapon: equipped_.weapon = id; break;
+    case EquipSlot::Armor:  equipped_.armor = id; break;
+    case EquipSlot::Gloves: equipped_.gloves = id; break;
+    case EquipSlot::Shoes:  equipped_.shoes = id; break;
+    }
+
+    AddStat(
+        data.BonusSTR,
+        data.BonusAGI,
+        data.BonusVIT,
+        data.BonusINT,
+        data.BonusLUK
+    );
+    std::cout << data.Name << " 장착 완료" << std::endl;
+}
+
+void Player::Unequip(EquipSlot slot)
+{
+    EquipID id = EquipID::None;
+
+    switch (slot)
+    {
+    case EquipSlot::Weapon: id = equipped_.weapon; equipped_.weapon = EquipID::None; break;
+    case EquipSlot::Armor:  id = equipped_.armor;  equipped_.armor = EquipID::None; break;
+    case EquipSlot::Gloves: id = equipped_.gloves; equipped_.gloves = EquipID::None; break;
+    case EquipSlot::Shoes:  id = equipped_.shoes;  equipped_.shoes = EquipID::None; break;
+    }
+
+    if (id == EquipID::None)
+        return;
+
+    const auto& data = db_.GetEquipItems(id)[0];
+
+    AddStat(
+        -data.BonusSTR,
+        -data.BonusAGI,
+        -data.BonusVIT,
+        -data.BonusINT,
+        -data.BonusLUK
+    );
+
+    std::cout << data.Name << " 장착 해제" << std::endl;
+}
+
+
+
 
 
 // 게터
@@ -128,6 +189,16 @@ void Player::ShowStatus() const
         << ", Experience: " << exp_
         << ", Gold: " << gold_ << std::endl;
 }
+
+void Player::ShowEquipments() const
+{
+    std::cout << "[장착 장비]" << std::endl;
+    std::cout << "Weapon: " << (int)equipped_.weapon << std::endl;
+    std::cout << "Armor : " << (int)equipped_.armor << std::endl;
+    std::cout << "Gloves: " << (int)equipped_.gloves << std::endl;
+    std::cout << "Shoes : " << (int)equipped_.shoes << std::endl;
+}
+
 
 void Player::AddStat(int str, int agi, int vit, int intel, int luk)
 {

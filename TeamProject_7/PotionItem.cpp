@@ -20,7 +20,7 @@ bool PotionItem::Use(Player* player)
     // 이미 체력이 가득 찬 경우
     if (curHp >= maxHp && data.PlusHP > 0)
     {
-        std::cout << "이미 체력이 가득 차 있습니다.\n";
+        std::cout << "이미 체력이 가득 차 있습니다." << std::endl;
         return false;
     }
 
@@ -31,8 +31,8 @@ bool PotionItem::Use(Player* player)
         player->SetHP(healed);
 
         std::cout << data.Name << " 사용! 체력 +"
-            << data.PlusHP << "\n";
-        std::cout << "현재 체력: " << player->GetHP() << "\n";
+            << data.PlusHP << std::endl;
+        std::cout << "현재 체력: " << player->GetHP() << std::endl;
     }
 
     // ATK 증가 포션도 여기서 처리 가능
@@ -41,8 +41,8 @@ bool PotionItem::Use(Player* player)
         player->SetATK(player->GetATK() + data.PlusATK);
 
         std::cout << data.Name << " 사용! 공격력 +"
-            << data.PlusATK << "\n";
-        std::cout << "현재 공격력: " << player->GetATK() << "\n";
+            << data.PlusATK << std::endl";
+        std::cout << "현재 공격력: " << player->GetATK() << std::endl;
     }
 
     return true;

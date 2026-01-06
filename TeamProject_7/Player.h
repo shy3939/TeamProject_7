@@ -6,6 +6,15 @@
 
 class Inventory;
 
+struct EquipmentSlots
+{
+    EquipID weapon = EquipID::None;
+    EquipID armor = EquipID::None;
+    EquipID gloves = EquipID::None;
+    EquipID shoes = EquipID::None;
+};
+
+
 class Player
 {
 public:
@@ -25,16 +34,19 @@ public:
     void AddGold(int amount);
     bool SpendGold(int amount);
 
-
+    // 장비 관련
+    void Equip(EquipID id);
+    void Unequip(EquipSlot slot);
 
     // 능력치 관련
-    int CalcPhysicalDamage(int baseAtk) const; //STR
-    bool TryEvade(int enemyAgi) const;          // AGI
+    int CalcPhysicalDamage(int baseAtk) const;      // STR
+    bool TryEvade(int enemyAgi) const;              // AGI
     int  ApplyDamageReduction(int rawDamage) const; // VIT
-    int CalcMagicDamage(int baseMagic) const; //INT
-    bool IsCritical() const;                    // LUK
+    int CalcMagicDamage(int baseMagic) const;       // INT
+    bool IsCritical() const;                        // LUK
 
     int RandomInRange(int min, int max);
+    void AddStat(int str, int agi, int vit, int intel, int luk);
 
     // 게터
     std::string GetName() const;
@@ -56,7 +68,7 @@ public:
 
     // 상태 출력
     void ShowStatus() const;
-    void AddStat(int str, int agi, int vit, int intel, int luk);
+    void Player::ShowEquipments() const;
 
 private:
     std::string name_;
@@ -72,6 +84,9 @@ private:
     int vit_;
     int int_;
     int luk_;
+    //아이템
     std::unique_ptr<Inventory> inventory_;
+    EquipmentSlots equipped_;
+    const ItemDatabase& db_;
 };
 

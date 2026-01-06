@@ -27,6 +27,19 @@ struct Slot
     }
 };
 
+struct ItemKey
+{
+    ItemType type;
+    int id;
+
+    bool operator<(const ItemKey& other) const
+    {
+        if (type != other.type)
+            return type < other.type;
+        return id < other.id;
+    }
+};
+
 class Inventory
 {
 public:
@@ -49,7 +62,7 @@ private:
     static const int MAX_SLOT = 30;
 
     const ItemDatabase& db_;
-    std::map<int, std::unique_ptr<Item>> itemData_;
+    std::map<ItemKey, std::unique_ptr<Item>> itemData_;
     std::vector<Slot> slots_;
 
     int FindSameItemSlot(ItemType type, int id) const;

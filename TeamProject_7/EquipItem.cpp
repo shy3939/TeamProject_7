@@ -10,7 +10,7 @@ void EquipItem::Equip(Player* player)
         return;
 
     const auto& equipList = db_.GetEquipItems(eid_);
-    const auto& data = equipList[0]; // 기본 옵션
+    const auto& data = equipList[0];
 
     player->AddStat(
         data.BonusSTR,
@@ -20,7 +20,7 @@ void EquipItem::Equip(Player* player)
         data.BonusLUK
     );
 
-    std::cout << data.Name << " 장착 완료\n";
+    std::cout << data.Name << " 장착 완료" << std::endl;
 }
 
 void EquipItem::Unequip(Player* player)
@@ -39,5 +39,5 @@ void EquipItem::Unequip(Player* player)
         -data.BonusLUK
     );
 
-    std::cout << data.Name << " 장착 해제\n";
+    std::cout << data.Name << " 장착 해제" < std::endl;
 }

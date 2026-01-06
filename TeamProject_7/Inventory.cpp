@@ -1,5 +1,7 @@
 ﻿#include "Inventory.h"
 #include "PotionItem.h"
+#include "EquipItem.h"
+#include "IngredItem.h"
 #include "ItemDatabase.h"
 #include <iostream>
 #include "ItemEnum.h"
@@ -13,12 +15,12 @@ Inventory::Inventory(const ItemDatabase& db)
     slots_.assign(MAX_SLOT, Slot());
 
     itemData_.emplace(
-        (int)PotionID::HPPotion,
+        ItemKey{ ItemType::Potion, (int)PotionID::HPPotion },
         std::make_unique<PotionItem>(PotionID::HPPotion, db_)
     );
 
     itemData_.emplace(
-        (int)PotionID::ATKPotion,
+        ItemKey{ ItemType::Potion, (int)PotionID::ATKPotion },
         std::make_unique<PotionItem>(PotionID::ATKPotion, db_)
     );
 }
@@ -139,7 +141,9 @@ void Inventory::Use(int displaySlot, Player* player)
 
     Slot& slot = slots_[index];
 
-    auto it = itemData_.find(slot.id);
+    ItemKey key{ slot.type, slot.id };
+
+    auto it = itemData_.find(key);
     if (it == itemData_.end())
     {
         UIHelper::UpdateBot("아이템 데이터가 없습니다.", 1);
