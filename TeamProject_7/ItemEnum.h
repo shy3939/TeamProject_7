@@ -61,8 +61,10 @@ enum class EquipID
 enum class PotionID
 {
 	HPPotion,
+	HPPotion2,
 	MPPotion,
-	ATKPotion
+	ATKPotion,
+	ATKPotion2
 };
 
 enum class IngredID

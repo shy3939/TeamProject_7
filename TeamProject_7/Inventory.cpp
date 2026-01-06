@@ -1,4 +1,4 @@
-#include "Inventory.h"
+﻿#include "Inventory.h"
 #include "PotionItem.h"
 #include "EquipItem.h"
 #include "IngredItem.h"
@@ -19,10 +19,125 @@ Inventory::Inventory(const ItemDatabase& db)
         ItemKey{ ItemType::Potion, (int)PotionID::HPPotion },
         std::make_unique<PotionItem>(PotionID::HPPotion, db_)
     );
-
+    itemData_.emplace(
+        ItemKey{ ItemType::Potion, (int)PotionID::HPPotion2 },
+        std::make_unique<PotionItem>(PotionID::HPPotion2, db_)
+    );
     itemData_.emplace(
         ItemKey{ ItemType::Potion, (int)PotionID::ATKPotion },
         std::make_unique<PotionItem>(PotionID::ATKPotion, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Potion, (int)PotionID::ATKPotion2 },
+        std::make_unique<PotionItem>(PotionID::ATKPotion2, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::RustyArmor },
+        std::make_unique<EquipItem>(EquipID::RustyArmor, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalArmor },
+        std::make_unique<EquipItem>(EquipID::NormalArmor, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyArmor },
+        std::make_unique<EquipItem>(EquipID::SturdyArmor, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::OldGloves },
+        std::make_unique<EquipItem>(EquipID::OldGloves, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalGloves },
+        std::make_unique<EquipItem>(EquipID::NormalGloves, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyGloves },
+        std::make_unique<EquipItem>(EquipID::SturdyGloves, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::OldShoes },
+        std::make_unique<EquipItem>(EquipID::OldShoes, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalShoes },
+        std::make_unique<EquipItem>(EquipID::NormalShoes, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyShoes },
+        std::make_unique<EquipItem>(EquipID::SturdyShoes, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::RustySword },
+        std::make_unique<EquipItem>(EquipID::RustySword, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalSword },
+        std::make_unique<EquipItem>(EquipID::NormalSword, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SharpSword },
+        std::make_unique<EquipItem>(EquipID::SharpSword, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::OldBow },
+        std::make_unique<EquipItem>(EquipID::OldBow, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalBow },
+        std::make_unique<EquipItem>(EquipID::NormalBow, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyBow },
+        std::make_unique<EquipItem>(EquipID::SturdyBow, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::OldStaff },
+        std::make_unique<EquipItem>(EquipID::OldStaff, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalStaff },
+        std::make_unique<EquipItem>(EquipID::NormalStaff, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyStaff },
+        std::make_unique<EquipItem>(EquipID::SturdyStaff, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::RustySpear },
+        std::make_unique<EquipItem>(EquipID::RustySpear, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalSpear },
+        std::make_unique<EquipItem>(EquipID::NormalSpear, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SharpSpear },
+        std::make_unique<EquipItem>(EquipID::SharpSpear, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::RustyAxe },
+        std::make_unique<EquipItem>(EquipID::RustyAxe, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalAxe },
+        std::make_unique<EquipItem>(EquipID::NormalAxe, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SturdyAxe },
+        std::make_unique<EquipItem>(EquipID::SturdyAxe, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::RustyDagger },
+        std::make_unique<EquipItem>(EquipID::RustyDagger, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::NormalDagger },
+        std::make_unique<EquipItem>(EquipID::NormalDagger, db_)
+    );
+    itemData_.emplace(
+        ItemKey{ ItemType::Equipment, (int)EquipID::SharpDagger },
+        std::make_unique<EquipItem>(EquipID::SharpDagger, db_)
     );
 }
 
@@ -142,36 +257,52 @@ void Inventory::RemoveItem(ItemType type, int id, int count)
         UIHelper::UpdateBot("제거할 아이템 수량이 부족합니다.", 1);
 }
 
-void Inventory::Use(int displaySlot, Player* player)
+bool Inventory::Use(int displaySlot, Player* player)
 {
-    if (!player) return;
+    if (!player) return false;
 
     int index = displaySlot - 1;
     if (index < 0 || index >= MAX_SLOT || slots_[index].IsEmpty())
     {
         UIHelper::UpdateBot("비어있는 슬롯입니다.", 1);
-        return;
+        return false;
     }
 
     Slot& slot = slots_[index];
 
     ItemKey key{ slot.type, slot.id };
 
-    auto it = itemData_.find(key);
-    if (it == itemData_.end())
+    Item* findItem = nullptr;
+
+    for (const auto& it : itemData_)
     {
-        UIHelper::UpdateBot("아이템 데이터가 없습니다.", 1);
-        return;
+        Item* item_ = it.second.get();   // 밸류값
+        ItemType type_ = it.first.type;  // 키값에 있는 아이템 타입(아이템 구분을 위한 타입)
+        int id_ = it.first.id;           // 키값에 있는 아이템 아이디(인덱스 번호)
+
+        if (type_ == key.type && id_ == key.id)
+        {
+            findItem = item_;
+            break;
+        }
     }
 
-    if (!it->second->Use(player))
+    if (findItem == nullptr)
+    {
+        UIHelper::UpdateBot("아이템 데이터가 없습니다.", 1);
+        return false;
+    }
+    
+    if (!findItem->Use(player))
     {
         UIHelper::UpdateBot("아이템을 사용할 수 없습니다.", 1);
-        return;
+        return false;
     }
 
     if (--slot.count <= 0)
         slot.Clear();
+    UIHelper::UpdateStatus(player);
+    return true;
 }
 
 int Inventory::GetItemCount(ItemType type, int id) const

@@ -103,13 +103,11 @@ void GameField::StartBattle(Player* player)
         // 플레이어 사망 체크
         if (player->GetHP() <= 0)
         {
-
             Defeat(player);
             break;
         }
     }
-
-    delete monster;
+    delete monster;  
 }
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
@@ -246,7 +244,7 @@ void GameField::Victory(Player* player, Monster* monster)
     {
         GameIsOver = true;
     
-        if (monster->GetName() == "드래곤")
+        if (monster->GetName() == "(Boss)드래곤")
         KillScore[3]++;
         
         UIHelper::UpdateBot({
