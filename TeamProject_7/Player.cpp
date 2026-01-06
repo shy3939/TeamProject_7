@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -182,6 +182,11 @@ int Player::GetMaxHP() const { return maxhp_; }
 int Player::GetEXP() const { return exp_;  }
 int Player::GetATK() const { return atk_; }
 int Player::GetGold() const { return gold_; }
+int Player::GetSTR() const { return str_; }
+int Player::GetAGI() const { return agi_; }
+int Player::GetVIT() const { return vit_; }
+int Player::GetINT() const { return int_; }
+int Player::GetLUK() const { return luk_; }
 Inventory* Player::GetInventory() { return inventory_.get(); }
 
 
@@ -221,4 +226,9 @@ void Player::AddStat(int str, int agi, int vit, int intel, int luk)
     vit_ += vit;
     int_ += intel;
     luk_ += luk;
+}
+
+int Player::RandomInRange(int min, int max)
+{
+    return rand() % (max - min + 1) + min;
 }

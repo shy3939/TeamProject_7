@@ -11,15 +11,14 @@ Monster::Monster()
 	vit_(0),
 	int_(0),
 	luk_(0),
-	item_(nullptr),
+	dropType_(ItemType::None),
+	dropId_(-1),
 	player_(nullptr)
-
 {
 }
 
 Monster::~Monster()
 {
-	delete item_;
 }
 
 std::string Monster::GetName() const { return name_; }

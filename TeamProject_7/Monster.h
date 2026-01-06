@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include "Player.h"
-#include "Item.h"
+#include "ItemEnum.h"
 
 class Monster
 {
@@ -53,6 +53,8 @@ protected:
 	int vit_;
 	int int_;
 	int luk_;
-	Item* item_;
+	// 드랍 아이템 정보
+	ItemType dropType_ = ItemType::None;
+	int dropId_ = -1;
 	Player* player_;
 };

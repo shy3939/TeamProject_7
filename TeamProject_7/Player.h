@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <iostream>
 #include <string>
 #include <memory>
@@ -57,6 +57,14 @@ public:
     int GetHP() const;
     int GetMaxHP() const;
     int GetATK() const;
+    
+    //stats
+    int GetSTR() const;
+    int GetAGI() const;
+    int GetVIT() const;
+    int GetINT() const;
+    int GetLUK() const;
+    
     int GetGold() const;
     Inventory* GetInventory();
 

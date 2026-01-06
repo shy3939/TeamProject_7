@@ -1,4 +1,5 @@
 ﻿#include "Goblin.h"
+#include "ItemEnum.h"
 
 Goblin::Goblin(const Player& player)
 	: Monster()
@@ -19,18 +20,16 @@ Goblin::Goblin(const Player& player)
 	vit_ = rvit_;
 	int_ = rint_;
 	luk_ = rluk_;
-	if (RandNum < 4)
+
+	// 드랍 아이템 설정
+	dropType_ = ItemType::Potion;
+	if (RandNum < 5)
 	{
-		item_ = new AtkPotion();
-		item_ = new HpPotion();
-	}
-	else if (RandNum >= 4 && RandNum < 8)
-	{
-		item_ = new AtkPotion();
+		dropId_ = (int)PotionID::ATKPotion;
 	}
 	else
 	{
-		item_ = new HpPotion();
+		dropId_ = (int)PotionID::HPPotion;
 	}
 }
 

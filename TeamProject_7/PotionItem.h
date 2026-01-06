@@ -14,6 +14,7 @@ public:
     }
 
     bool Use(Player* player) override;
+    ItemType GetType() const override { return ItemType::Potion; }
 
 private:
     PotionID pid_;
