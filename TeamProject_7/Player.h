@@ -38,7 +38,7 @@ public:
     // 장비 관련
     void Equip(EquipID id);
     void Unequip(EquipSlot slot);
-    EquipSlot GetSlotFromEquipID(EquipID id);
+    EquipSlot GetSlotFromEquipID(EquipID id) const;
 
     // 능력치 관련
     int CalcPhysicalDamage(int baseAtk) const;      // STR

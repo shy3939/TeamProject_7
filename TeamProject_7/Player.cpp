@@ -102,6 +102,7 @@ bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
 void Player::Equip(EquipID id)
 {
     const auto& equipList = db_.GetEquipItems(id);
+    if (equipList.empty()) return;
     const auto& data = equipList[0];
 
     EquipSlot slot = GetSlotFromEquipID(id);
@@ -156,7 +157,7 @@ void Player::Unequip(EquipSlot slot)
     std::cout << data.Name << " 장착 해제" << std::endl;
 }
 
-EquipSlot Player::GetSlotFromEquipID(EquipID id)
+EquipSlot Player::GetSlotFromEquipID(EquipID id) const
 {
     switch (id)
     {
@@ -168,7 +169,7 @@ EquipSlot Player::GetSlotFromEquipID(EquipID id)
         return EquipSlot::Armor;
 
     default:
-        return EquipSlot::Weapon;
+        throw std::runtime_error("Invalid EquipID");
     }
 }
 

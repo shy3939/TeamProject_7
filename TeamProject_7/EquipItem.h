@@ -13,8 +13,6 @@ public:
     ItemType GetType() const override { return ItemType::Equipment; }
 
     bool Use(Player* player) override;
-    void Equip(Player* player);
-    void Unequip(Player* player);
 
 private:
     EquipID eid_;
