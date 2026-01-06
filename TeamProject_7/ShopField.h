@@ -12,6 +12,7 @@ public:
     int ItemId;
     int BasePrice;    // 기준 가격
     int CurrentPrice; // 실제 판매가 (랜덤 변동 적용)
+    bool IsSoldOut = false;
 };
 
 class ShopField : public Field

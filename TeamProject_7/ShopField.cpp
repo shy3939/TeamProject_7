@@ -105,20 +105,27 @@ void ShopField::BuyItem(Player* player)
     // 1. 구매할 아이템 선택
     if (CurrentStock.empty()) return;
     
-    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1 ~ 6) 입력 (0: 취소)");
-   
+    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1~6) 입력 (0: 취소)");
+    if (strChoice.empty()) return;
     // 빈 문자열 체크
-    if (strChoice.empty()) {
+    if (strChoice.empty()) 
+    {
         UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
         return;
     }
 
     // 전체가 숫자인지 체크
     size_t pos;
-    int Choice = std::stoi(strChoice, &pos);
+    int Choice;
+    try 
+    {
+        Choice = std::stoi(strChoice, &pos);
+    }
+    catch (...) { return; }
 
-    if (pos != strChoice.length()) {
-        UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
+    if (Choice < 1 || Choice >(int)CurrentStock.size())
+    {
+        UIHelper::UpdateBot("해당 번호의 상품이 없습니다! (현재 " + std::to_string(CurrentStock.size()) + "번까지 존재)", 0.7);
         return;
     }
 
@@ -126,6 +133,12 @@ void ShopField::BuyItem(Player* player)
 
     
     ShopItem & selected = CurrentStock[Choice - 1];
+
+    if (selected.IsSoldOut)
+    {
+        UIHelper::UpdateBot("이미 품절된 상품입니다!", 0.7);
+        return;
+    }
     bool isEquipment = (selected.ItemType == ItemType::Equipment); // 변수명이 ItemType인지 type인지 확인 필요
 
     int Quantity = 1;
@@ -151,6 +164,10 @@ void ShopField::BuyItem(Player* player)
     player->SpendGold(TotalPrice);
     player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
     UIHelper::UpdateStatus(player);
+    selected.IsSoldOut = true; // 품절 상태로 변경
+    UIHelper::UpdateStatus(player);
+    UpdateShopUI(); // 바뀐 상태로 화면 갱신
+
     UIHelper::UpdateBot(selected.Name + " 구매 완료!", 1);
 }
 void ShopField::CloseSellUI()
@@ -338,8 +355,18 @@ void ShopField::RefreshShop()
 void ShopField::UpdateShopUI()
 {
     UIHelper::UpdateTop(AsciiArt::ShopBackGround);
-    for (int i = 0; i < (int)CurrentStock.size(); ++i) 
+
+    for (int i = 0; i < (int)CurrentStock.size(); ++i)
     {
-        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
+        // [수정] 품절 여부에 따라 다른 문구를 출력합니다.
+        if (CurrentStock[i].IsSoldOut)
+        {
+            // 가격 자리에 "품절"이라고 표시합니다.
+            UIHelper::AddToShopList(CurrentStock[i].Name, "품절", i);
+        }
+        else
+        {
+            UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
+        }
     }
 }

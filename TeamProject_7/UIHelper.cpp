@@ -244,5 +244,9 @@ namespace UIHelper {
 
         DrawAt(x, y, message);
         DrawAt(x, y + 1, price + " G");
+
+        if(price == "품절") DrawAt(x, y + 1, price + "  ");
+        else DrawAt(x, y + 1, price + " G");
+       
     }
 }
