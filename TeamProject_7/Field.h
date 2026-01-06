@@ -1,4 +1,5 @@
 ﻿#pragma once
+class BossMonster;
 class Monster;
 class Player;
 

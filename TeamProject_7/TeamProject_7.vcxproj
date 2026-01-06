@@ -124,7 +124,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BossMonster.cpp" />
     <ClCompile Include="Craft.cpp" />
     <ClCompile Include="Dragon.cpp" />
     <ClCompile Include="EquipItem.cpp" />
@@ -145,7 +144,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AsciiArt.h" />
-    <ClInclude Include="BossMonster.h" />
     <ClInclude Include="Craft.h" />
     <ClInclude Include="Dragon.h" />
     <ClInclude Include="EquipItem.h" />

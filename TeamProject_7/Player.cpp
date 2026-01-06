@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -6,11 +6,11 @@
 Player::Player(const std::string& Name, const ItemDatabase& db)
     : name_(Name),
     level_(1),
-    hp_(200),
-    maxhp_(200),
-    atk_(30),
+    hp_(9999),
+    maxhp_(9999),
+    atk_(999),
     exp_(0),
-    gold_(0),
+    gold_(99999999),
     str_(RandomInRange(10, 50)),
     agi_(RandomInRange(1, 10)),
     vit_(RandomInRange(10, 100)),
