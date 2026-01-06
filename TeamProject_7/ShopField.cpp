@@ -98,9 +98,6 @@ void ShopField::BuyItem(Player* player)
     int finalPrice = 0;
     bool isEquipment = false;
 
-    ShopItem& selected = CurrentStock[Choice - 1];
-    finalName = selected.Name;
-    finalPrice = selected.CurrentPrice;
     
     // 번호에 따른 아이템 판별
     if (Choice == 1 || Choice == 2) 
@@ -117,6 +114,10 @@ void ShopField::BuyItem(Player* player)
         UIHelper::UpdateBot("잘못된 번호 : 구매를 취소합니다 !", 0.5);
         return;
     }
+
+    ShopItem& selected = CurrentStock[Choice - 1];
+    finalName = selected.Name;
+    finalPrice = selected.CurrentPrice;
 
 ////////////////////
     // 2. 수량 입력 및 확인
@@ -194,6 +195,13 @@ void ShopField::BuyItem(Player* player)
         UIHelper::UpdateBot("[" + finalName + "] " + std::to_string(Quantity) +"개 구매 완료!", 1);
     }
 }
+void ShopField::CloseSellUI()
+{
+    UIHelper::UpdateTop(AsciiArt::ShopBackGround);
+    for (int i = 0; i < 6; ++i) {
+        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice) , i);
+    }
+}
 
 void ShopField::SellItem(Player* player)
 {
@@ -204,6 +212,7 @@ void ShopField::SellItem(Player* player)
     if (inventory->IsEmpty())
     {
         UIHelper::UpdateBot("판매할 아이템이 없습니다.", 1);
+        CloseSellUI();
         return;
     }
 
@@ -251,6 +260,7 @@ void ShopField::SellItem(Player* player)
     if (SellableItems.empty())
     {
         UIHelper::UpdateBot("상점에서 매입하는 아이템을 보유하고 있지 않습니다.", 1);
+        CloseSellUI();
         return;
     }
 
@@ -263,6 +273,7 @@ void ShopField::SellItem(Player* player)
     std::string strChoice = UIHelper::UpdateBotInput("판매할 아이템 번호를 입력하세요");
 
     if (strChoice.empty()) {
+        CloseSellUI();
         UIHelper::UpdateBot("입력이 없습니다. 판매를 취소합니다.", 0.5);
         return;
     }
@@ -272,19 +283,26 @@ void ShopField::SellItem(Player* player)
     try {
         Choice = std::stoi(strChoice, &pos);
     } catch (...) {
+        CloseSellUI();
         UIHelper::UpdateBot("잘못된 입력입니다. 판매를 취소합니다.", 0.5);
         return;
     }
 
     if (pos != strChoice.length()) {
+        CloseSellUI();
         UIHelper::UpdateBot("숫자만 입력해주세요. 판매를 취소합니다.", 0.5);
         return;
     }
 
-    if (Choice == 0) return;
+    if (Choice == 0)
+    {
+        CloseSellUI(); 
+        return;
+    }
 
     if (Choice < 1 || Choice > (int)SellableItems.size())
     {
+        CloseSellUI();
         UIHelper::UpdateBot("잘못된 선택입니다.", 0.5);
         return;
     }
@@ -298,6 +316,7 @@ void ShopField::SellItem(Player* player)
     std::string strQuantity = UIHelper::UpdateBotInput(selected->Name + " 몇 개 판매? (보유: " + std::to_string(ownedCount) + "개)");
 
     if (strQuantity.empty()) {
+        CloseSellUI();
         UIHelper::UpdateBot("입력이 없습니다. 판매를 취소합니다.", 0.5);
         return;
     }
@@ -307,17 +326,20 @@ void ShopField::SellItem(Player* player)
         Quantity = std::stoi(strQuantity, &pos);
     } catch (...) {
         UIHelper::UpdateBot("잘못된 입력입니다. 판매를 취소합니다.", 0.5);
+        CloseSellUI();
         return;
     }
 
     if (pos != strQuantity.length()) {
         UIHelper::UpdateBot("숫자만 입력해주세요. 판매를 취소합니다.", 0.5);
+        CloseSellUI();
         return;
     }
 
     if (Quantity <= 0 || Quantity > ownedCount)
     {
         UIHelper::UpdateBot("수량이 올바르지 않습니다.", 0.5);
+        CloseSellUI();
         return;
     }
 
@@ -326,13 +348,7 @@ void ShopField::SellItem(Player* player)
     inventory->RemoveItem(selected->ItemType, selected->ItemId, Quantity); // 인벤토리 데이터 갱신
     player->AddGold(TotalGold);                      // 플레이어 재화 갱신
     UIHelper::UpdateStatus(player);
-
-    // 상점 화면 복원
-    UIHelper::UpdateTop(AsciiArt::ShopBackGround);
-    for (int i = 0; i < 6; ++i) {
-        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
-    }
-
+    CloseSellUI();
     UIHelper::UpdateBot(selected->Name + " " + std::to_string(Quantity) + "개 판매 완료! (+" + std::to_string(TotalGold) + " G)", 1);
 }
 

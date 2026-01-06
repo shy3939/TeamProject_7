@@ -150,6 +150,7 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
 
     int damage = player->GetATK();
+
     monster->TakeDamage(damage);
 
     // Log 처리

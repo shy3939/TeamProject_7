@@ -106,7 +106,9 @@ namespace UIHelper {
         SetCursor(0, MID_Y + 1);
         std::cout << " HP: " << player->GetHP() << " / " << player->GetMaxHP();
         SetCursor(0, MID_Y + 2);
-        std::cout << " ATK: " << player->GetATK() << "  LV: " << player->GetLevel() << "  Gold: " << player->GetGold();
+        std::cout << "  LV: " << player->GetLevel() << " ATK: " << player->GetATK()  << "  Gold: " << player->GetGold();
+        SetCursor(0, MID_Y + 3);
+        std::cout << " STR: " << player->GetSTR() << " AGI: " << player->GetAGI() << " VIT: " << player->GetVIT() << " INT: " << player->GetINT() << " LUK: " << player->GetLUK();
     }
 
     void UpdateBot(const std::string& message, const float sleepSec) {
@@ -234,13 +236,13 @@ namespace UIHelper {
         case 0: x = 4;  y = 4; break;   // 예시
         case 1: x = 29; y = 4; break;   // 
         case 2: x = 54; y = 4; break;   // 
-        case 3: x = 4; y = 7; break;   // 
-        case 4: x = 29; y = 7; break;   // 
-        case 5: x = 54;  y = 7; break;  // 
+        case 3: x = 4; y = 8; break;   // 
+        case 4: x = 29; y = 8; break;   // 
+        case 5: x = 54;  y = 8; break;  // 
         default: return;  
         }
 
         DrawAt(x, y, message);
-        DrawAt(x, y + 2, price + " G");
+        DrawAt(x, y + 1, price + " G");
     }
 }

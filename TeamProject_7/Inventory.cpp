@@ -1,4 +1,4 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include "PotionItem.h"
 #include "EquipItem.h"
 #include "IngredItem.h"
@@ -8,6 +8,7 @@
 #include "Item.h"
 #include "Player.h"
 #include "UIHelper.h"
+#include "utf.h"
 
 Inventory::Inventory(const ItemDatabase& db)
     : db_(db)
@@ -61,6 +62,19 @@ int Inventory::FindSameItemSlot(ItemType type, int id) const
         }
     }
     return -1;
+}
+
+int Inventory::GetSize() const
+{
+    int size = 0;
+    for (const Slot& slot : slots_)
+    {
+        if (!slot.IsEmpty())
+        {
+            size++;
+        }
+    }
+    return size;
 }
 
 int Inventory::FindEmptySlot() const
@@ -178,23 +192,48 @@ int Inventory::GetItemCount(ItemType type, int id) const
 
 void Inventory::ShowInventory() const
 {
-    std::cout << std::endl;
-    std::cout << "====== 인벤토리 ======" << std::endl;
+    std::vector<std::string> displayLines;
 
-    for (int index = 0; index < MAX_SLOT; ++index)
+    if (IsEmpty())
     {
-        std::cout << "[" << index + 1 << "] ";
+        displayLines.push_back("인벤토리가 비어 있습니다.");
+    }
+    else
+    {
+        for (int i = 1; i <= MAX_SLOT; ++i)
+        {
+            if (IsAvailable(i))
+            {
+                const Slot& slot = slots_[i - 1];
+                std::string itemName = "알 수 없는 아이템";
 
-        if (slots_[index].IsEmpty())
-            std::cout << "----\t";
-        else
-            std::cout << "ID:" << slots_[index].id
-            << " x" << slots_[index].count << "\t";
+                // 타입에 따른 이름 추출 로직
+                try {
+                    switch (slot.type)
+                    {
+                    case ItemType::Potion:
+                        itemName = db_.GetPotionItems((PotionID)slot.id)[0].Name;
+                        break;
+                    case ItemType::Equipment:
+                        itemName = db_.GetEquipItems((EquipID)slot.id)[0].Name;
+                        break;
+                    case ItemType::Ingredient:
+                        itemName = db_.GetIngredItems((IngredID)slot.id)[0].Name;
+                        break;
+                    }
+                }
+                catch (...) {
+                    itemName = "데이터 없음(ID:" + std::to_string(slot.id) + ")";
+                }
 
-        if ((index + 1) % 5 == 0)
-            std::cout << std::endl;
+                // 가독성을 위해 [슬롯번호] 이름 x수량 형식으로 구성
+                std::string line = "[" + std::to_string(i) + "] " + itemName + " (x" + std::to_string(slot.count) + ")";
+                displayLines.push_back(line);
+            }
+        }
     }
 
-    std::cout << "=====================" << std::endl;
-    std::cout << std::endl;
+    UIHelper::UpdateTopList(displayLines, "플레이어 인벤토리");
+    UIHelper::UpdateBot("인벤토리를 닫으려면 [Enter]를 눌러주세요.");
+    GetEnterInput(); // utf.h 등에 정의된 입력 대기 함수 호출
 }

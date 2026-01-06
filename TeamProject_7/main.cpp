@@ -1,6 +1,7 @@
 #include <windows.h>
 #include "utf.h"
 #include "Player.h"
+#include "Inventory.h"
 #include "GameField.h"
 #include "ShopField.h"
 #include "UIHelper.h"
@@ -17,7 +18,8 @@ int main()
     srand(time(nullptr));
 
     for (const auto& frame : AsciiArt::TITLE) {
-        UIHelper::UpdateTop(frame, 0.7);
+        //UIHelper::UpdateTop(frame, 0.5);
+        UIHelper::UpdateTop(frame, 0.1);
     }
 
     UIHelper::Init();
@@ -61,48 +63,54 @@ int main()
     GameField* gamefield = new GameField();
     ShopField* shopfield = new ShopField(db);
 
+    UIHelper::UpdateTop(AsciiArt::Hero);
     UIHelper::UpdateStatus(player);
 
+    // 상점 선택 루프
     while (1)
     {
-        gamefield->Enter(player);
-        gamefield->ShowLog();
-
         if (gamefield->GetGameIsOver())
         {
             break;
         }
         
-        // 상점 선택 루프
-        while (1)
+        char bSelect;
+        std::string bSelectBuffer = UIHelper::UpdateBotInput("행동을 선택해 주세요 (1 : 전투 2 : 상점 3 : 인벤토리 4 : 장비 관리) " );
+        
+        if (bSelectBuffer.length() != 1) {
+            UIHelper::UpdateBot("잘못된 입력입니다 : 다시 입력해주세요!", 1);
+            continue;
+        }
+
+        bSelect = bSelectBuffer[0];
+
+        switch (bSelect)
         {
-            char bShop;
-            std::string bShopBuffer = UIHelper::UpdateBotInput("상점에서 아이템을 구매하시겠습니까? (y/n) ");
-            
-            if (bShopBuffer.length() != 1) {
-                UIHelper::UpdateBot("잘못된 입력입니다. 다시 입력해주세요", 1);
-                continue;
-            }
-
-            bShop = bShopBuffer[0];
-
-            switch (bShop)
-            {
-            case 'y':
-            case 'Y':
-                shopfield->Enter(player);
-                break;
-            case 'n':
-            case 'N':
-                UIHelper::UpdateBot("상점을 지나쳤다", 0.5);
-                break;
-            default:
-                UIHelper::UpdateBot("잘못된 입력입니다. 다시 입력해주세요", 1);
-                continue;
-            }
+        case '1':
+            gamefield->Enter(player);
+            gamefield->ShowLog();
             break;
-        } 
-    }
+        case '2':
+            shopfield->Enter(player);
+            break;
+        case '3':
+            {
+            player->GetInventory()->ShowInventory();
+            break;
+            }
+        case '4' :
+        {
+            break; 
+        }
+                       
+        default:
+            UIHelper::UpdateBot("잘못된 입력입니다. 다시 입력해주세요", 1);
+            continue;
+        }
+
+        UIHelper::UpdateTop(AsciiArt::Hero);
+        UIHelper::UpdateStatus(player);
+    } 
 
     Sleep(10000);
     delete player;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <iostream>
 #include <string>
 #include <memory>
@@ -41,10 +41,9 @@ public:
     EquipSlot GetSlotFromEquipID(EquipID id) const;
 
     // 능력치 관련
-    int CalcPhysicalDamage(int baseAtk) const;      // STR
+    int CalcDamage(int baseAtk) const;      // STR, INT
     bool TryEvade(int enemyAgi) const;              // AGI
     int  ApplyDamageReduction(int rawDamage) const; // VIT
-    int CalcMagicDamage(int baseMagic) const;       // INT
     bool IsCritical() const;                        // LUK
 
     int RandomInRange(int min, int max);
@@ -57,6 +56,14 @@ public:
     int GetHP() const;
     int GetMaxHP() const;
     int GetATK() const;
+    
+    //stats
+    int GetSTR() const;
+    int GetAGI() const;
+    int GetVIT() const;
+    int GetINT() const;
+    int GetLUK() const;
+    
     int GetGold() const;
     Inventory* GetInventory();
 

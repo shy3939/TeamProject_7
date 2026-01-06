@@ -22,6 +22,7 @@ public:
 
 private:
     void BuyItem(Player* player);
+    void CloseSellUI();
     void SellItem(Player* player);
     void RefreshShop(); // 매번 목록을 새로고침하는 함수
 

@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -70,9 +70,9 @@ bool Player::SpendGold(int amount)
 }
 
 //능력치 처리
-int Player::CalcPhysicalDamage(int baseATK) const //STR
+int Player::CalcDamage(int baseATK) const //STR
 {
-    float rate = 1.0f + str_ * 0.01f;
+    float rate = 1.0f + std::max(str_, int_) * 0.01f;
     return static_cast<int>(baseATK * rate);
 }
 
@@ -82,17 +82,12 @@ bool Player::TryEvade(int MonsterAgi) const //AGI
         return rand() % 100 < 50;
     return false;
 }
+
 int Player::ApplyDamageReduction(int rawDamage) const //VIT
 {
     float rate = vit_ * 0.01f;
     if (rate > 0.5f) rate = 0.5f;
     return static_cast<int>(rawDamage * (1.0f - rate));
-}
-
-int Player::CalcMagicDamage(int baseMagic) const //INT
-{
-    float rate = 1.0f + int_ * 0.01f;
-    return static_cast<int>(baseMagic * rate);
 }
 
 bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
@@ -182,6 +177,11 @@ int Player::GetMaxHP() const { return maxhp_; }
 int Player::GetEXP() const { return exp_;  }
 int Player::GetATK() const { return atk_; }
 int Player::GetGold() const { return gold_; }
+int Player::GetSTR() const { return str_; }
+int Player::GetAGI() const { return agi_; }
+int Player::GetVIT() const { return vit_; }
+int Player::GetINT() const { return int_; }
+int Player::GetLUK() const { return luk_; }
 Inventory* Player::GetInventory() { return inventory_.get(); }
 
 
