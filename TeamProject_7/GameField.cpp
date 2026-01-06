@@ -1,9 +1,12 @@
-// GameField.cpp
+﻿// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "utf.h"
 #include "GameField.h"
 #include "Goblin.h"
+#include "Oak.h"
+#include "Slim.h"
+#include "Dragon.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
 #include "Inventory.h"
@@ -42,11 +45,11 @@ Monster* GameField::CreateRandomMonster(Player& player)
     case 1:
         return new Goblin(player);
     case 2:
-        return new Goblin(player);
+        return new Slim(player);
     case 3:
-        return new Goblin(player);
+        return new Oak(player);
     case 4:
-        return new Goblin(player);
+        return new Dragon(player);
     default:
         return nullptr;
     }
