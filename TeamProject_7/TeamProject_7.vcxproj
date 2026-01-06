@@ -125,6 +125,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Craft.cpp" />
+    <ClCompile Include="Dragon.cpp" />
     <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="GameField.cpp" />
     <ClCompile Include="Goblin.cpp" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClInclude Include="AsciiArt.h" />
     <ClInclude Include="Craft.h" />
+    <ClInclude Include="Dragon.h" />
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameField.h" />

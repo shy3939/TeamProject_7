@@ -1,4 +1,5 @@
 ﻿#include "Oak.h"
+#include "UIHelper.h"
 
 Oak::Oak(const Player& player)
 	: Monster()
@@ -24,7 +25,7 @@ Oak::Oak(const Player& player)
 
 Oak::~Oak()
 {
-	std::cout << "오크(를)을 처치하셨습니다!" << std::endl;
+	UIHelper::UpdateBot("오크를 처치했다!");
 }
 
 void Oak::TakeDamage(int damage_)

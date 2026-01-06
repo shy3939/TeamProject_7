@@ -1,5 +1,5 @@
 ﻿#include "Slim.h"
-#include "ItemEnum.h"
+#include "UIHelper.h"
 
 Slim::Slim(const Player& player)
 	: Monster()
@@ -25,7 +25,7 @@ Slim::Slim(const Player& player)
 
 Slim::~Slim()
 {
-	std::cout << "슬라임(를)을 처치하셨습니다!" << std::endl;
+	UIHelper::UpdateBot("슬라임을 처치했다!");
 }
 
 void Slim::TakeDamage(int damage_)

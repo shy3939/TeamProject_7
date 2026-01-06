@@ -1,5 +1,5 @@
 ﻿#include "Goblin.h"
-#include "ItemEnum.h"
+#include "UIHelper.h"
 
 Goblin::Goblin(const Player& player)
 	: Monster()
@@ -24,7 +24,7 @@ Goblin::Goblin(const Player& player)
 
 Goblin::~Goblin()
 {
-	std::cout << "고블린(를)을 처치하셨습니다!" << std::endl;
+	UIHelper::UpdateBot("고블린을 처치했다!");
 }
 
 void Goblin::TakeDamage(int damage_)

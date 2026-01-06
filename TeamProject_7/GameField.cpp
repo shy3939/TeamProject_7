@@ -1,4 +1,4 @@
-﻿// GameField.cpp
+// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "utf.h"
@@ -6,6 +6,7 @@
 #include "Goblin.h"
 #include "Oak.h"
 #include "Slim.h"
+#include "Dragon.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
 #include "Inventory.h"
@@ -52,6 +53,11 @@ Monster* GameField::CreateRandomMonster(Player& player)
     }
 }
 
+Monster* GameField::CreateBossMonster(Player& player)
+{
+    return new Dragon(player);
+}
+
 void GameField::StartBattle(Player* player)
 {
     Monster* monster = nullptr;
@@ -59,8 +65,9 @@ void GameField::StartBattle(Player* player)
     // 레벨 10이면 보스 등장
     if (BossBattle)
     {
-        std::cout << " 보스 몬스터가 나타났다! " << std::endl;
-        monster = CreateBossMonster();
+        UIHelper::UpdateBot("드래곤이(가) 나타났다! ", 1);
+        monster = CreateBossMonster(*player);
+        UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
     }
     else
     {
@@ -240,51 +247,53 @@ void GameField::Victory(Player* player, Monster* monster)
     {
         GameIsOver = true;
     
+        if (monster->GetName() == "드래곤")
+        KillScore[3]++;
+        
         UIHelper::UpdateBot({
             "*** 축하합니다 "+player->GetName()+ "! ***",
             "당신이 보스를 물리치고 세계를 구했습니다!"
         }, 3);
     }
-    else {
+    else
+    {
         UIHelper::UpdateBot("*** 전투에서 승리했습니다! ***", 3);
-    }
 
-    // 골드와 경험치 보상
-    int goldReward = monster->GetGold();
+        // 골드와 경험치 보상
+        int goldReward = monster->GetGold();
 
-    player->AddGold(goldReward);
-    player->AddExp(50);
+        player->AddGold(goldReward);
+        player->AddExp(50);
     
-    UIHelper::UpdateStatus(player);
-    UIHelper::UpdateBot({
-        "획득 골드: " + std::to_string(goldReward) + " G",
-        "획득 경험치: " + std::to_string(50) + " EXP"
-        }, 1);
+        UIHelper::UpdateStatus(player);
+        UIHelper::UpdateBot({
+            "획득 골드: " + std::to_string(goldReward) + " G",
+            "획득 경험치: " + std::to_string(50) + " EXP"
+            }, 1);
 
-    int NumHealthPotion = rand() % 3;
-    int NumAttackHealthPotion = rand() % 3;
+        int NumHealthPotion = rand() % 3;
+        int NumAttackHealthPotion = rand() % 3;
 
-    // 아이템 보상
-    if (rand() % 100 < 30) 
-    {
-        Inventory* inventory = player->GetInventory();
-        inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, NumHealthPotion);
+        // 아이템 보상
+        if (rand() % 100 < 30) 
+        {
+            Inventory* inventory = player->GetInventory();
+            inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, NumHealthPotion);
+        }
+
+        if (rand() % 100 < 30)
+        {
+            Inventory* inventory = player->GetInventory();
+            inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, NumAttackHealthPotion);
+        }
+
+        if (monster->GetName() == "슬라임")
+            KillScore[0]++;
+        else if (monster->GetName() == "고블린")
+            KillScore[1]++;
+        else if (monster->GetName() == "오크")
+            KillScore[2]++;
     }
-
-    if (rand() % 100 < 30)
-    {
-        Inventory* inventory = player->GetInventory();
-        inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, NumAttackHealthPotion);
-    }
-
-    if (monster->GetName() == "슬라임")
-        KillScore[0]++;
-    else if (monster->GetName() == "고블린")
-        KillScore[1]++;
-    else if (monster->GetName() == "오크")
-        KillScore[2]++;
-    else if (monster->GetName() == "드래곤")
-        KillScore[3]++;
 
 }
 

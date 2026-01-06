@@ -112,7 +112,10 @@ int main()
         UIHelper::UpdateStatus(player);
     } 
 
-    Sleep(10000);
+    
+    UIHelper::UpdateTop(AsciiArt::TITLE[0]);
+    UIHelper::UpdateBot("플레이 해주셔서 감사합니다!", 5);
+
     delete player;
     delete gamefield;
     delete shopfield;
