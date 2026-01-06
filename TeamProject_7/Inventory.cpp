@@ -1,4 +1,4 @@
-﻿#include "Inventory.h"
+#include "Inventory.h"
 #include "PotionItem.h"
 #include "EquipItem.h"
 #include "IngredItem.h"
@@ -8,6 +8,8 @@
 #include "Item.h"
 #include "Player.h"
 #include "UIHelper.h"
+
+
 
 Inventory::Inventory(const ItemDatabase& db)
     : db_(db)
@@ -47,6 +49,12 @@ bool Inventory::IsAvailable(int displaySlot) const
         return false;
     }
     return !slots_[index].IsEmpty();
+}
+
+const Slot& Inventory::GetSlot(int displaySlot) const
+{
+    int index = displaySlot - 1; // 1~30번 입력을 0~29 인덱스로 변환
+    return slots_[index];
 }
 
 int Inventory::FindSameItemSlot(ItemType type, int id) const

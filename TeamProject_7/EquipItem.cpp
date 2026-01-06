@@ -1,4 +1,4 @@
-﻿#include "Item.h"
+#include "Item.h"
 #include "ItemDatabase.h"
 #include "Player.h"
 #include "EquipItem.h"
@@ -7,6 +7,6 @@
 bool EquipItem::Use(Player* player)
 {
     if (!player) return false;
-    player->Equip(eid_);
+    player->Equipment(eid_);
     return true;
 }

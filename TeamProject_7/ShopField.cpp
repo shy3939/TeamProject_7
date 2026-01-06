@@ -3,20 +3,15 @@
 #include "Inventory.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
+#include "ItemDatabase.h"
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <random>
 
-// [1] 생성자: 상점의 기본 아이템 풀(Pool) 설정
-ShopField::ShopField() {
-    // 랜덤 매대에 올라올 후보 아이템들을 등록
-    // (포션류는 고정 판매이므로 여기서 제외하여 중복 등장을 방지)
-    ItemPool.push_back({ "아이템1", 500, 500 });
-    ItemPool.push_back({ "아이템2", 200, 200 });
-    ItemPool.push_back({ "아이템3", 300, 300 });
-    ItemPool.push_back({ "아이템4", 1000, 1000 });
-    ItemPool.push_back({ "아이템5", 1500, 1500 });
+
+ShopField::ShopField(ItemDatabase* db) : dbPtr(db) {
+    // 이제 ItemPool은 사용하지 않고 Database에서 직접 가져옵니다.
 }
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
 void ShopField::Enter(Player* player)
@@ -33,271 +28,185 @@ void ShopField::Enter(Player* player)
 
     while (1)
     {
-        std::string Choice =  UIHelper::UpdateBotInput("[상점 메뉴] : 1. 아이템 구매  2. 아이템 판매 3. 나가기 ");
+        std::string Choice =  UIHelper::UpdateBotInput("[상점 메뉴] : 1. 아이템 구매  2. 아이템 판매 3. 리롤(" + std::to_string(RerollCost) + "G) 4. 나가기 ");
 
-        if (Choice == "1") {
+        if (Choice == "1") 
+        {
             BuyItem(player);
         }
-        else if (Choice == "2") {
+        else if (Choice == "2") 
+        {
             SellItem(player);
         }
-        else if (Choice == "3") {
+        else if (Choice == "3") 
+        {
+            // 리롤 로직
+            if (player->GetGold() >= RerollCost) 
+            {
+                player->SpendGold(RerollCost);
+                RefreshShop();
+                UpdateShopUI(); // 리롤된 정보로 UI 갱신
+                UIHelper::UpdateBot("매대 상품을 갱신했습니다! (-" + std::to_string(RerollCost) + "G)", 1);
+            }
+            else 
+            {
+                UIHelper::UpdateBot("골드가 부족하여 리롤할 수 없습니다!", 1);
+            }
+        }
+        else if (Choice == "4") 
+        {
             UIHelper::UpdateBot("다음에도 살아서 만나요~ ", 1);
             return;
         }
-        else {
+        else 
+        {
             UIHelper::UpdateBot("잘못된 입력입니다 !", 0.5);
         }
+    }
+}
+
+void ShopField::UpdateShopUI() 
+{
+    for (int i = 0; i < 6; ++i) 
+    {
+        if (i < (int)CurrentStock.size()) 
+        {
+            UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
+        }
+    }
+}
+
+void ShopField::RefreshShop()
+{
+    CurrentStock.clear();
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    // 카테고리 분포 (0: 장비, 1: 포션, 2: 재료)
+    std::uniform_int_distribution<int> categoryDist(0, 2);
+    // 가격 변동 분포 (80% ~ 120%)
+    std::uniform_int_distribution<int> priceVar(80, 120);
+
+    // 총 6개의 아이템을 무작위로 추출
+    for (int i = 0; i < 6; ++i) {
+        int cat = categoryDist(g);
+        ShopItem newItem;
+
+        if(cat == 0) { // 장비
+            std::uniform_int_distribution<int> idDist(0, (int)EquipID::SturdyShoes);
+            EquipID rid = static_cast<EquipID>(idDist(g));
+            const auto& data = dbPtr->GetEquipItems(rid)[0];
+            newItem = { data.Name, data.Price, 0, (int)rid, ItemType::Equipment};
+        }
+        else if (cat == 1) { // 포션
+            std::uniform_int_distribution<int> idDist(0, (int)PotionID::ATKPotion);
+            PotionID rid = static_cast<PotionID>(idDist(g));
+            const auto& data = dbPtr->GetPotionItems(rid)[0];
+            newItem = { data.Name, data.Price, 0, (int)rid, ItemType::Potion };
+            }
+        else { // 재료
+                std::uniform_int_distribution<int> idDist(0, (int)IngredID::Whetstone);
+                IngredID rid = static_cast<IngredID>(idDist(g));
+                const auto& data = dbPtr->GetIngredItems(rid)[0];
+                newItem = { data.Name, data.Price, 0, (int)rid, ItemType::Ingredient };
+                }
+
+                newItem.CurrentPrice = static_cast<int>(newItem.BasePrice * (priceVar(g) / 100.0f));
+                CurrentStock.push_back(newItem);
     }
 }
 
 // [5] 아이템 구매 로직: 선택 번호에 따른 인덱스 매핑이 핵심
 void ShopField::BuyItem(Player* player)
 {
-//////////////////////
-    // 1. 구매할 아이템 선택
     if (CurrentStock.empty()) return;
-    
-    std::string strChoice = UIHelper::UpdateBotInput("구매할 아이템 번호를 입력해주세요");
-   
-    // 빈 문자열 체크
-    if (strChoice.empty()) {
-        UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
-        return;
-    }
 
-    // 전체가 숫자인지 체크
-    size_t pos;
-    int Choice = std::stoi(strChoice, &pos);
+    // 1. 번호 선택 입력
+    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1~6)를 입력해주세요");
+    if (strChoice.empty()) return;
 
-    if (pos != strChoice.length()) {
-        UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
-        return;
-    }
-
-    if (Choice == 0) return;
-
-    std::string finalName;
-    int finalPrice = 0;
-    bool isEquipment = false;
-
-    // 번호에 따른 아이템 판별
-    if (Choice == 1) 
-    {   
-        finalName = "체력 포션";
-        finalPrice = HealthPotionPrice;
-    }
-    else if (Choice == 2) 
-    {   
-        finalName = "공격력 포션";
-        finalPrice = AttackPotionPrice;
-    }
-    else if (Choice >= 3 && Choice < 3 + (int)CurrentStock.size()) 
+    int Choice = std::stoi(strChoice);
+    if (Choice < 1 || Choice > 6) 
     {
-        // 3번 이상 선택 시 랜덤 리스트(CurrentStock)에서 인덱스 계산 (선택번호 - 3)
-        ShopItem& selected = CurrentStock[Choice - 3];
-        finalName = selected.Name;
-        finalPrice = selected.CurrentPrice;
-        isEquipment = true; // 3번 이후는 장비 아이템으로 간주
-    }
-    else 
-    {
-        UIHelper::UpdateBot("잘못된 번호 : 구매를 취소합니다 !", 0.5);
+        UIHelper::UpdateBot("잘못된 번호입니다!", 0.5);
         return;
     }
 
-////////////////////
-    // 2. 수량 입력 및 확인
-    int Quantity;
-    if (!isEquipment) {
-        // [포션] 수량을 입력받음
-        std::string strQunatity = UIHelper::UpdateBotInput(finalName + "을(를) 몇 개 구매하시겠습니까?");
+    // 선택된 아이템 정보 참조
+    ShopItem& selected = CurrentStock[Choice - 1];
+    int Quantity = 1;
 
-        // 빈 문자열 체크
-        if (strQunatity.empty()) {
-            UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
-            return;
-        }
-
-        // 전체가 숫자인지 체크
-        size_t pos;
-        Quantity = std::stoi(strQunatity, &pos);
-
-        if (pos != strQunatity.length()) {
-            UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
-
-        if (Quantity <= 0) {
-            UIHelper::UpdateBot("잘못된 수량 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
-    }
-
-    else {
-        // [장비] 단품 구매 확인만 거침
-        char Confirm;
-        std::string strConfirm = UIHelper::UpdateBotInput(finalName + "을(를) 구매하시겠습니까? ( y / n )");
-        
-        if (strConfirm.length() != 1) {
-            UIHelper::UpdateBot("잘못된 입력입니다. 구매를 취소합니다.", 1);
-            return;
-        }
-
-        Confirm = strConfirm[0];
-
-        switch (Confirm)
-        {
-        case 'y':
-        case 'Y':
-            Quantity = 1;
-            break;
-        case 'n':
-        case 'N':
-            UIHelper::UpdateBot("구매를 취소합니다 !", 0.5);
-            return;
-        default:
-            UIHelper::UpdateBot("잘못된 입력 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
-    }
-
-    // 3. 골드 체크 및 결제
-    int TotalPrice = finalPrice * Quantity;
-    if (player->GetGold() < TotalPrice) {
-        UIHelper::UpdateBot("보유 골드가 부족합니다 : 구매를 취소합니다 !", 0.5);
-        return;
-    }
-
-    player->SpendGold(TotalPrice);
-    player->GetInventory()->AddItem(finalName, id, Quantity);
-
-    // 4. 아이템 종류에 따른 출력 문구 차별화
-    if (isEquipment) {
-        UIHelper::UpdateBot("[" + finalName + "]" + " 구매 완료!", 1);
+    // 2. 아이템 타입에 따른 구매 방식 분기
+    if (selected.type != ItemType::Equipment) {
+        std::string strQty = UIHelper::UpdateBotInput(selected.Name + " 몇 개 구매?");
+        if (strQty.empty()) return;
+        Quantity = std::stoi(strQty);
     }
     else {
-        // 소모품(포션): "✅ [아이템이름] [개수]개 구매 완료!"
-        UIHelper::UpdateBot("[" + finalName + "] " + std::to_string(Quantity) +"개 구매 완료!", 1);
+        std::string confirm = UIHelper::UpdateBotInput(selected.Name + " 구매? (y/n)");
+        if (confirm != "y" && confirm != "Y") return;
     }
 
+    if (Quantity <= 0) return;
+
+    int TotalPrice = selected.CurrentPrice * Quantity;
+    if (player->GetGold() >= TotalPrice) {
+        player->SpendGold(TotalPrice);
+        player->GetInventory()->AddItem(selected.type, selected.itemID, Quantity);
+        UIHelper::UpdateBot(selected.Name + " 구매 완료!", 1);
+    }
+    else {
+        UIHelper::UpdateBot("골드가 부족합니다!", 0.7);
+    }
 }
-
 
 void ShopField::SellItem(Player* player)
 {
-    // [1] 사전 검사: 인벤토리 포인터를 가져오고 비어있는지 확인합니다.
-    Inventory* inventory = player->GetInventory();
-
-    // 인벤토리 비어있는지 확인
-    if (inventory->IsEmpty())
-    {
+    Inventory* inv = player->GetInventory();
+    if (inv->IsEmpty()) {
         UIHelper::UpdateBot("판매할 아이템이 없습니다.", 1);
         return;
     }
 
-    UIHelper::UpdateBot("알림 ! : 판매가는 구입가의 60%입니다", 0.7);
+    inv->ShowInventory(); // 현재 인벤토리 출력
 
-    // [2] 마스터 리스트 작성: 상점이 가격 정보를 알고 있는 모든 품목을 모음
-    // 고정 상품(포션)과 랜덤 상품(ItemPool)을 하나의 벡터에 임시로 합침
-    std::vector<ShopItem> AllPossibleItems;
-    
-    // 고정 상품(포션) 정보 추가
-    AllPossibleItems.push_back({ "체력 포션", HealthPotionPrice, HealthPotionPrice });
-    AllPossibleItems.push_back({ "공격력 포션", AttackPotionPrice, AttackPotionPrice });
+    std::string strSlot = UIHelper::UpdateBotInput("판매할 슬롯 번호를 입력하세요 (1~30)");
+    if (strSlot.empty()) return;
 
-    // ItemPool(랜덤 상품 후보군)에 있는 정보들을 추가
-    for (const auto& item : ItemPool)
-    {
-        AllPossibleItems.push_back(item);
-    }
-
-    // [3] 필터링: 플레이어가 실제로 가지고 있는 아이템만 골라냄
-    // 사용자가 입력할 번호(1, 2, 3...)와 실제 아이템 객체를 매핑하기 위해 포인터(*) 벡터를 활용
-    std::vector<ShopItem*> SellableItems;
-
-    for (int i = 0; i < AllPossibleItems.size(); ++i)
-    {
-        // 인벤토리 클래스에 해당 아이템 이름의 개수가 1개 이상인지 확인
-        int count = inventory->GetItemCount(AllPossibleItems[i].Name);
-        if (count > 0)
-        {
-            // 실제 보유 중인 아이템만 판매 가능 목록(SellableItems)에 저장
-            SellableItems.push_back(&AllPossibleItems[i]);
-
-            // 판매가 계산: 기준 가격(BasePrice)의 60%
-            int sellPrice = static_cast<int>(AllPossibleItems[i].BasePrice * 0.6);
-            // 화면에는 1번부터 순차적으로 보이게 출력
-            std::cout << SellableItems.size() << ". " << AllPossibleItems[i].Name
-                << " - " << count << "개 보유 (개당 " << sellPrice << " G)" << std::endl;
-        }
-    }
-    // [4] 예외 처리: 인벤토리에 아이템은 있지만, 상점에서 안 사는 물건만 있을 경우
-    if (SellableItems.empty())
-    {
-        std::cout << "상점에서 매입하는 아이템을 보유하고 있지 않습니다." << std::endl;
+    int displaySlot = std::stoi(strSlot);
+    if (!inv->IsAvailable(displaySlot)) {
+        UIHelper::UpdateBot("해당 슬롯이 비어있습니다.", 0.7);
         return;
     }
 
-    std::cout << "0. 취소" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "판매할 아이템 번호: ";
+    // [ID 역추적] 슬롯 정보를 통해 DB에서 가격 조회
+    const Slot& targetSlot = inv->GetSlot(displaySlot);
+    int basePrice = 0;
+    std::string itemName = "";
 
-    // [5] 입력 처리: 어떤 아이템을 팔지 결정
-    int Choice;
-    if (!(std::cin >> Choice) || Choice == 0) return; // 입력 오류 및 취소 처리
-
-    if (Choice < 1 || Choice >(int)SellableItems.size())
-    {
-        std::cout << "잘못된 선택입니다." << std::endl;
-        return;
+    // 타입에 맞는 DB 호출 (EquipID 등으로 형변환)
+    if (targetSlot.type == ItemType::Equipment) {
+        const auto& data = dbPtr->GetEquipItems(static_cast<EquipID>(targetSlot.id))[0];
+        basePrice = data.Price; itemName = data.Name;
+    }
+    else if (targetSlot.type == ItemType::Potion) {
+        const auto& data = dbPtr->GetPotionItems(static_cast<PotionID>(targetSlot.id))[0];
+        basePrice = data.Price; itemName = data.Name;
+    }
+    else if (targetSlot.type == ItemType::Ingredient) {
+        const auto& data = dbPtr->GetIngredItems(static_cast<IngredID>(targetSlot.id))[0];
+        basePrice = data.Price; itemName = data.Name;
     }
 
-    // [6] 정보 추출: 선택한 아이템의 포인터를 통해 이름과 원가를 가져옴
-    ShopItem* selected = SellableItems[Choice - 1];
-    int ownedCount = inventory->GetItemCount(selected->Name);
-    int sellPricePerOne = static_cast<int>(selected->BasePrice * 0.6);
+    // 최종 판매 수량 확인 및 정산
+    std::string strQty = UIHelper::UpdateBotInput(itemName + " 몇 개 판매? (보유:" + std::to_string(targetSlot.count) + ")");
+    int sellQty = std::stoi(strQty);
 
-    // [7] 수량 결정: 팔고자 하는 개수를 입력받고 보유 수량을 넘지 않는지 체크
-    std::cout << selected->Name << "을(를) 몇 개 판매하시겠습니까? (보유: " << ownedCount << "개): ";
-    int Quantity;
-    std::cin >> Quantity;
-
-    if (Quantity <= 0 || Quantity > ownedCount)
-    {
-        std::cout << "수량이 올바르지 않습니다." << std::endl;
-        return;
+    if (sellQty > 0 && sellQty <= targetSlot.count) {
+        int reward = static_cast<int>(basePrice * 0.6) * sellQty;
+        inv->RemoveItem(targetSlot.type, targetSlot.id, sellQty);
+        player->AddGold(reward);
+        UIHelper::UpdateBot(itemName + " 판매 완료! +" + std::to_string(reward) + "G", 1);
     }
-    // [8] 최종 정산: 인벤토리에서 제거하고 플레이어에게 골드를 지급
-    int TotalGold = sellPricePerOne * Quantity;
-    inventory->RemoveItem(selected->Name, Quantity); // 인벤토리 데이터 갱신
-    player->AddGold(TotalGold);                      // 플레이어 재화 갱신
-
-    std::cout << "✅ " << selected->Name << " " << Quantity << "개 판매 완료!" << std::endl;
-    std::cout << "💰 획득 골드: " << TotalGold << " G" << std::endl;
 }
 
-void ShopField::RefreshShop()
-{
-    // 1. 현재 진열대 비우기
-    CurrentStock.clear(); 
-
-    // 2. 랜덤 엔진 설정
-    std::random_device rd;
-    std::mt19937 g(rd());
-
-    // 3. 전체 목록을 무작위로 섞기
-    std::shuffle(ItemPool.begin(), ItemPool.end(), g);
-
-    // 4. 섞인 목록의 앞부분에서 MaxDisplayCount만큼 가져오기
-    for (int i = 0; i < MaxDisplayCount && i < ItemPool.size(); ++i) 
-    {
-        ShopItem item = ItemPool[i];
-
-        // 5. 가격 랜덤화 (예: 80% ~ 120% 사이)
-        float ratio = (80 + (rand() % 41)) / 100.0f;
-        item.CurrentPrice = static_cast<int>(item.BasePrice * ratio);
-
-        CurrentStock.push_back(item);
-    }
-}

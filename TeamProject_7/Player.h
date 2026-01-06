@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <iostream>
 #include <string>
 #include <memory>
@@ -36,7 +36,7 @@ public:
     bool SpendGold(int amount);
 
     // 장비 관련
-    void Equip(EquipID id);
+    void Equipment(EquipID id);
     void Unequip(EquipSlot slot);
     EquipSlot GetSlotFromEquipID(EquipID id) const;
 

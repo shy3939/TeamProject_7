@@ -1,4 +1,4 @@
-﻿#include "Player.h"
+#include "Player.h"
 #include "Inventory.h"
 #include <iostream>
 
@@ -99,7 +99,7 @@ bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
 
 
 // 장비
-void Player::Equip(EquipID id)
+void Player::Equipment(EquipID id)
 {
     const auto& equipList = db_.GetEquipItems(id);
     if (equipList.empty()) return;

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <memory>
 #include <vector>
 #include <map>
@@ -58,6 +58,7 @@ public:
 
     void ShowInventory() const;
 
+    const Slot& GetSlot(int displaySlot) const;
 private:
     static const int MAX_SLOT = 30;
 
