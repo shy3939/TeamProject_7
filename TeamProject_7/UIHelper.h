@@ -20,4 +20,5 @@ namespace UIHelper {
     void PlayFireEffect(const float delaySec = 0.5f);
     void PlayHeroDeathEffect(const float delaySec = 0.15f);
     void PlayMonsterDeathEffect(const float delaySec = 0.15f);
+    void AddToShopList(const std::string& message, const std::string& price, int ShopSlot);
 }

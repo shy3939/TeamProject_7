@@ -1,4 +1,4 @@
-﻿#include <windows.h>
+#include <windows.h>
 #include "utf.h"
 #include "Player.h"
 #include "GameField.h"
@@ -74,8 +74,14 @@ int main()
         while (1)
         {
             char bShop;
-            std::cout << " 상점에서 아이템을 구매하시겠습니까? (y/n) " << std::endl;
-            std::cin >>bShop;
+            std::string bShopBuffer = UIHelper::UpdateBotInput("상점에서 아이템을 구매하시겠습니까? (y/n) ");
+            
+            if (bShopBuffer.length() != 1) {
+                UIHelper::UpdateBot("잘못된 입력입니다. 다시 입력해주세요", 1);
+                continue;
+            }
+
+            bShop = bShopBuffer[0];
 
             switch (bShop)
             {
@@ -85,10 +91,10 @@ int main()
                 break;
             case 'n':
             case 'N':
-                std::cout << " 상점을 지나쳤다 " << std::endl;
+                UIHelper::UpdateBot("상점을 지나쳤다", 0.5);
                 break;
             default:
-                std::cout << " 잘못된 입력입니다. 다시 입력해주세요 " << std::endl;
+                UIHelper::UpdateBot("잘못된 입력입니다. 다시 입력해주세요", 1);
                 continue;
             }
             break;
