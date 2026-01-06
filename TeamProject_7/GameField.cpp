@@ -1,4 +1,4 @@
-// GameField.cpp
+﻿// GameField.cpp
 #include <cstdlib>
 #include <iostream>
 #include "utf.h"
@@ -84,7 +84,7 @@ void GameField::StartBattle(Player* player)
     
     // 턴 기반 전투
     while (1)
-    {         
+    {
         // 플레이어 턴
         ProcessPlayerTurn(player, monster);
         UIHelper::UpdateStatus(player);
@@ -125,6 +125,7 @@ void GameField::StartBattle(Player* player)
         }
 
         delete monster;
+    }
 }
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
