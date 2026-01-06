@@ -38,13 +38,13 @@ struct PotionData : ItemBaseData
 		const std::string& name_,
 		int price_,
 		int hp_,
-		int mp_)
+		int atk_)
 		: ItemBaseData{name_, price_},
 		PlusHP(hp_),
-		PlusMP(mp_)
+		PlusATK(atk_)
 	{}
 	int PlusHP;
-	int PlusMP;
+	int PlusATK;
 };
 
 struct IngredData : ItemBaseData

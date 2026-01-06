@@ -126,24 +126,28 @@
   <ItemGroup>
     <ClCompile Include="BossMonster.cpp" />
     <ClCompile Include="Craft.cpp" />
+    <ClCompile Include="EquipItem.cpp" />
     <ClCompile Include="GameField.cpp" />
     <ClCompile Include="Goblin.cpp" />
     <ClCompile Include="Inventory.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemDatabase.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PotionItem.cpp" />
     <ClCompile Include="RecipeDatabase.cpp" />
     <ClCompile Include="ShopField.cpp" />
     <ClCompile Include="UIHelper.cpp" />
     <ClCompile Include="utf.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AsciiArt.h" />
     <ClInclude Include="BossMonster.h" />
+    <ClInclude Include="EquipItem.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameField.h" />
     <ClInclude Include="Goblin.h" />
+    <ClInclude Include="IngredItem.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemData.h" />
@@ -151,6 +155,7 @@
     <ClInclude Include="ItemEnum.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PotionItem.h" />
     <ClInclude Include="Recipe.h" />
     <ClInclude Include="RecipeDatabase.h" />
     <ClInclude Include="ShopField.h" />

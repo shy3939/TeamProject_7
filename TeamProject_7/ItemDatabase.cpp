@@ -105,9 +105,14 @@ static std::map<EquipID, std::vector<EquipData>> EquipDB = {
 };
 
 static std::map<PotionID, std::vector<PotionData>> PotionDB = {
-    { PotionID::HPPotion, { PotionData("하급 HP 포션", 10, 30, 0), PotionData("중급 HP 포션", 50, 100, 0) }},
-    { PotionID::MPPotion, { PotionData("하급 MP 포션", 15, 0, 20), PotionData("중급 MP 포션", 60, 0, 80) }},
-    { PotionID::ATKPotion, { PotionData("힘의 비약", 100, 0, 0) }}
+    { PotionID::HPPotion, { 
+        PotionData("하급 HP 포션", 10, 30, 0), 
+        PotionData("중급 HP 포션", 30, 100, 0) 
+}},
+    { PotionID::ATKPotion, { 
+        PotionData("하급 힘의 비약", 10, 0, 10), 
+        PotionData("중급 힘의 비약", 30, 0, 30) 
+}}
 };
 
 static std::map<IngredID, std::vector<IngredData>> IngredDB = {

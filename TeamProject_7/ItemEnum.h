@@ -2,6 +2,7 @@
 
 enum class ItemType
 {
+	None,			// 인벤토리 비어있는 칸
 	Equipment,
 	Potion,
 	Ingredient

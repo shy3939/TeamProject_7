@@ -3,17 +3,26 @@
 #include <iostream>
 
 // 이름 포함 생성자
-Player::Player(const std::string& Name)
-    : name_(Name), level_(1), hp_(200), maxhp_(200), atk_(30), exp_(0), gold_(0), str_(RandomInRange(10, 50)), agi_(RandomInRange(1, 10)), vit_(RandomInRange(10, 100)), int_(RandomInRange(10, 30)), luk_(RandomInRange(0, 40))
-{
-    inventory_ = new Inventory();
-}
+Player::Player(const std::string& Name, const ItemDatabase& db)
+    : name_(Name),
+    level_(1),
+    hp_(200),
+    maxhp_(200),
+    atk_(30),
+    exp_(0),
+    gold_(0),
+    str_(RandomInRange(10, 50)),
+    agi_(RandomInRange(1, 10)),
+    vit_(RandomInRange(10, 100)),
+    int_(RandomInRange(10, 30)),
+    luk_(RandomInRange(0, 40)),
+    db_(db),
+    inventory_(std::make_unique<Inventory>(db))
+{}
 
 // 소멸자
 Player::~Player()
-{
-    delete inventory_;
-}
+{}
 
 // 경험치 증가
 void Player::GainExperience(int amount)
@@ -89,6 +98,66 @@ int Player::CalcMagicDamage(int baseMagic) const //INT
 bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
 
 
+// 장비
+void Player::Equip(EquipID id)
+{
+    const auto& equipList = db_.GetEquipItems(id);
+    const auto& data = equipList[0];
+
+    EquipSlot slot = data.slot;
+
+    // 기존 장비 해제
+    Unequip(slot);
+
+    // 장착
+    switch (slot)
+    {
+    case EquipSlot::Weapon: equipped_.weapon = id; break;
+    case EquipSlot::Armor:  equipped_.armor = id; break;
+    case EquipSlot::Gloves: equipped_.gloves = id; break;
+    case EquipSlot::Shoes:  equipped_.shoes = id; break;
+    }
+
+    AddStat(
+        data.BonusSTR,
+        data.BonusAGI,
+        data.BonusVIT,
+        data.BonusINT,
+        data.BonusLUK
+    );
+    std::cout << data.Name << " 장착 완료" << std::endl;
+}
+
+void Player::Unequip(EquipSlot slot)
+{
+    EquipID id = EquipID::None;
+
+    switch (slot)
+    {
+    case EquipSlot::Weapon: id = equipped_.weapon; equipped_.weapon = EquipID::None; break;
+    case EquipSlot::Armor:  id = equipped_.armor;  equipped_.armor = EquipID::None; break;
+    case EquipSlot::Gloves: id = equipped_.gloves; equipped_.gloves = EquipID::None; break;
+    case EquipSlot::Shoes:  id = equipped_.shoes;  equipped_.shoes = EquipID::None; break;
+    }
+
+    if (id == EquipID::None)
+        return;
+
+    const auto& data = db_.GetEquipItems(id)[0];
+
+    AddStat(
+        -data.BonusSTR,
+        -data.BonusAGI,
+        -data.BonusVIT,
+        -data.BonusINT,
+        -data.BonusLUK
+    );
+
+    std::cout << data.Name << " 장착 해제" << std::endl;
+}
+
+
+
 
 
 // 게터
@@ -99,7 +168,7 @@ int Player::GetMaxHP() const { return maxhp_; }
 int Player::GetEXP() const { return exp_;  }
 int Player::GetATK() const { return atk_; }
 int Player::GetGold() const { return gold_; }
-Inventory* Player::GetInventory() { return inventory_; }
+Inventory* Player::GetInventory() { return inventory_.get(); }
 
 
 // 세터
@@ -119,4 +188,23 @@ void Player::ShowStatus() const
         << ", Attack: " << atk_
         << ", Experience: " << exp_
         << ", Gold: " << gold_ << std::endl;
+}
+
+void Player::ShowEquipments() const
+{
+    std::cout << "[장착 장비]" << std::endl;
+    std::cout << "Weapon: " << (int)equipped_.weapon << std::endl;
+    std::cout << "Armor : " << (int)equipped_.armor << std::endl;
+    std::cout << "Gloves: " << (int)equipped_.gloves << std::endl;
+    std::cout << "Shoes : " << (int)equipped_.shoes << std::endl;
+}
+
+
+void Player::AddStat(int str, int agi, int vit, int intel, int luk)
+{
+    str_ += str;
+    agi_ += agi;
+    vit_ += vit;
+    int_ += intel;
+    luk_ += luk;
 }
