@@ -19,6 +19,7 @@ enum class EquipSlot
 
 enum class EquipID
 {
+	None,
 	// --- 검 ---
 	RustySword,
 	NormalSword,

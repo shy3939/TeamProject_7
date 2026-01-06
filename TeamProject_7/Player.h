@@ -3,6 +3,7 @@
 #include <string>
 #include <memory>
 #include "ItemDatabase.h"
+#include "ItemEnum.h"
 
 class Inventory;
 
@@ -68,7 +69,7 @@ public:
 
     // 상태 출력
     void ShowStatus() const;
-    void Player::ShowEquipments() const;
+    void ShowEquipments() const;
 
 private:
     std::string name_;
