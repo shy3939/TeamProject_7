@@ -1,6 +1,8 @@
 ﻿#include "Player.h"
 #include "Inventory.h"
+#include <string>
 #include <iostream>
+#include "UIHelper.h"
 
 // 이름 포함 생성자
 Player::Player(const std::string& Name, const ItemDatabase& db)
@@ -97,11 +99,13 @@ bool Player::IsCritical() const { return rand() % 100 < luk_; } //LUK
 // 장비
 void Player::Equip(EquipID id)
 {
+    Inventory* inv = nullptr;
     const auto& equipList = db_.GetEquipItems(id);
     if (equipList.empty()) return;
     const auto& data = equipList[0];
 
     EquipSlot slot = GetSlotFromEquipID(id);
+    EquipID oldEquip = EquipID::None;
 
     // 기존 장비 해제
     Unequip(slot);
@@ -109,10 +113,27 @@ void Player::Equip(EquipID id)
     // 장착
     switch (slot)
     {
-    case EquipSlot::Weapon: equipped_.weapon = id; break;
-    case EquipSlot::Armor:  equipped_.armor = id; break;
-    case EquipSlot::Gloves: equipped_.gloves = id; break;
-    case EquipSlot::Shoes:  equipped_.shoes = id; break;
+    case EquipSlot::Weapon:
+        oldEquip = equipped_.weapon;
+        equipped_.weapon = id; 
+        break;
+    case EquipSlot::Armor:  
+        oldEquip = equipped_.armor;
+        equipped_.armor = id; 
+        break;
+    case EquipSlot::Gloves: 
+        oldEquip = equipped_.gloves;
+        equipped_.gloves = id; 
+        break;
+    case EquipSlot::Shoes:  
+        oldEquip = equipped_.shoes;
+        equipped_.shoes = id; 
+        break;
+    }
+    
+    if (oldEquip != EquipID::None)
+    {
+        inv->AddItem(ItemType::Equipment, (int)id, 1);
     }
 
     AddStat(
@@ -129,14 +150,27 @@ void Player::Equip(EquipID id)
 
 void Player::Unequip(EquipSlot slot)
 {
+    Inventory* inv = nullptr;
     EquipID id = EquipID::None;
 
     switch (slot)
     {
-    case EquipSlot::Weapon: id = equipped_.weapon; equipped_.weapon = EquipID::None; break;
-    case EquipSlot::Armor:  id = equipped_.armor;  equipped_.armor = EquipID::None; break;
-    case EquipSlot::Gloves: id = equipped_.gloves; equipped_.gloves = EquipID::None; break;
-    case EquipSlot::Shoes:  id = equipped_.shoes;  equipped_.shoes = EquipID::None; break;
+    case EquipSlot::Weapon:
+        id = equipped_.weapon; 
+        equipped_.weapon = EquipID::None; 
+        break;
+    case EquipSlot::Armor:  
+        id = equipped_.armor;  
+        equipped_.armor = EquipID::None; 
+        break;
+    case EquipSlot::Gloves: 
+        id = equipped_.gloves; 
+        equipped_.gloves = EquipID::None; 
+        break;
+    case EquipSlot::Shoes:  
+        id = equipped_.shoes;  
+        equipped_.shoes = EquipID::None; 
+        break;
     }
 
     if (id == EquipID::None)
@@ -222,11 +256,11 @@ void Player::ShowStatus() const
 
 void Player::ShowEquipments() const
 {
-    std::cout << "[장착 장비]" << std::endl;
-    std::cout << "Weapon: " << (int)equipped_.weapon << std::endl;
-    std::cout << "Armor : " << (int)equipped_.armor << std::endl;
-    std::cout << "Gloves: " << (int)equipped_.gloves << std::endl;
-    std::cout << "Shoes : " << (int)equipped_.shoes << std::endl;
+    UIHelper::UpdateBot("[장착 장비]", 1);
+    UIHelper::UpdateBot("Weapon: " + std::to_string((int)equipped_.weapon), 1);
+    UIHelper::UpdateBot("Armor: " + std::to_string((int)equipped_.armor), 1);
+    UIHelper::UpdateBot("Gloves: " + std::to_string((int)equipped_.gloves), 1);
+    UIHelper::UpdateBot("Shoes: " + std::to_string((int)equipped_.shoes), 1);
 }
 
 

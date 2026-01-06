@@ -38,6 +38,10 @@ struct ItemKey
             return type < other.type;
         return id < other.id;
     }
+    bool operator==(const ItemKey& other) const
+    {
+        return type == other.type && id == other.id;
+    }
 };
 
 class Inventory
