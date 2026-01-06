@@ -1,8 +1,9 @@
 ﻿#include "Dragon.h"
+
 Dragon::Dragon(const Player& player)
 	: Monster()
 {
-	name_ = "드래곤";
+	name_ = "(Boss)드래곤";
 	InitRandom();
 
 	int Level = player.GetLevel();
@@ -43,13 +44,13 @@ void Dragon::TakeDamage(int damage_)
 
 void Dragon::InitRandom()
 {
-	rmaxhp_ = RandomInRange(20, 30);
-	ratk_ = RandomInRange(5, 10);
-	rgold_ = RandomInRange(10, 20);
-	rstr_ = RandomInRange(10, 30);
-	ragi_ = RandomInRange(1, 10);
-	rvit_ = RandomInRange(0, 100);
-	rint_ = RandomInRange(10, 30);
+	rmaxhp_ = RandomInRange(20, 45);
+	ratk_ = RandomInRange(5, 15);
+	rgold_ = RandomInRange(10, 30);
+	rstr_ = RandomInRange(10, 45);
+	ragi_ = RandomInRange(1, 15);
+	rvit_ = RandomInRange(0, 99);
+	rint_ = RandomInRange(10, 45);
 	rluk_ = RandomInRange(0, 40);
 }
 
