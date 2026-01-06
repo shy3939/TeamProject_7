@@ -51,7 +51,10 @@ ShopField::ShopField(const ItemDatabase& db) : m_DB(db) {
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
 void ShopField::Enter(Player* player)
 {
-    RefreshShop(); 
+    if (CurrentStock.empty())
+    {
+        RefreshShop();
+    }
     // 상점 입장 시마다 아이템 구성을 새로고침
     
     // UI 상단부에 아이템 정보 삽입
@@ -100,22 +103,33 @@ void ShopField::BuyItem(Player* player)
 {
 //////////////////////
     // 1. 구매할 아이템 선택
-    if (CurrentStock.empty()) return;
+    if (CurrentStock.empty()) 
+    {
+        UIHelper::UpdateBot("현재 매대가 비어있습니다!", 0.5);
+        return;
+    }
     
-    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1 ~ 6) 입력 (0: 취소)");
+    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1 ~" + std::to_string(CurrentStock.size()) + ") 입력");
    
     // 빈 문자열 체크
-    if (strChoice.empty()) {
+    if (strChoice.empty()) 
+    {
         UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
         return;
     }
 
     // 전체가 숫자인지 체크
     size_t pos;
-    int Choice = std::stoi(strChoice, &pos);
+    int Choice;
+    try 
+    {
+        Choice = std::stoi(strChoice, &pos);
+    }
+    catch (...) { return; }
 
-    if (pos != strChoice.length()) {
-        UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
+    if (Choice < 1 || Choice >(int)CurrentStock.size())
+    {
+        UIHelper::UpdateBot("해당 번호의 상품이 없습니다! (현재 " + std::to_string(CurrentStock.size()) + "번까지 존재)", 0.7);
         return;
     }
 
@@ -148,6 +162,12 @@ void ShopField::BuyItem(Player* player)
     player->SpendGold(TotalPrice);
     player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
     UIHelper::UpdateStatus(player);
+    std::string boughtItemName = selected.Name;
+
+    CurrentStock.erase(CurrentStock.begin() + (Choice - 1));
+
+    UpdateShopUI();
+
     UIHelper::UpdateBot(selected.Name + " 구매 완료!", 1);
 }
 void ShopField::CloseSellUI()
