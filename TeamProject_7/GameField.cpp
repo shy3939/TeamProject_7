@@ -81,7 +81,7 @@ void GameField::StartBattle(Player* player)
 
     UIHelper::UpdateBot(monster->GetName() + "이(가) 나타났다! ", 1);
     }
-    
+
     // 턴 기반 전투
     while (1)
     {
@@ -96,36 +96,20 @@ void GameField::StartBattle(Player* player)
             break;
         }
 
+        // 몬스터 턴
+        ProcessMonsterTurn(player, monster);
+        UIHelper::UpdateStatus(player);
 
-        // 턴 기반 전투
-        while (1)
+        // 플레이어 사망 체크
+        if (player->GetHP() <= 0)
         {
-            // 플레이어 턴
-            ProcessPlayerTurn(player, monster);
-            UIHelper::UpdateStatus(player);
 
-            // 몬스터 사망 체크
-            if (monster->GetHP() <= 0)
-            {
-                Victory(player, monster);
-                break;
-            }
-
-            // 몬스터 턴
-            ProcessMonsterTurn(player, monster);
-            UIHelper::UpdateStatus(player);
-
-            // 플레이어 사망 체크
-            if (player->GetHP() <= 0)
-            {
-
-                Defeat(player);
-                break;
-            }
+            Defeat(player);
+            break;
         }
-
-        delete monster;
     }
+
+    delete monster;
 }
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
