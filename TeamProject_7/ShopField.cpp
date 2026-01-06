@@ -33,6 +33,19 @@ ShopField::ShopField(const ItemDatabase& db) : m_DB(db) {
             equipData.Price
         });
     }
+    std::vector<PotionID> shopPotions = { PotionID::HPPotion, PotionID::ATKPotion };
+    for (PotionID pid : shopPotions) {
+        const auto& variations = m_DB.GetPotionItems(pid);
+        for (const auto& potionData : variations) {
+            ItemPool.push_back({
+                potionData.Name,
+                ItemType::Potion,
+                (int)pid,
+                potionData.Price,
+                potionData.Price
+                });
+        }
+    }
 }
 
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
@@ -43,9 +56,7 @@ void ShopField::Enter(Player* player)
     
     // UI 상단부에 아이템 정보 삽입
     UIHelper::UpdateTop(AsciiArt::ShopBackGround);
-    for (int i = 0; i < 6; ++i) {
-        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice) , i);
-    }
+    UpdateShopUI();
     UIHelper::UpdateBot("  상점에 입장했습니다! " , 1);
 
     while (1)
@@ -64,6 +75,7 @@ void ShopField::Enter(Player* player)
             if (player->GetGold() >= RerollCost)
             {
                 player->SpendGold(RerollCost);
+                UIHelper::UpdateStatus(player);
                 RefreshShop();
                 UpdateShopUI(); // 리롤된 정보로 UI 갱신
                 UIHelper::UpdateBot("매대 상품을 갱신했습니다! (-" + std::to_string(RerollCost) + "G)", 1);
@@ -90,7 +102,7 @@ void ShopField::BuyItem(Player* player)
     // 1. 구매할 아이템 선택
     if (CurrentStock.empty()) return;
     
-    std::string strChoice = UIHelper::UpdateBotInput("구매할 아이템 번호를 입력해주세요");
+    std::string strChoice = UIHelper::UpdateBotInput("구매할 번호(1 ~ 6) 입력 (0: 취소)");
    
     // 빈 문자열 체크
     if (strChoice.empty()) {
@@ -109,106 +121,34 @@ void ShopField::BuyItem(Player* player)
 
     if (Choice == 0) return;
 
-    std::string finalName;
-    int finalPrice = 0;
-    bool isEquipment = false;
-
     
-    // 번호에 따른 아이템 판별
-    if (Choice == 1 || Choice == 2) 
-    {   
-        isEquipment = false;
-    }
-    else if (Choice >= 3 && Choice <= CurrentStock.size())
+    ShopItem & selected = CurrentStock[Choice - 1];
+    bool isEquipment = (selected.ItemType == ItemType::Equipment); // 변수명이 ItemType인지 type인지 확인 필요
 
-    {
-        isEquipment = true; // 3번 이후는 장비 아이템으로 간주
-    }
-    else 
-    {
-        UIHelper::UpdateBot("잘못된 번호 : 구매를 취소합니다 !", 0.5);
-        return;
-    }
-
-    ShopItem& selected = CurrentStock[Choice - 1];
-    finalName = selected.Name;
-    finalPrice = selected.CurrentPrice;
-
-////////////////////
-    // 2. 수량 입력 및 확인
-    int Quantity;
-    if (!isEquipment) {
-        // [포션] 수량을 입력받음
-        std::string strQunatity = UIHelper::UpdateBotInput(finalName + "을(를) 몇 개 구매하시겠습니까?");
-
-        // 빈 문자열 체크
-        if (strQunatity.empty()) {
-            UIHelper::UpdateBot("숫자를 입력해주세요 : 구매를 취소합니다!", 0.5);
-            return;
+    int Quantity = 1;
+    if (!isEquipment) { // 포션인 경우
+        std::string strQ = UIHelper::UpdateBotInput(selected.Name + "을(를) 몇 개 구매하시겠습니까?");
+        try {
+            Quantity = std::stoi(strQ);
         }
-
-        // 전체가 숫자인지 체크
-        size_t pos;
-        Quantity = std::stoi(strQunatity, &pos);
-
-        if (pos != strQunatity.length()) {
-            UIHelper::UpdateBot("숫자만 입력해주세요 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
-
-        if (Quantity <= 0) {
-            UIHelper::UpdateBot("잘못된 수량 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
+        catch (...) { return; }
+        if (Quantity <= 0) return;
+    }
+    else { // 장비인 경우
+        std::string strC = UIHelper::UpdateBotInput(selected.Name + " 구매? (y/n)");
+        if (strC != "y" && strC != "Y") return;
     }
 
-    else {
-        // [장비] 단품 구매 확인만 거침
-        char Confirm;
-        std::string strConfirm = UIHelper::UpdateBotInput(finalName + "을(를) 구매하시겠습니까? ( y / n )");
-        
-        if (strConfirm.length() != 1) {
-            UIHelper::UpdateBot("잘못된 입력입니다. 구매를 취소합니다.", 1);
-            return;
-        }
-    
-        Confirm = strConfirm[0];
-    
-        switch (Confirm)
-        {
-        case 'y':
-        case 'Y':
-            Quantity = 1;
-            break;
-        case 'n':
-        case 'N':
-            UIHelper::UpdateBot("구매를 취소합니다 !", 0.5);
-            return;
-        default:
-            UIHelper::UpdateBot("잘못된 입력 : 구매를 취소합니다 !", 0.5);
-            return;
-        }
-    }
-
-    // 3. 골드 체크 및 결제
-    int TotalPrice = finalPrice * Quantity;
+    int TotalPrice = selected.CurrentPrice * Quantity;
     if (player->GetGold() < TotalPrice) {
-        UIHelper::UpdateBot("보유 골드가 부족합니다 : 구매를 취소합니다 !", 0.5);
+        UIHelper::UpdateBot("골드 부족!", 0.5);
         return;
     }
 
     player->SpendGold(TotalPrice);
     player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
     UIHelper::UpdateStatus(player);
-
-    // 4. 아이템 종류에 따른 출력 문구 차별화
-    if (isEquipment) {
-        UIHelper::UpdateBot("[" + finalName + "]" + " 구매 완료!", 1);
-    }
-    else {
-        // 소모품(포션): "✅ [아이템이름] [개수]개 구매 완료!"
-        UIHelper::UpdateBot("[" + finalName + "] " + std::to_string(Quantity) +"개 구매 완료!", 1);
-    }
+    UIHelper::UpdateBot(selected.Name + " 구매 완료!", 1);
 }
 void ShopField::CloseSellUI()
 {
@@ -372,14 +312,10 @@ void ShopField::RefreshShop()
     // 1. 현재 진열대 비우기
     CurrentStock.clear();
 
-    // 2. 고정 아이템 (포션) 추가 - 1번, 2번 슬롯
-    CurrentStock.push_back({ "체력 포션", ItemType::Potion, (int)PotionID::HPPotion, HealthPotionPrice, HealthPotionPrice });
-    CurrentStock.push_back({ "공격력 포션", ItemType::Potion, (int)PotionID::ATKPotion, AttackPotionPrice, AttackPotionPrice });
-
     // 3. 랜덤 엔진 설정
     std::random_device rd;
     std::mt19937 g(rd());
-
+    std::vector<ShopItem> TempPool = ItemPool;
     // 4. 전체 목록을 무작위로 섞기
     std::shuffle(ItemPool.begin(), ItemPool.end(), g);
 
@@ -398,11 +334,9 @@ void ShopField::RefreshShop()
 
 void ShopField::UpdateShopUI()
 {
-    for (int i = 0; i < 6; ++i)
+    UIHelper::UpdateTop(AsciiArt::ShopBackGround);
+    for (int i = 0; i < (int)CurrentStock.size(); ++i) 
     {
-        if (i < (int)CurrentStock.size())
-        {
-            UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
-        }
+        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
     }
 }
