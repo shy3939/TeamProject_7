@@ -106,7 +106,9 @@ namespace UIHelper {
         SetCursor(0, MID_Y + 1);
         std::cout << " HP: " << player->GetHP() << " / " << player->GetMaxHP();
         SetCursor(0, MID_Y + 2);
-        std::cout << " ATK: " << player->GetATK() << "  LV: " << player->GetLevel() << "  Gold: " << player->GetGold();
+        std::cout << "  LV: " << player->GetLevel() << " ATK: " << player->GetATK()  << "  Gold: " << player->GetGold();
+        SetCursor(0, MID_Y + 3);
+        std::cout << " STR: " << player->GetSTR() << " AGI: " << player->GetAGI() << " VIT: " << player->GetVIT() << " INT: " << player->GetINT() << " LUK: " << player->GetLUK();
     }
 
     void UpdateBot(const std::string& message, const float sleepSec) {

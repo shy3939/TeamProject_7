@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <memory>
 #include <vector>
 #include <map>
@@ -53,7 +53,7 @@ public:
     int GetItemCount(ItemType type, int id) const;
     void ShowInventory() const;
     int FindSameItemSlot(ItemType type, int id) const;
-    
+    int GetSize() const;
 private:
     static const int MAX_SLOT = 30;
 
