@@ -31,8 +31,6 @@ public:
 
 	int RandomInRange(int min, int max);
 
-	Monster* CreateRandomMonster(Player& player);
-
 
 protected:
 	std::string name_;

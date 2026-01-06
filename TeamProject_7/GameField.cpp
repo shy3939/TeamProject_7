@@ -62,13 +62,13 @@ void GameField::StartBattle(Player* player)
     monster = CreateRandomMonster(*player);
     std::cout << monster->GetName() << "이(가) 나타났다! " << std::endl;
     //}
+    
+    //플레이어 상태 확인 (player에서 구현됐나 확인)
+    player->ShowStatus();
 
     // 턴 기반 전투
     while (1)
     {         
-        //플레이어 상태 확인 (player에서 구현됐나 확인)
-        player->ShowStatus();
-
         // 플레이어 턴
         ProcessPlayerTurn(player, monster);
 
@@ -117,6 +117,7 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     std::cout << monster->GetName() << "에게 " << damage << " 데미지! " << std::endl;
     if (monster->GetHP() > 0) {
         std::cout << " 적 현재 체력 : " << monster->GetHP() << std::endl;
+        std::cout << "" << std::endl;
     }
 }
 
@@ -131,6 +132,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
     std::cout << player->GetName() << "에게 " << damage << " 데미지! " << std::endl;
     if (player->GetHP() > 0) {
         std::cout << " 내 현재 체력 : " << player->GetHP() << std::endl;
+        std::cout << " " << std::endl;
     }
 }
 
