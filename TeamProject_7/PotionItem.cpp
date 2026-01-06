@@ -41,7 +41,7 @@ bool PotionItem::Use(Player* player)
         player->SetATK(player->GetATK() + data.PlusATK);
 
         std::cout << data.Name << " 사용! 공격력 +"
-            << data.PlusATK << std::endl";
+            << data.PlusATK << std::endl;
         std::cout << "현재 공격력: " << player->GetATK() << std::endl;
     }
 

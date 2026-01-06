@@ -104,7 +104,7 @@ void Player::Equip(EquipID id)
     const auto& equipList = db_.GetEquipItems(id);
     const auto& data = equipList[0];
 
-    EquipSlot slot = data.slot;
+    EquipSlot slot = GetSlotFromEquipID(id);
 
     // 기존 장비 해제
     Unequip(slot);
@@ -156,8 +156,21 @@ void Player::Unequip(EquipSlot slot)
     std::cout << data.Name << " 장착 해제" << std::endl;
 }
 
+EquipSlot Player::GetSlotFromEquipID(EquipID id)
+{
+    switch (id)
+    {
+    case EquipID::RustySword:
+    case EquipID::NormalSword:
+        return EquipSlot::Weapon;
 
+    case EquipID::RustyArmor:
+        return EquipSlot::Armor;
 
+    default:
+        return EquipSlot::Weapon;
+    }
+}
 
 
 // 게터

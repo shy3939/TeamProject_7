@@ -39,5 +39,5 @@ void EquipItem::Unequip(Player* player)
         -data.BonusLUK
     );
 
-    std::cout << data.Name << " 장착 해제" < std::endl;
+    std::cout << data.Name << " 장착 해제" << std::endl;
 }
