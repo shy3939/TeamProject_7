@@ -23,6 +23,7 @@ public:
     Player(const std::string& Name, const ItemDatabase& db);
     // 소멸자
     ~Player();
+    int VitUpdate() const;
 
     // 경험치 관련
     void GainExperience(int amount);
@@ -43,7 +44,6 @@ public:
     // 능력치 관련
     int CalcDamage(int baseAtk) const;      // STR, INT
     bool TryEvade(int enemyAgi) const;              // AGI
-    int  ApplyDamageReduction(int rawDamage) const; // VIT
     bool IsCritical() const;                        // LUK
 
     int RandomInRange(int min, int max);
@@ -73,7 +73,7 @@ public:
     void SetEXP(int exp);
     void SetLevel(int lv);
     void SetGold(int gold);
-    void SetMaxHP(int maxHp);
+
 
     // 상태 출력
     void ShowStatus() const;
@@ -81,18 +81,20 @@ public:
 
 private:
     std::string name_;
-    int level_;
-    int maxhp_;
-    int hp_;
-    int atk_;
-    int exp_;
-    int gold_;
-    //능력치
     int str_;
     int agi_;
     int vit_;
     int int_;
     int luk_;
+    int level_;
+    int maxhp_;
+    int vmaxhp_;
+    int hp_;
+    int atk_;
+    int exp_;
+    int gold_;
+    //능력치
+
     //아이템
     std::unique_ptr<Inventory> inventory_;
     EquipmentSlots equipped_;

@@ -5,8 +5,7 @@ class Slim : public Monster
 public:
 	Slim(const Player& player);
 	~Slim() override;
-
-	int MonsterATK() override;
+	
 	void TakeDamage(int damage_) override;
 	void InitRandom() override;
 

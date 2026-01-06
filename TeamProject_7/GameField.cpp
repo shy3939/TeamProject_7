@@ -6,7 +6,6 @@
 #include "Goblin.h"
 #include "Oak.h"
 #include "Slim.h"
-#include "Dragon.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
 #include "Inventory.h"
@@ -38,7 +37,7 @@ void GameField::Enter(Player* player)
 // 추가함
 Monster* GameField::CreateRandomMonster(Player& player)
 {
-    int RandNum = rand() % 4 + 1;
+    int RandNum = rand() % 3 + 1;
 
     switch (RandNum)
     {
@@ -48,10 +47,8 @@ Monster* GameField::CreateRandomMonster(Player& player)
         return new Slim(player);
     case 3:
         return new Oak(player);
-    case 4:
-        return new Dragon(player);
     default:
-        return nullptr;
+        return new Goblin(player);
     }
 }
 
@@ -60,13 +57,13 @@ void GameField::StartBattle(Player* player)
     Monster* monster = nullptr;
 
     // 레벨 10이면 보스 등장
-    //if (BossBattle)
-    //{
-    //    std::cout << " 보스 몬스터가 나타났다! " << std::endl;
-    //    monster = CreateBossMonster();
-    //}
-    //else
-    //{
+    if (BossBattle)
+    {
+        std::cout << " 보스 몬스터가 나타났다! " << std::endl;
+        monster = CreateBossMonster();
+    }
+    else
+    {
     monster = CreateRandomMonster(*player);
 
     if (monster->GetName() == "슬라임")
@@ -75,15 +72,10 @@ void GameField::StartBattle(Player* player)
         UIHelper::UpdateTop(AsciiArt::HeroVsGoblin);
     else if (monster->GetName() == "오크")
         UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
-    else if (monster->GetName() == "드래곤")
-        UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
 
     UIHelper::UpdateBot(monster->GetName() + "이(가) 나타났다! ", 1);
-    //}
-
-
-
-
+    }
+    
     // 턴 기반 전투
     while (1)
     {         
@@ -94,7 +86,6 @@ void GameField::StartBattle(Player* player)
         // 몬스터 사망 체크
         if (monster->GetHP() <= 0)
         {
-            
             Victory(player, monster);
             break;
         }
@@ -121,7 +112,8 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
 
     //inventory 사용
     Inventory* inventory = player->GetInventory();
-
+    int tempATK = player->GetATK();
+    
     if (inventory->GetItemCount(ItemType::Potion, (int)PotionID::HPPotion) > 0
         && player->GetHP() < (player->GetMaxHP() / 2))
     {
@@ -137,6 +129,8 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         if (slot != -1)
             inventory->Use(slot + 1, player);
     }
+    
+    UIHelper::UpdateStatus(player);
 
     // 공격 처리
     UIHelper::PlaySlashEffect();
@@ -148,9 +142,16 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
     else if (monster->GetName() == "드래곤")
         UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
-
-    int damage = player->GetATK();
-
+    
+    int damage = player->CalcDamage(player->GetATK());
+    
+    std::string CriticalMessage;
+    if (player->IsCritical())
+    {
+        CriticalMessage = "치명적인";
+        damage *= 1.3;
+    }
+    
     monster->TakeDamage(damage);
 
     // Log 처리
@@ -158,18 +159,19 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     if (monster->GetHP() > 0) {
         PromptEnemyHP = "적 현재 체력 : " + std::to_string(monster->GetHP());
     }
-
+    
     else {
         UIHelper::PlayMonsterDeathEffect();
         PromptEnemyHP = monster->GetName() + "은(는) 쓰러졌다!";
     }
     UIHelper::UpdateBot({
-        player->GetName() + "의 공격!",
+        player->GetName() + "의 " + CriticalMessage+ " 공격!",
         monster->GetName() + "에게 " + std::to_string(damage) + " 데미지!",
         PromptEnemyHP
         }, 2);
-
-
+    
+    player->SetATK(tempATK);
+    UIHelper::UpdateStatus(player);
 }
 
 void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
@@ -194,25 +196,40 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
         UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
     }
 
-    int damage = monster->MonsterATK();
-    player->TakeDamage(damage);
-
-    // Log 처리
-    std::string PromptPlayerHP;
-    if (monster->GetHP() > 0) {
-        PromptPlayerHP = "내 현재 체력 : " + std::to_string(player->GetHP());
+    if (player->TryEvade(monster->GetAGI()))
+    {
+        UIHelper::UpdateBot( monster->GetName() + "의 공격!",0.5);
+        UIHelper::UpdateBot( player->GetName() + "은(는) 회피했다!", 0.5);
     }
+    else
+    {
+        int damage = monster->CalcDamage( monster->MonsterATK() );
+        std::string CriticalMessage;
+        if (monster->IsCritical())
+        {
+            CriticalMessage = "치명적인";
+            damage *= 1.3;
+        }
+    
+        player->TakeDamage(damage);
 
-    else {
-        UIHelper::PlayHeroDeathEffect();
-        PromptPlayerHP = player->GetName() + "은(는) 쓰러졌다!";
+        // Log 처리
+        std::string PromptPlayerHP;
+        if (monster->GetHP() > 0) {
+            PromptPlayerHP = "내 현재 체력 : " + std::to_string(player->GetHP());
+        }
+
+        else {
+            UIHelper::PlayHeroDeathEffect();
+            PromptPlayerHP = player->GetName() + "은(는) 쓰러졌다!";
+        }
+
+        UIHelper::UpdateBot({
+        monster->GetName() + "의 " + CriticalMessage+ " 공격!",
+        player->GetName() + "에게 " + std::to_string(damage) + " 데미지!",
+        PromptPlayerHP
+        }, 2);
     }
-
-    UIHelper::UpdateBot({
-    monster->GetName() + "의 공격!",
-    player->GetName() + "에게 " + std::to_string(damage) + " 데미지!",
-    PromptPlayerHP
-    }, 2);
 }
 
 void GameField::Victory(Player* player, Monster* monster)
@@ -244,20 +261,20 @@ void GameField::Victory(Player* player, Monster* monster)
         "획득 경험치: " + std::to_string(50) + " EXP"
         }, 1);
 
-    int NumHealthPotion = rand() % 5;
-    int NumAttackHealthPotion = rand() % 5;
+    int NumHealthPotion = rand() % 3;
+    int NumAttackHealthPotion = rand() % 3;
 
     // 아이템 보상
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, 1);
+        inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, NumHealthPotion);
     }
 
     if (rand() % 100 < 30)
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, 1);
+        inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, NumAttackHealthPotion);
     }
 
     if (monster->GetName() == "슬라임")

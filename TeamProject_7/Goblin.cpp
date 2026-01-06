@@ -11,7 +11,7 @@ Goblin::Goblin(const Player& player)
 
 	int RandNum = RandomInRange(1, 10);
 
-	maxhp_ = Level * rmaxhp_;
+	maxhp_ = Level * rmaxhp_ * (1 + 0.01f * rvit_);
 	hp_ = maxhp_;
 	atk_ = Level * ratk_;
 	gold_ = rgold_;
@@ -20,17 +20,6 @@ Goblin::Goblin(const Player& player)
 	vit_ = rvit_;
 	int_ = rint_;
 	luk_ = rluk_;
-
-	// 드랍 아이템 설정
-	dropType_ = ItemType::Potion;
-	if (RandNum < 5)
-	{
-		dropId_ = (int)PotionID::ATKPotion;
-	}
-	else
-	{
-		dropId_ = (int)PotionID::HPPotion;
-	}
 }
 
 Goblin::~Goblin()
@@ -55,7 +44,3 @@ void Goblin::InitRandom()
 	rluk_ = RandomInRange(0, 40);
 }
 
-int Goblin::MonsterATK()
-{
-	return atk_ + str_ + int_;
-}

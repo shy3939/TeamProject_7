@@ -7,7 +7,6 @@ public:
 	Goblin(const Player& player);
 	~Goblin() override;
 
-	int MonsterATK() override;
 	void TakeDamage(int damage_) override;
 	void InitRandom() override;
 
