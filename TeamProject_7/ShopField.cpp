@@ -165,7 +165,6 @@ void ShopField::BuyItem(Player* player)
     player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
     UIHelper::UpdateStatus(player);
     selected.IsSoldOut = true; // 품절 상태로 변경
-    UIHelper::UpdateStatus(player);
     UpdateShopUI(); // 바뀐 상태로 화면 갱신
 
     UIHelper::UpdateBot(selected.Name + " 구매 완료!", 1);
