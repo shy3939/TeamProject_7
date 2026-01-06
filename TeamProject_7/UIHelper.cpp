@@ -71,6 +71,31 @@ namespace UIHelper {
         }
     }
 
+    void UpdateTopList(const std::vector<std::string>& lines, const std::string& title) {
+        HideCursor();
+        // Top 영역 클리어
+        for (int i = TOP_Y; i < MID_Y - 1; i++) {
+            ClearLine(i);
+        }
+
+        int currentLine = TOP_Y;
+        const int maxLines = MID_Y - 1 - TOP_Y; // 사용 가능한 최대 라인 수
+
+        // 타이틀 출력 (있는 경우)
+        if (!title.empty()) {
+            SetCursor(0, currentLine);
+            std::cout << " ====== " << title << " ======";
+            currentLine++;
+        }
+
+        // 리스트 항목 출력
+        for (size_t i = 0; i < lines.size() && currentLine < MID_Y - 1; i++) {
+            SetCursor(0, currentLine);
+            std::cout << " " << lines[i];
+            currentLine++;
+        }
+    }
+
     void UpdateStatus(Player* player) {
         for (int i = MID_Y; i < BOT_Y - 1; i++) {
             ClearLine(i);

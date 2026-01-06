@@ -143,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="AsciiArt.h" />
     <ClInclude Include="BossMonster.h" />
+    <ClInclude Include="Craft.h" />
     <ClInclude Include="EquipItem.h" />
     <ClInclude Include="Field.h" />
     <ClInclude Include="GameField.h" />

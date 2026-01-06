@@ -233,7 +233,8 @@ void GameField::Victory(Player* player, Monster* monster)
 
     player->AddGold(goldReward);
     player->AddExp(50);
-
+    
+    UIHelper::UpdateStatus(player);
     UIHelper::UpdateBot({
         "획득 골드: " + std::to_string(goldReward) + " G",
         "획득 경험치: " + std::to_string(50) + " EXP"
