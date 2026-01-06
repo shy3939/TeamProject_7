@@ -75,7 +75,7 @@ int main()
         }
         
         char bSelect;
-        std::string bSelectBuffer = UIHelper::UpdateBotInput("행동을 선택해 주세요 (1 : 전투 2 : 상점 3 : 인벤토리 4, 장비 관리) " );
+        std::string bSelectBuffer = UIHelper::UpdateBotInput("행동을 선택해 주세요 (1 : 전투 2 : 상점 3 : 인벤토리 4 : 장비 관리) " );
         
         if (bSelectBuffer.length() != 1) {
             UIHelper::UpdateBot("잘못된 입력입니다 : 다시 입력해주세요!", 1);

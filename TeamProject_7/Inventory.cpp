@@ -192,7 +192,6 @@ int Inventory::GetItemCount(ItemType type, int id) const
 
 void Inventory::ShowInventory() const
 {
-    // 1. 인벤토리 데이터 준비
     std::vector<std::string> displayLines;
 
     if (IsEmpty())
@@ -201,21 +200,40 @@ void Inventory::ShowInventory() const
     }
     else
     {
-        // 인벤토리 내용을 문자열 리스트로 변환 (ID와 수량 표시)
-        // Inventory 내부에서 직접 리스트를 반환하는 함수를 만들거나, 여기서 순회하며 생성
-        for (int i = 1; i <= 30; ++i) // MAX_SLOT이 30이므로
+        for (int i = 1; i <= MAX_SLOT; ++i)
         {
             if (IsAvailable(i))
             {
-                // 예: [Slot 1] Item ID: 101 (3개)
-                // 실제 구현 시 아이템 이름 정보를 ItemDatabase에서 가져오면 더 좋습니다.
-                std::string line = "[슬롯 " + std::to_string(i) + "] 아이템 ID: " + std::to_string(i) + " x" + std::to_string(GetItemCount(ItemType::Potion, i));
+                const Slot& slot = slots_[i - 1];
+                std::string itemName = "알 수 없는 아이템";
+
+                // 타입에 따른 이름 추출 로직
+                try {
+                    switch (slot.type)
+                    {
+                    case ItemType::Potion:
+                        itemName = db_.GetPotionItems((PotionID)slot.id)[0].Name;
+                        break;
+                    case ItemType::Equipment:
+                        itemName = db_.GetEquipItems((EquipID)slot.id)[0].Name;
+                        break;
+                    case ItemType::Ingredient:
+                        itemName = db_.GetIngredItems((IngredID)slot.id)[0].Name;
+                        break;
+                    }
+                }
+                catch (...) {
+                    itemName = "데이터 없음(ID:" + std::to_string(slot.id) + ")";
+                }
+
+                // 가독성을 위해 [슬롯번호] 이름 x수량 형식으로 구성
+                std::string line = "[" + std::to_string(i) + "] " + itemName + " (x" + std::to_string(slot.count) + ")";
                 displayLines.push_back(line);
             }
         }
     }
 
     UIHelper::UpdateTopList(displayLines, "플레이어 인벤토리");
-    UIHelper::UpdateBot("인벤토리를 닫으려면 [Enter]를 눌러주세요");
-    GetEnterInput();
+    UIHelper::UpdateBot("인벤토리를 닫으려면 [Enter]를 눌러주세요.");
+    GetEnterInput(); // utf.h 등에 정의된 입력 대기 함수 호출
 }

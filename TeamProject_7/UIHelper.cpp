@@ -236,13 +236,13 @@ namespace UIHelper {
         case 0: x = 4;  y = 4; break;   // 예시
         case 1: x = 29; y = 4; break;   // 
         case 2: x = 54; y = 4; break;   // 
-        case 3: x = 4; y = 7; break;   // 
-        case 4: x = 29; y = 7; break;   // 
-        case 5: x = 54;  y = 7; break;  // 
+        case 3: x = 4; y = 8; break;   // 
+        case 4: x = 29; y = 8; break;   // 
+        case 5: x = 54;  y = 8; break;  // 
         default: return;  
         }
 
         DrawAt(x, y, message);
-        DrawAt(x, y + 2, price + " G");
+        DrawAt(x, y + 1, price + " G");
     }
 }
