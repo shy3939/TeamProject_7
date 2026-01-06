@@ -45,19 +45,15 @@ class Inventory
 public:
     Inventory(const ItemDatabase& db);
     ~Inventory();
-
     bool IsEmpty() const;
     bool IsAvailable(int displaySlot) const;
-
     void Use(int displaySlot, Player* player);
-
     void AddItem(ItemType type, int id, int count = 1);
     void RemoveItem(ItemType type, int id, int count = 1);
-
     int GetItemCount(ItemType type, int id) const;
-
     void ShowInventory() const;
-
+    int FindSameItemSlot(ItemType type, int id) const;
+    
 private:
     static const int MAX_SLOT = 30;
 
@@ -65,6 +61,5 @@ private:
     std::map<ItemKey, std::unique_ptr<Item>> itemData_;
     std::vector<Slot> slots_;
 
-    int FindSameItemSlot(ItemType type, int id) const;
     int FindEmptySlot() const;
 };

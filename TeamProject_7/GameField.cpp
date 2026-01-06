@@ -6,6 +6,8 @@
 #include "Goblin.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
+#include "Inventory.h"
+#include "ItemEnum.h" 
 
 void GameField::Enter(Player* player)
 {
@@ -117,14 +119,20 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     //inventory 사용
     Inventory* inventory = player->GetInventory();
 
-    if (inventory->IsAvailable("HpPotion") && player->GetHP() < (player->GetMaxHP() / 2))
+    if (inventory->GetItemCount(ItemType::Potion, (int)PotionID::HPPotion) > 0
+        && player->GetHP() < (player->GetMaxHP() / 2))
     {
-        inventory->Use("HpPotion", player);
+        // 해당 아이템이 있는 슬롯을 찾아서 사용
+        int slot = inventory->FindSameItemSlot(ItemType::Potion, (int)PotionID::HPPotion);
+        if (slot != -1)
+            inventory->Use(slot + 1, player);  // displaySlot은 1부터 시작
     }
 
-    if (inventory->IsAvailable("AtkPotion"))
+    if (inventory->GetItemCount(ItemType::Potion, (int)PotionID::ATKPotion) > 0)
     {
-        inventory->Use("AtkPotion", player);
+        int slot = inventory->FindSameItemSlot(ItemType::Potion, (int)PotionID::ATKPotion);
+        if (slot != -1)
+            inventory->Use(slot + 1, player);
     }
 
     // 공격 처리
@@ -238,13 +246,13 @@ void GameField::Victory(Player* player, Monster* monster)
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("HpPotion");
+        inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, 1);
     }
 
     if (rand() % 100 < 30)
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("AtkPotion");
+        inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, 1);
     }
 
     if (monster->GetName() == "슬라임")

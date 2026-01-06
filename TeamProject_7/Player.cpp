@@ -222,3 +222,8 @@ void Player::AddStat(int str, int agi, int vit, int intel, int luk)
     int_ += intel;
     luk_ += luk;
 }
+
+int Player::RandomInRange(int min, int max)
+{
+    return rand() % (max - min + 1) + min;
+}

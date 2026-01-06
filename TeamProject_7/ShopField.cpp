@@ -9,15 +9,32 @@
 #include <random>
 
 // [1] 생성자: 상점의 기본 아이템 풀(Pool) 설정
-ShopField::ShopField() {
-    // 랜덤 매대에 올라올 후보 아이템들을 등록
-    // (포션류는 고정 판매이므로 여기서 제외하여 중복 등장을 방지)
-    ItemPool.push_back({ "아이템1", 500, 500 });
-    ItemPool.push_back({ "아이템2", 200, 200 });
-    ItemPool.push_back({ "아이템3", 300, 300 });
-    ItemPool.push_back({ "아이템4", 1000, 1000 });
-    ItemPool.push_back({ "아이템5", 1500, 1500 });
+ShopField::ShopField(const ItemDatabase& db) : m_DB(db) {
+    // ItemPool 초기화 - ItemDatabase에서 장비 정보를 가져옴
+    std::vector<EquipID> shopEquips = {
+        EquipID::NormalSword, EquipID::SharpSword,
+        EquipID::NormalBow, EquipID::SturdyBow,
+        EquipID::NormalStaff,
+        EquipID::NormalSpear,
+        EquipID::NormalAxe,
+        EquipID::NormalDagger,
+        EquipID::NormalArmor,
+        EquipID::NormalGloves,
+        EquipID::NormalShoes
+    };
+
+    for (EquipID eid : shopEquips) {
+        const auto& equipData = m_DB.GetEquipItems(eid)[0]; // 첫 번째 변형 사용
+        ItemPool.push_back({
+            equipData.Name,
+            ItemType::Equipment,
+            (int)eid,
+            equipData.Price,
+            equipData.Price
+        });
+    }
 }
+
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
 void ShopField::Enter(Player* player)
 {
@@ -81,23 +98,18 @@ void ShopField::BuyItem(Player* player)
     int finalPrice = 0;
     bool isEquipment = false;
 
+    ShopItem& selected = CurrentStock[Choice - 1];
+    finalName = selected.Name;
+    finalPrice = selected.CurrentPrice;
+    
     // 번호에 따른 아이템 판별
-    if (Choice == 1) 
+    if (Choice == 1 || Choice == 2) 
     {   
-        finalName = "체력 포션";
-        finalPrice = HealthPotionPrice;
+        isEquipment = false;
     }
-    else if (Choice == 2) 
-    {   
-        finalName = "공격력 포션";
-        finalPrice = AttackPotionPrice;
-    }
-    else if (Choice >= 3 && Choice < 3 + (int)CurrentStock.size()) 
+    else if (Choice >= 3 && Choice <= CurrentStock.size())
+
     {
-        // 3번 이상 선택 시 랜덤 리스트(CurrentStock)에서 인덱스 계산 (선택번호 - 3)
-        ShopItem& selected = CurrentStock[Choice - 3];
-        finalName = selected.Name;
-        finalPrice = selected.CurrentPrice;
         isEquipment = true; // 3번 이후는 장비 아이템으로 간주
     }
     else 
@@ -170,7 +182,8 @@ void ShopField::BuyItem(Player* player)
     }
 
     player->SpendGold(TotalPrice);
-    player->GetInventory()->AddItem(finalName, id, Quantity);
+    player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
+
 
     // 4. 아이템 종류에 따른 출력 문구 차별화
     if (isEquipment) {
@@ -180,9 +193,7 @@ void ShopField::BuyItem(Player* player)
         // 소모품(포션): "✅ [아이템이름] [개수]개 구매 완료!"
         UIHelper::UpdateBot("[" + finalName + "] " + std::to_string(Quantity) +"개 구매 완료!", 1);
     }
-
 }
-
 
 void ShopField::SellItem(Player* player)
 {
@@ -203,8 +214,8 @@ void ShopField::SellItem(Player* player)
     std::vector<ShopItem> AllPossibleItems;
     
     // 고정 상품(포션) 정보 추가
-    AllPossibleItems.push_back({ "체력 포션", HealthPotionPrice, HealthPotionPrice });
-    AllPossibleItems.push_back({ "공격력 포션", AttackPotionPrice, AttackPotionPrice });
+    AllPossibleItems.push_back({ "체력 포션", ItemType::Potion, (int)PotionID::HPPotion, HealthPotionPrice, HealthPotionPrice});
+    AllPossibleItems.push_back({ "공격력 포션", ItemType::Potion, (int)PotionID::ATKPotion, AttackPotionPrice, AttackPotionPrice });
 
     // ItemPool(랜덤 상품 후보군)에 있는 정보들을 추가
     for (const auto& item : ItemPool)
@@ -219,7 +230,8 @@ void ShopField::SellItem(Player* player)
     for (int i = 0; i < AllPossibleItems.size(); ++i)
     {
         // 인벤토리 클래스에 해당 아이템 이름의 개수가 1개 이상인지 확인
-        int count = inventory->GetItemCount(AllPossibleItems[i].Name);
+        int count = inventory->GetItemCount(AllPossibleItems[i].ItemType, AllPossibleItems[i].ItemId);
+
         if (count > 0)
         {
             // 실제 보유 중인 아이템만 판매 가능 목록(SellableItems)에 저장
@@ -255,7 +267,7 @@ void ShopField::SellItem(Player* player)
 
     // [6] 정보 추출: 선택한 아이템의 포인터를 통해 이름과 원가를 가져옴
     ShopItem* selected = SellableItems[Choice - 1];
-    int ownedCount = inventory->GetItemCount(selected->Name);
+    int ownedCount = inventory->GetItemCount(selected->ItemType, selected->ItemId);
     int sellPricePerOne = static_cast<int>(selected->BasePrice * 0.6);
 
     // [7] 수량 결정: 팔고자 하는 개수를 입력받고 보유 수량을 넘지 않는지 체크
@@ -270,7 +282,7 @@ void ShopField::SellItem(Player* player)
     }
     // [8] 최종 정산: 인벤토리에서 제거하고 플레이어에게 골드를 지급
     int TotalGold = sellPricePerOne * Quantity;
-    inventory->RemoveItem(selected->Name, Quantity); // 인벤토리 데이터 갱신
+    inventory->RemoveItem(selected->ItemType, selected->ItemId, Quantity); // 인벤토리 데이터 갱신
     player->AddGold(TotalGold);                      // 플레이어 재화 갱신
 
     std::cout << "✅ " << selected->Name << " " << Quantity << "개 판매 완료!" << std::endl;
@@ -280,21 +292,25 @@ void ShopField::SellItem(Player* player)
 void ShopField::RefreshShop()
 {
     // 1. 현재 진열대 비우기
-    CurrentStock.clear(); 
+    CurrentStock.clear();
 
-    // 2. 랜덤 엔진 설정
+    // 2. 고정 아이템 (포션) 추가 - 1번, 2번 슬롯
+    CurrentStock.push_back({ "체력 포션", ItemType::Potion, (int)PotionID::HPPotion, HealthPotionPrice, HealthPotionPrice });
+    CurrentStock.push_back({ "공격력 포션", ItemType::Potion, (int)PotionID::ATKPotion, AttackPotionPrice, AttackPotionPrice });
+
+    // 3. 랜덤 엔진 설정
     std::random_device rd;
     std::mt19937 g(rd());
 
-    // 3. 전체 목록을 무작위로 섞기
+    // 4. 전체 목록을 무작위로 섞기
     std::shuffle(ItemPool.begin(), ItemPool.end(), g);
 
-    // 4. 섞인 목록의 앞부분에서 MaxDisplayCount만큼 가져오기
-    for (int i = 0; i < MaxDisplayCount && i < ItemPool.size(); ++i) 
+    // 5. 섞인 목록의 앞부분에서 MaxDisplayCount만큼 가져오기 (3번~6번 슬롯)
+    for (int i = 0; i < MaxDisplayCount && i < (int)ItemPool.size(); ++i)
     {
         ShopItem item = ItemPool[i];
 
-        // 5. 가격 랜덤화 (예: 80% ~ 120% 사이)
+        // 6. 가격 랜덤화 (예: 80% ~ 120% 사이)
         float ratio = (80 + (rand() % 41)) / 100.0f;
         item.CurrentPrice = static_cast<int>(item.BasePrice * ratio);
 

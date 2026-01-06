@@ -5,6 +5,7 @@
 #include "ShopField.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
+#include "ItemDatabase.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
@@ -54,9 +55,11 @@ int main()
     }
 
     UIHelper::UpdateBot("용사 [" + PlayerName + "] 모험 시작!", 1);
-    Player* player = new Player(PlayerName);
+
+    ItemDatabase db;
+    Player* player = new Player(PlayerName, db);
     GameField* gamefield = new GameField();
-    ShopField* shopfield = new ShopField();
+    ShopField* shopfield = new ShopField(db);
 
     UIHelper::UpdateStatus(player);
 
