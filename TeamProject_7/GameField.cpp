@@ -6,6 +6,17 @@
 #include "Goblin.h"
 #include "UIHelper.h"
 #include "AsciiArt.h"
+#include "Inventory.h"
+
+GameField::GameField(ItemDatabase* db)
+    : db_(*db), GameIsOver(false), BossBattle(false) // 초기화 리스트
+{
+    // 처치 점수 배열 초기화 (슬라임, 고블린, 오크, 드래곤)
+    for (int i = 0; i < 4; ++i)
+    {
+        KillScore[i] = 0;
+    }
+}
 
 void GameField::Enter(Player* player)
 {
@@ -38,13 +49,13 @@ Monster* GameField::CreateRandomMonster(Player& player)
     switch (RandNum)
     {
     case 1:
-        return new Goblin(player);
+        return new Goblin(player, db_);
     case 2:
-        return new Goblin(player);
+        return new Goblin(player, db_);
     case 3:
-        return new Goblin(player);
+        return new Goblin(player, db_);
     case 4:
-        return new Goblin(player);
+        return new Goblin(player, db_);
     default:
         return nullptr;
     }
@@ -117,16 +128,24 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
     //inventory 사용
     Inventory* inventory = player->GetInventory();
 
-    if (inventory->IsAvailable("HpPotion") && player->GetHP() < (player->GetMaxHP() / 2))
+    int hpIdx = inventory->FindSameItemSlot(ItemType::Potion, (int)PotionID::HPPotion);
+    int hpSlot = hpIdx + 1;
+    // [2] 체력 포션 사용 (슬롯 번호로 체크 및 사용)
+    if (hpIdx != -1 && player->GetHP() < (player->GetMaxHP() / 2))
     {
-        inventory->Use("HpPotion", player);
+        // 이제 문자열 "HpPotion" 대신 숫자인 hpSlot을 넣습니다.
+        inventory->Use(hpSlot, player);
     }
 
-    if (inventory->IsAvailable("AtkPotion"))
-    {
-        inventory->Use("AtkPotion", player);
-    }
+    // [3] 공격력 포션 찾기
+    int atkIdx = inventory->FindSameItemSlot(ItemType::Potion, (int)PotionID::ATKPotion);
+    int atkSlot = atkIdx + 1;
 
+    // [4] 공격력 포션 사용
+    if (atkIdx != -1)
+    {
+        inventory->Use(atkSlot, player);
+    }
     // 공격 처리
     UIHelper::PlaySlashEffect();
     if (monster->GetName() == "슬라임")
@@ -238,13 +257,13 @@ void GameField::Victory(Player* player, Monster* monster)
     if (rand() % 100 < 30) 
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("HpPotion");
+        inventory->AddItem(ItemType::Potion, (int)PotionID::HPPotion, 1);
     }
 
     if (rand() % 100 < 30)
     {
         Inventory* inventory = player->GetInventory();
-        inventory->AddItem("AtkPotion");
+        inventory->AddItem(ItemType::Potion, (int)PotionID::ATKPotion, 1);
     }
 
     if (monster->GetName() == "슬라임")

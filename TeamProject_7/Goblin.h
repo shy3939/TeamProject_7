@@ -1,10 +1,10 @@
-﻿#pragma once
+#pragma once
 #include "Monster.h"
 
 class Goblin : public Monster
 {
 public:
-	Goblin(const Player& player);
+	Goblin(Player& player, const ItemDatabase& db);
 	~Goblin() override;
 
 	int MonsterATK() override;
@@ -21,4 +21,5 @@ private:
 	int rvit_;
 	int rint_;
 	int rluk_;
+	const ItemDatabase& db_;
 };

@@ -34,5 +34,5 @@ private:
     // 포션 아이템 가격 (고정)
     const int HealthPotionPrice = 30;
     const int AttackPotionPrice = 50;
-    const int RerollCost = 50; //리롤 비용 상수 추가
+    const int RerollCost = 1; //리롤 비용 상수 추가
 };

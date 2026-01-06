@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Item.h"
 #include "ItemEnum.h"
 
@@ -14,6 +14,7 @@ public:
     }
 
     bool Use(Player* player) override;
+    ItemType GetType() const override;
 
 private:
     PotionID pid_;

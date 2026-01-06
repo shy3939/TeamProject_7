@@ -1,4 +1,4 @@
-﻿// GameField.h
+// GameField.h
 #pragma once
 #include "Field.h"
 #include "Player.h"
@@ -7,7 +7,7 @@
 class GameField : public Field
 {
 public:
-    GameField() {};
+    GameField(ItemDatabase* db);
 
     void Enter(Player* player) override;
     Monster* CreateRandomMonster(Player& player);
@@ -24,4 +24,5 @@ private:
     bool GameIsOver = false;
     bool BossBattle = false;
     int  KillScore[4] = {0,};
+    const ItemDatabase& db_;
 };

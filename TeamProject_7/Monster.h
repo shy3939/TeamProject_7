@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include <string>
 #include <iostream>
 #include <vector>
@@ -9,7 +9,7 @@
 class Monster
 {
 public:
-	Monster();
+	Monster(Player* player);
 	virtual ~Monster();
 
 	virtual int MonsterATK() = 0;

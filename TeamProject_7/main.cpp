@@ -22,6 +22,7 @@ int main()
     UIHelper::Init();
 
     std::string PlayerName;
+    ItemDatabase database;
 
     while (1)
     {
@@ -54,9 +55,9 @@ int main()
     }
 
     UIHelper::UpdateBot("용사 [" + PlayerName + "] 모험 시작!", 1);
-    Player* player = new Player(PlayerName);
-    GameField* gamefield = new GameField();
-    ShopField* shopfield = new ShopField();
+    Player* player = new Player(PlayerName, database);
+    GameField* gamefield = new GameField(&database);
+    ShopField* shopfield = new ShopField(&database);
 
     UIHelper::UpdateStatus(player);
 

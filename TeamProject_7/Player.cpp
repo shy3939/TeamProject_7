@@ -222,3 +222,9 @@ void Player::AddStat(int str, int agi, int vit, int intel, int luk)
     int_ += intel;
     luk_ += luk;
 }
+
+int Player::RandomInRange(int min, int max)
+{
+    // min부터 max 사이의 랜덤한 정수를 반환합니다.
+    return min + (rand() % (max - min + 1));
+}

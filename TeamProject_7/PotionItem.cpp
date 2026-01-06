@@ -1,4 +1,4 @@
-﻿#include "Item.h"
+#include "Item.h"
 #include "ItemDatabase.h"
 #include "Player.h"
 #include "PotionItem.h"
@@ -46,4 +46,8 @@ bool PotionItem::Use(Player* player)
     }
 
     return true;
+}
+
+ItemType PotionItem::GetType() const {
+    return ItemType::Potion; // 이 아이템은 '포션'임을 반환
 }

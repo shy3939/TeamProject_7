@@ -1,6 +1,6 @@
-﻿#include "Monster.h"
+#include "Monster.h"
 
-Monster::Monster()
+Monster::Monster(Player* player)
 	:name_("Unknown"),
 	maxhp_(0),
 	hp_(0),

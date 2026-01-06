@@ -1,4 +1,4 @@
-﻿#include "ItemDatabase.h"
+#include "ItemDatabase.h"
 #include <vector>
 #include <map>
 
@@ -112,6 +112,9 @@ static std::map<PotionID, std::vector<PotionData>> PotionDB = {
     { PotionID::ATKPotion, { 
         PotionData("하급 힘의 비약", 10, 0, 10), 
         PotionData("중급 힘의 비약", 30, 0, 30) 
+}},
+{ PotionID::MPPotion, {
+      PotionData("하급 MP 포션", 10, 0, 0) // 값은 기획에 맞춰 수정하세요
 }}
 };
 

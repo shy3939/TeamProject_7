@@ -59,6 +59,7 @@ public:
     void ShowInventory() const;
 
     const Slot& GetSlot(int displaySlot) const;
+    int FindSameItemSlot(ItemType type, int id) const;
 private:
     static const int MAX_SLOT = 30;
 
@@ -66,6 +67,5 @@ private:
     std::map<ItemKey, std::unique_ptr<Item>> itemData_;
     std::vector<Slot> slots_;
 
-    int FindSameItemSlot(ItemType type, int id) const;
     int FindEmptySlot() const;
 };

@@ -1,7 +1,9 @@
-﻿#include "Goblin.h"
+#include "Goblin.h"
+#include "PotionItem.h"
+#include "ItemEnum.h"
 
-Goblin::Goblin(const Player& player)
-	: Monster()
+Goblin::Goblin(Player& player, const ItemDatabase& db)
+	: Monster(&player), db_(db)
 {
 	name_ = "고블린";
 	InitRandom();
@@ -21,19 +23,13 @@ Goblin::Goblin(const Player& player)
 	luk_ = rluk_;
 	if (RandNum < 4)
 	{
-		item_ = new AtkPotion();
-		item_ = new HpPotion();
+		item_ = new PotionItem(PotionID::ATKPotion, db_);
 	}
 	else if (RandNum >= 4 && RandNum < 8)
 	{
-		item_ = new AtkPotion();
-	}
-	else
-	{
-		item_ = new HpPotion();
+		item_ = new PotionItem(PotionID::HPPotion, db_);
 	}
 }
-
 Goblin::~Goblin()
 {
 	std::cout << "고블린(를)을 처치하셨습니다!" << std::endl;
