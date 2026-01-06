@@ -10,6 +10,7 @@ public:
     GameField() {};
 
     void Enter(Player* player) override;
+    Monster* CreateBossMonster(Player& player);
     Monster* CreateRandomMonster(Player& player);
     Monster* CreateBossMonster(Player& player);
     bool GetGameIsOver() const { return GameIsOver; }

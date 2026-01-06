@@ -1,10 +1,10 @@
-﻿#include "Dragon.h"
+#include "Dragon.h"
 #include "UIHelper.h"
 
 Dragon::Dragon(const Player& player)
 	: Monster()
 {
-	name_ = "드래곤";
+	name_ = "(Boss)드래곤";
 	InitRandom();
 
 	int Level = player.GetLevel();

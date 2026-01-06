@@ -22,14 +22,13 @@ void GameField::Enter(Player* player)
         BossBattle = true;
     }
 
-    if (BossBattle) {
-
+    if (BossBattle) 
+    {
         UIHelper::UpdateBot("**!** 보스의 서식지에 입장했습니다! **!**", 1);
     }
 
     else
     {
-
         UIHelper::UpdateBot("+++ 몬스터 서식지에 입장했습니다! +++", 1);
     }
     StartBattle(player);
@@ -97,20 +96,35 @@ void GameField::StartBattle(Player* player)
             break;
         }
 
-        // 몬스터 턴
-        ProcessMonsterTurn(player, monster);
-        UIHelper::UpdateStatus(player);
 
-        // 플레이어 사망 체크
-        if (player->GetHP() <= 0)
+        // 턴 기반 전투
+        while (1)
         {
-            
-            Defeat(player);
-            break;
-        }
-    }
+            // 플레이어 턴
+            ProcessPlayerTurn(player, monster);
+            UIHelper::UpdateStatus(player);
 
-    delete monster;
+            // 몬스터 사망 체크
+            if (monster->GetHP() <= 0)
+            {
+                Victory(player, monster);
+                break;
+            }
+
+            // 몬스터 턴
+            ProcessMonsterTurn(player, monster);
+            UIHelper::UpdateStatus(player);
+
+            // 플레이어 사망 체크
+            if (player->GetHP() <= 0)
+            {
+
+                Defeat(player);
+                break;
+            }
+        }
+
+        delete monster;
 }
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
@@ -147,7 +161,7 @@ void GameField::ProcessPlayerTurn(Player* player, Monster* monster)
         UIHelper::UpdateTop(AsciiArt::HeroVsGoblin);
     else if (monster->GetName() == "오크")
         UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
-    else if (monster->GetName() == "드래곤")
+    else if (monster->GetName() == "(Boss)드래곤")
         UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
     
     int damage = player->CalcDamage(player->GetATK());
@@ -198,7 +212,7 @@ void GameField::ProcessMonsterTurn(Player* player, Monster* monster)
         UIHelper::PlaySlashEffectReverse();
         UIHelper::UpdateTop(AsciiArt::HeroVsOrc);
     }
-    else if (monster->GetName() == "드래곤") {
+    else if (monster->GetName() == "(Boss)드래곤") {
         UIHelper::PlayFireEffect();
         UIHelper::UpdateTop(AsciiArt::HeroVsDragon);
     }

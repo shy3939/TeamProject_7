@@ -25,12 +25,14 @@ private:
     void CloseSellUI();
     void SellItem(Player* player);
     void RefreshShop(); // 매번 목록을 새로고침하는 함수
+    void UpdateShopUI();
 
     const ItemDatabase& m_DB;
     std::vector<ShopItem> ItemPool; // 상점에서 팔 수 있는 전체 아이템
     std::vector<ShopItem> CurrentStock; // 현재 매대에 진열할 아이템
-    const int MaxDisplayCount = 4; // 포션 이외에 추가적으로 진열할 것
+    const int MaxDisplayCount = 6; // 포션 이외에 추가적으로 진열할 것
     // 포션 아이템 가격 (고정)
     const int HealthPotionPrice = 30;
     const int AttackPotionPrice = 50;
+    const int RerollCost = 1;
 };
