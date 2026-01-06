@@ -39,9 +39,9 @@ ShopField::ShopField(const ItemDatabase& db) : m_DB(db) {
 void ShopField::Enter(Player* player)
 {
     RefreshShop(); 
-        // 상점 입장 시마다 아이템 구성을 새로고침
-      
-        // UI 상단부에 아이템 정보 삽입
+    // 상점 입장 시마다 아이템 구성을 새로고침
+    
+    // UI 상단부에 아이템 정보 삽입
     UIHelper::UpdateTop(AsciiArt::ShopBackGround);
     for (int i = 0; i < 6; ++i) {
         UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice) , i);
@@ -155,9 +155,9 @@ void ShopField::BuyItem(Player* player)
             UIHelper::UpdateBot("잘못된 입력입니다. 구매를 취소합니다.", 1);
             return;
         }
-
+    
         Confirm = strConfirm[0];
-
+    
         switch (Confirm)
         {
         case 'y':
@@ -183,7 +183,7 @@ void ShopField::BuyItem(Player* player)
 
     player->SpendGold(TotalPrice);
     player->GetInventory()->AddItem(selected.ItemType, selected.ItemId, Quantity);
-
+    UIHelper::UpdateStatus(player);
 
     // 4. 아이템 종류에 따른 출력 문구 차별화
     if (isEquipment) {
@@ -244,6 +244,7 @@ void ShopField::SellItem(Player* player)
                 << " - " << count << "개 보유 (개당 " << sellPrice << " G)" << std::endl;
         }
     }
+    
     // [4] 예외 처리: 인벤토리에 아이템은 있지만, 상점에서 안 사는 물건만 있을 경우
     if (SellableItems.empty())
     {
@@ -284,7 +285,8 @@ void ShopField::SellItem(Player* player)
     int TotalGold = sellPricePerOne * Quantity;
     inventory->RemoveItem(selected->ItemType, selected->ItemId, Quantity); // 인벤토리 데이터 갱신
     player->AddGold(TotalGold);                      // 플레이어 재화 갱신
-
+    UIHelper::UpdateStatus(player);
+    
     std::cout << "✅ " << selected->Name << " " << Quantity << "개 판매 완료!" << std::endl;
     std::cout << "💰 획득 골드: " << TotalGold << " G" << std::endl;
 }
