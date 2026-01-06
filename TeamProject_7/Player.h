@@ -41,10 +41,9 @@ public:
     EquipSlot GetSlotFromEquipID(EquipID id) const;
 
     // 능력치 관련
-    int CalcPhysicalDamage(int baseAtk) const;      // STR
+    int CalcDamage(int baseAtk) const;      // STR, INT
     bool TryEvade(int enemyAgi) const;              // AGI
     int  ApplyDamageReduction(int rawDamage) const; // VIT
-    int CalcMagicDamage(int baseMagic) const;       // INT
     bool IsCritical() const;                        // LUK
 
     int RandomInRange(int min, int max);
