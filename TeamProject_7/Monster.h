@@ -11,11 +11,12 @@ class Monster
 public:
 	Monster();
 	virtual ~Monster();
-
-	virtual int MonsterATK() = 0;
+	
 	virtual void TakeDamage(int damage_) = 0;
 	virtual void InitRandom() = 0;
+	
 
+	
 	//getter
 	std::string GetName() const;
 	int GetMaxHP() const;
@@ -28,15 +29,19 @@ public:
 	int GetINT() const;
 	int GetLUK() const;
 	
-
 	//setter
 	void SetMaxHP(int maxhp);
 	void SetHP(int hp);
 	void SetATK(int atk);
 	void SetGold(int gold);
-
 	int RandomInRange(int min, int max);
 	float RandomInRange(float min, float max);
+	
+	int MonsterATK();
+	//stats
+	int CalcDamage(int baseATK) const;
+	bool TryEvade(int MonsterAgi) const;
+	bool IsCritical() const;
 
 	Monster* CreateRandomMonster(Player& player);
 

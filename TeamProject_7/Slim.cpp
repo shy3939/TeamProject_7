@@ -1,5 +1,5 @@
 ﻿#include "Slim.h"
-#include "ItemEnum.h"
+#include "UIHelper.h"
 
 Slim::Slim(const Player& player)
 	: Monster()
@@ -11,7 +11,7 @@ Slim::Slim(const Player& player)
 
 	int RandNum = RandomInRange(1, 10);
 
-	maxhp_ = Level * rmaxhp_;
+	maxhp_ = Level * rmaxhp_ * (1 + 0.01f * rvit_);
 	hp_ = maxhp_;
 	atk_ = Level * ratk_;
 	gold_ = rgold_;
@@ -20,22 +20,12 @@ Slim::Slim(const Player& player)
 	vit_ = rvit_;
 	int_ = rint_;
 	luk_ = rluk_;
-
-	// 드랍 아이템 설정
-	dropType_ = ItemType::Potion;
-	if (RandNum < 5)
-	{
-		dropId_ = (int)PotionID::ATKPotion;
-	}
-	else
-	{
-		dropId_ = (int)PotionID::HPPotion;
-	}
+	
 }
 
 Slim::~Slim()
 {
-	std::cout << "슬라임(를)을 처치하셨습니다!" << std::endl;
+	UIHelper::UpdateBot("슬라임을 처치했다!");
 }
 
 void Slim::TakeDamage(int damage_)
@@ -55,7 +45,3 @@ void Slim::InitRandom()
 	rluk_ = RandomInRange(0, 40);
 }
 
-int Slim::MonsterATK()
-{
-	return atk_ + str_ + int_;
-}

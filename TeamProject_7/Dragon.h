@@ -5,8 +5,7 @@ class Dragon : public Monster
 public:
 	Dragon(const Player& player);
 	~Dragon() override;
-
-	int MonsterATK() override;
+	
 	void TakeDamage(int damage_) override;
 	void InitRandom() override;
 

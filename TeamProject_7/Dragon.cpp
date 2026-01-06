@@ -1,4 +1,5 @@
-﻿#include "Dragon.h"
+#include "Dragon.h"
+#include "UIHelper.h"
 
 Dragon::Dragon(const Player& player)
 	: Monster()
@@ -10,7 +11,7 @@ Dragon::Dragon(const Player& player)
 
 	int RandNum = RandomInRange(1, 10);
 
-	maxhp_ = Level * rmaxhp_;
+	maxhp_ = Level * rmaxhp_ * (1 + 0.01f * rvit_);
 	hp_ = maxhp_;
 	atk_ = Level * ratk_;
 	gold_ = rgold_;
@@ -19,22 +20,11 @@ Dragon::Dragon(const Player& player)
 	vit_ = rvit_;
 	int_ = rint_;
 	luk_ = rluk_;
-
-	// 드랍 아이템 설정
-	dropType_ = ItemType::Potion;
-	if (RandNum < 5)
-	{
-		dropId_ = (int)PotionID::ATKPotion;
-	}
-	else
-	{
-		dropId_ = (int)PotionID::HPPotion;
-	}
 }
 
 Dragon::~Dragon()
 {
-	std::cout << "드래곤(를)을 처치하셨습니다!" << std::endl;
+	UIHelper::UpdateBot(" !!! 드래곤을 처치했다 !!! ");
 }
 
 void Dragon::TakeDamage(int damage_)
@@ -52,9 +42,4 @@ void Dragon::InitRandom()
 	rvit_ = RandomInRange(0, 99);
 	rint_ = RandomInRange(10, 45);
 	rluk_ = RandomInRange(0, 40);
-}
-
-int Dragon::MonsterATK()
-{
-	return atk_ + str_ + int_;
 }

@@ -37,6 +37,10 @@ void Monster::SetHP(int hp) { hp_ = hp; }
 void Monster::SetATK(int atk) { atk_ = atk; }
 void Monster::SetGold(int gold) { gold_ = gold; }
 
+int Monster::MonsterATK()
+{
+	return atk_;
+}
 
 int Monster::RandomInRange(int min, int max)
 {
@@ -48,3 +52,13 @@ float Monster::RandomInRange(float min, float max)
 	return (rand() / (float)RAND_MAX) * (max-min) + min ;
 	// 0부터1 -> max-min -> min부터 max까지
 }
+
+//능력치 처리
+int Monster::CalcDamage(int baseATK) const //STR
+{
+	float rate = 1.0f + std::max(str_, int_) * 0.01f;
+	return static_cast<int>(baseATK * rate);
+}
+
+bool Monster::IsCritical() const { return rand() % 100 < luk_; } //LUK
+
