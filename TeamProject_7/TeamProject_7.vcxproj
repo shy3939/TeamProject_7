@@ -130,6 +130,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Oak.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ShopField.cpp" />
     <ClCompile Include="utf.cpp" />
@@ -141,9 +142,10 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="Oak.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShopField.h" />
-	<ClCompile Include="utf.h" />
+    <ClCompile Include="utf.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
