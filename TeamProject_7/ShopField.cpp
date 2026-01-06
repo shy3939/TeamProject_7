@@ -50,7 +50,7 @@ void ShopField::Enter(Player* player)
 
     while (1)
     {
-        std::string Choice =  UIHelper::UpdateBotInput("[상점 메뉴] : 1. 아이템 구매  2. 아이템 판매 3. 나가기 ");
+        std::string Choice =  UIHelper::UpdateBotInput("[상점 메뉴] : 1. 아이템 구매  2. 아이템 판매 3. 리롤(" + std::to_string(RerollCost) + "G) 4. 나가기 ");
 
         if (Choice == "1") {
             BuyItem(player);
@@ -58,7 +58,22 @@ void ShopField::Enter(Player* player)
         else if (Choice == "2") {
             SellItem(player);
         }
-        else if (Choice == "3") {
+        else if (Choice == "3")
+        {
+            // 리롤 로직
+            if (player->GetGold() >= RerollCost)
+            {
+                player->SpendGold(RerollCost);
+                RefreshShop();
+                UpdateShopUI(); // 리롤된 정보로 UI 갱신
+                UIHelper::UpdateBot("매대 상품을 갱신했습니다! (-" + std::to_string(RerollCost) + "G)", 1);
+            }
+            else
+            {
+                UIHelper::UpdateBot("골드가 부족하여 리롤할 수 없습니다!", 1);
+            }
+        }
+        else if (Choice == "4") {
             UIHelper::UpdateBot("다음에도 살아서 만나요~ ", 1);
             return;
         }
@@ -378,5 +393,16 @@ void ShopField::RefreshShop()
         item.CurrentPrice = static_cast<int>(item.BasePrice * ratio);
 
         CurrentStock.push_back(item);
+    }
+}
+
+void ShopField::UpdateShopUI()
+{
+    for (int i = 0; i < 6; ++i)
+    {
+        if (i < (int)CurrentStock.size())
+        {
+            UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
+        }
     }
 }
