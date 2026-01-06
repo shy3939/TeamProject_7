@@ -14,6 +14,9 @@ namespace UIHelper {
     void UpdateBot(const std::vector<std::string>& messages, const float sleepSec = 0);
     std::string UpdateBotInput(const std::string& prompt);
 
+    // Top 영역 리스트 표시 함수들
+    void UpdateTopList(const std::vector<std::string>& lines, const std::string& title = "");
+
     // 효과 관련 함수들
     void PlaySlashEffect(const float delaySec = 0.5f);
     void PlaySlashEffectReverse(const float delaySec = 0.5f);

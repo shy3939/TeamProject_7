@@ -212,7 +212,7 @@ void ShopField::SellItem(Player* player)
     // [2] 마스터 리스트 작성: 상점이 가격 정보를 알고 있는 모든 품목을 모음
     // 고정 상품(포션)과 랜덤 상품(ItemPool)을 하나의 벡터에 임시로 합침
     std::vector<ShopItem> AllPossibleItems;
-    
+
     // 고정 상품(포션) 정보 추가
     AllPossibleItems.push_back({ "체력 포션", ItemType::Potion, (int)PotionID::HPPotion, HealthPotionPrice, HealthPotionPrice});
     AllPossibleItems.push_back({ "공격력 포션", ItemType::Potion, (int)PotionID::ATKPotion, AttackPotionPrice, AttackPotionPrice });
@@ -226,6 +226,7 @@ void ShopField::SellItem(Player* player)
     // [3] 필터링: 플레이어가 실제로 가지고 있는 아이템만 골라냄
     // 사용자가 입력할 번호(1, 2, 3...)와 실제 아이템 객체를 매핑하기 위해 포인터(*) 벡터를 활용
     std::vector<ShopItem*> SellableItems;
+    std::vector<std::string> displayLines;  // Top 영역에 표시할 리스트
 
     for (int i = 0; i < AllPossibleItems.size(); ++i)
     {
@@ -239,30 +240,52 @@ void ShopField::SellItem(Player* player)
 
             // 판매가 계산: 기준 가격(BasePrice)의 60%
             int sellPrice = static_cast<int>(AllPossibleItems[i].BasePrice * 0.6);
-            // 화면에는 1번부터 순차적으로 보이게 출력
-            std::cout << SellableItems.size() << ". " << AllPossibleItems[i].Name
-                << " - " << count << "개 보유 (개당 " << sellPrice << " G)" << std::endl;
+            // 리스트 항목 문자열 생성
+            std::string line = std::to_string(SellableItems.size()) + ". " + AllPossibleItems[i].Name
+                + " - " + std::to_string(count) + "개 보유 (개당 " + std::to_string(sellPrice) + " G)";
+            displayLines.push_back(line);
         }
     }
-    
+
     // [4] 예외 처리: 인벤토리에 아이템은 있지만, 상점에서 안 사는 물건만 있을 경우
     if (SellableItems.empty())
     {
-        std::cout << "상점에서 매입하는 아이템을 보유하고 있지 않습니다." << std::endl;
+        UIHelper::UpdateBot("상점에서 매입하는 아이템을 보유하고 있지 않습니다.", 1);
         return;
     }
 
-    std::cout << "0. 취소" << std::endl;
-    std::cout << "----------------------------------------" << std::endl;
-    std::cout << "판매할 아이템 번호: ";
+    displayLines.push_back("0. 취소");
+
+    // Top 영역에 판매 가능 아이템 리스트 표시
+    UIHelper::UpdateTopList(displayLines, "판매 가능 아이템");
 
     // [5] 입력 처리: 어떤 아이템을 팔지 결정
-    int Choice;
-    if (!(std::cin >> Choice) || Choice == 0) return; // 입력 오류 및 취소 처리
+    std::string strChoice = UIHelper::UpdateBotInput("판매할 아이템 번호를 입력하세요");
 
-    if (Choice < 1 || Choice >(int)SellableItems.size())
+    if (strChoice.empty()) {
+        UIHelper::UpdateBot("입력이 없습니다. 판매를 취소합니다.", 0.5);
+        return;
+    }
+
+    size_t pos;
+    int Choice;
+    try {
+        Choice = std::stoi(strChoice, &pos);
+    } catch (...) {
+        UIHelper::UpdateBot("잘못된 입력입니다. 판매를 취소합니다.", 0.5);
+        return;
+    }
+
+    if (pos != strChoice.length()) {
+        UIHelper::UpdateBot("숫자만 입력해주세요. 판매를 취소합니다.", 0.5);
+        return;
+    }
+
+    if (Choice == 0) return;
+
+    if (Choice < 1 || Choice > (int)SellableItems.size())
     {
-        std::cout << "잘못된 선택입니다." << std::endl;
+        UIHelper::UpdateBot("잘못된 선택입니다.", 0.5);
         return;
     }
 
@@ -272,23 +295,45 @@ void ShopField::SellItem(Player* player)
     int sellPricePerOne = static_cast<int>(selected->BasePrice * 0.6);
 
     // [7] 수량 결정: 팔고자 하는 개수를 입력받고 보유 수량을 넘지 않는지 체크
-    std::cout << selected->Name << "을(를) 몇 개 판매하시겠습니까? (보유: " << ownedCount << "개): ";
+    std::string strQuantity = UIHelper::UpdateBotInput(selected->Name + " 몇 개 판매? (보유: " + std::to_string(ownedCount) + "개)");
+
+    if (strQuantity.empty()) {
+        UIHelper::UpdateBot("입력이 없습니다. 판매를 취소합니다.", 0.5);
+        return;
+    }
+
     int Quantity;
-    std::cin >> Quantity;
+    try {
+        Quantity = std::stoi(strQuantity, &pos);
+    } catch (...) {
+        UIHelper::UpdateBot("잘못된 입력입니다. 판매를 취소합니다.", 0.5);
+        return;
+    }
+
+    if (pos != strQuantity.length()) {
+        UIHelper::UpdateBot("숫자만 입력해주세요. 판매를 취소합니다.", 0.5);
+        return;
+    }
 
     if (Quantity <= 0 || Quantity > ownedCount)
     {
-        std::cout << "수량이 올바르지 않습니다." << std::endl;
+        UIHelper::UpdateBot("수량이 올바르지 않습니다.", 0.5);
         return;
     }
+
     // [8] 최종 정산: 인벤토리에서 제거하고 플레이어에게 골드를 지급
     int TotalGold = sellPricePerOne * Quantity;
     inventory->RemoveItem(selected->ItemType, selected->ItemId, Quantity); // 인벤토리 데이터 갱신
     player->AddGold(TotalGold);                      // 플레이어 재화 갱신
     UIHelper::UpdateStatus(player);
-    
-    std::cout << "✅ " << selected->Name << " " << Quantity << "개 판매 완료!" << std::endl;
-    std::cout << "💰 획득 골드: " << TotalGold << " G" << std::endl;
+
+    // 상점 화면 복원
+    UIHelper::UpdateTop(AsciiArt::ShopBackGround);
+    for (int i = 0; i < 6; ++i) {
+        UIHelper::AddToShopList(CurrentStock[i].Name, std::to_string(CurrentStock[i].CurrentPrice), i);
+    }
+
+    UIHelper::UpdateBot(selected->Name + " " + std::to_string(Quantity) + "개 판매 완료! (+" + std::to_string(TotalGold) + " G)", 1);
 }
 
 void ShopField::RefreshShop()
