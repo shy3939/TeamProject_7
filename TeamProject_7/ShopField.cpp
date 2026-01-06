@@ -1,4 +1,4 @@
-// ShopField.cpp
+﻿// ShopField.cpp
 #include "ShopField.h"
 #include "Inventory.h"
 #include "UIHelper.h"
@@ -51,7 +51,10 @@ ShopField::ShopField(const ItemDatabase& db) : m_DB(db) {
 // [2] 입장 함수: 매대 새로고침 및 메인 루프 실행
 void ShopField::Enter(Player* player)
 {
-    RefreshShop(); 
+    if (CurrentStock.empty())
+    {
+        RefreshShop();
+    }
     // 상점 입장 시마다 아이템 구성을 새로고침
     
     // UI 상단부에 아이템 정보 삽입

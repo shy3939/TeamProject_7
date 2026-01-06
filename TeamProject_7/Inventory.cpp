@@ -1,4 +1,4 @@
-#include "Inventory.h"
+﻿#include "Inventory.h"
 #include "PotionItem.h"
 #include "EquipItem.h"
 #include "IngredItem.h"
@@ -142,15 +142,15 @@ void Inventory::RemoveItem(ItemType type, int id, int count)
         UIHelper::UpdateBot("제거할 아이템 수량이 부족합니다.", 1);
 }
 
-void Inventory::Use(int displaySlot, Player* player)
+bool Inventory::Use(int displaySlot, Player* player)
 {
-    if (!player) return;
+    if (!player) return false;
 
     int index = displaySlot - 1;
     if (index < 0 || index >= MAX_SLOT || slots_[index].IsEmpty())
     {
         UIHelper::UpdateBot("비어있는 슬롯입니다.", 1);
-        return;
+        return false;
     }
 
     Slot& slot = slots_[index];
@@ -160,18 +160,37 @@ void Inventory::Use(int displaySlot, Player* player)
     auto it = itemData_.find(key);
     if (it == itemData_.end())
     {
-        UIHelper::UpdateBot("아이템 데이터가 없습니다.", 1);
-        return;
+        // 데이터가 없으면 즉석에서 생성하여 등록
+        if (slot.type == ItemType::Equipment) {
+            itemData_.emplace(key, std::make_unique<EquipItem>((EquipID)slot.id, db_));
+        }
+        else if (slot.type == ItemType::Potion) {
+            itemData_.emplace(key, std::make_unique<PotionItem>((PotionID)slot.id, db_));
+        }
+        else if (slot.type == ItemType::Ingredient) {
+            itemData_.emplace(key, std::make_unique<IngredItem>((IngredID)slot.id, db_));
+        }
+
+        // 생성 후 다시 찾기
+        it = itemData_.find(key);
+
+        // 그래도 없으면 진짜 데이터가 없는 것
+        if (it == itemData_.end()) {
+            UIHelper::UpdateBot("아이템 데이터가 없습니다.", 1);
+            return false;
+        }
     }
+
 
     if (!it->second->Use(player))
     {
         UIHelper::UpdateBot("아이템을 사용할 수 없습니다.", 1);
-        return;
+        return false;
     }
 
     if (--slot.count <= 0)
         slot.Clear();
+    return true;
 }
 
 int Inventory::GetItemCount(ItemType type, int id) const

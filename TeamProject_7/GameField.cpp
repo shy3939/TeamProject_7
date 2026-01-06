@@ -103,13 +103,11 @@ void GameField::StartBattle(Player* player)
         // 플레이어 사망 체크
         if (player->GetHP() <= 0)
         {
-
             Defeat(player);
             break;
         }
     }
-    delete monster;
-    
+    delete monster;  
 }
 
 void GameField::ProcessPlayerTurn(Player* player, Monster* monster)

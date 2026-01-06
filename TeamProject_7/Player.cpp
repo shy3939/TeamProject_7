@@ -156,6 +156,19 @@ void Player::Unequip(EquipSlot slot)
     std::cout << data.Name << " 장착 해제" << std::endl;
 }
 
+EquipID Player::GetEquippedID(EquipSlot slot) const
+{
+    switch (slot)
+    {
+    case EquipSlot::Weapon: return equipped_.weapon;
+    case EquipSlot::Armor:  return equipped_.armor;
+    case EquipSlot::Gloves: return equipped_.gloves;
+    case EquipSlot::Shoes:  return equipped_.shoes;
+    default: return EquipID::None;
+    }
+}
+
+
 EquipSlot Player::GetSlotFromEquipID(EquipID id) const
 {
     switch (id)

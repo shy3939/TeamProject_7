@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 #include <string>
 #include <memory>
@@ -78,6 +78,7 @@ public:
     // 상태 출력
     void ShowStatus() const;
     void ShowEquipments() const;
+    EquipID GetEquippedID(EquipSlot slot) const;
 
 private:
     std::string name_;
@@ -100,4 +101,3 @@ private:
     EquipmentSlots equipped_;
     const ItemDatabase& db_;
 };
-
